@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">IntelliFridge</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Settings</string>$
+    <string-array name="MenuList">
+        <item>Reciepes</item>
+        <item>Home</item>
+        <item>Fridges</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

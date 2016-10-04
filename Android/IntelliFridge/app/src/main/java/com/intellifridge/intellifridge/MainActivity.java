@@ -3,11 +3,12 @@ package com.intellifridge.intellifridge;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,7 +18,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        pagerAdapter myPagerAdapter;
+        ViewPager myViewPager;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -26,6 +28,14 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        setContentView(R.layout.content_main);
+        // Set the PagerAdapter and the ViewPager element of our layout
+        myPagerAdapter = new pagerAdapter(getFragmentManager(), getApplicationContext());
+        myViewPager = (ViewPager) findViewById(R.id.pager);
+
+        // Set the Adapter
+        myViewPager.setAdapter(myPagerAdapter);
     }
 
     @Override
