@@ -1,6 +1,5 @@
 package com.intellifridge.intellifridge;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,9 +11,14 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.security.Permission;
+
+import static java.util.logging.Logger.global;
+
 public class BarcodeReader extends AppCompatActivity implements View.OnClickListener {
     private Button scanBtn;
     private TextView formatTxt, contextTxt;
+    private String in;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,9 @@ public class BarcodeReader extends AppCompatActivity implements View.OnClickList
     public void onClick(View view){
         if(view.getId()==R.id.scan_button){
             IntentIntegrator scanIntegrator = new IntentIntegrator(this);
+            scanIntegrator.setPrompt("Scan a barcode");
+            scanIntegrator.setOrientationLocked(false);
+            scanIntegrator.setBeepEnabled(true);
             scanIntegrator.initiateScan();
         }
     }
