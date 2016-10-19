@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IntelliFridge</string>
+    <string name="action_settings">Réglages</string>
+    <string name="name_tab1">Frigos</string>
+    <string name="name_tab2">Accueil</string>
+    <string name="name_tab3">Liste De Courses</string>
+    <string name="nav_fridges">Mes Frigos</string>
+    <string name="nav_input">Ranger Dans Frigo</string>
+    <string name="nav_share">Partager</string>
+    <string name="nav_subgroup">Autres</string>
+    <string name="navigation_drawer_close"></string>
+    <string name="scan_button">Scanner</string>
+    <string name="title_activity_main2">Accueil</string>
+    <string name="main_fragment">Fragment Principal</string>
+    <string name="scanner_prompt">Scanner Code-Barres</string>
+</resources>

@@ -35,7 +35,7 @@ public class BarcodeReader extends AppCompatActivity implements View.OnClickList
     public void onClick(View view){
         if(view.getId()==R.id.scan_button){
             IntentIntegrator scanIntegrator = new IntentIntegrator(this);
-            scanIntegrator.setPrompt("Scan a barcode");
+            scanIntegrator.setPrompt(String.valueOf(R.string.scanner_prompt));
             scanIntegrator.setOrientationLocked(false);
             scanIntegrator.setBeepEnabled(true);
             scanIntegrator.initiateScan();

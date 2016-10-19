@@ -33,8 +33,7 @@ public class MainFragment extends Fragment {
     }
 
     private void setViews(View view, Bundle args){
-        TextView pageName = (TextView) view.findViewById(R.id.test);
-        pageName.setText(args.getString(ARG_PARAM1));
+
     }
     /**
      * Use this factory method to create a new instance of
