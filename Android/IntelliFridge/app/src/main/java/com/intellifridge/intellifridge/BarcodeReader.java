@@ -16,30 +16,22 @@ import java.security.Permission;
 import static java.util.logging.Logger.global;
 
 public class BarcodeReader extends AppCompatActivity implements View.OnClickListener {
-    private Button scanBtn;
-    private TextView formatTxt, contextTxt;
-    private String in;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_barcode_reader);
+        initiateScan();
+    }
 
-        scanBtn = (Button)findViewById(R.id.scan_button);
-        formatTxt = (TextView)findViewById(R.id.scan_format);
-        contextTxt = (TextView)findViewById(R.id.scan_content);
-
-        scanBtn.setOnClickListener(this);
+    public void initiateScan(){
+        IntentIntegrator scanIntegrator = new IntentIntegrator(this);
+        scanIntegrator.setPrompt(getString(R.string.scanner_prompt));
+        scanIntegrator.setOrientationLocked(false);
+        scanIntegrator.setBeepEnabled(true);
+        scanIntegrator.initiateScan();
     }
 
     public void onClick(View view){
-        if(view.getId()==R.id.scan_button){
-            IntentIntegrator scanIntegrator = new IntentIntegrator(this);
-            scanIntegrator.setPrompt(String.valueOf(R.string.scanner_prompt));
-            scanIntegrator.setOrientationLocked(false);
-            scanIntegrator.setBeepEnabled(true);
-            scanIntegrator.initiateScan();
-        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent){
@@ -47,9 +39,9 @@ public class BarcodeReader extends AppCompatActivity implements View.OnClickList
 
         if (scanningResult != null){
             String scanContent = scanningResult.getContents();
-            String scanFormat = scanningResult.getFormatName();
-            formatTxt.setText("Format: " + scanFormat);
-            contextTxt.setText("Content: " + scanContent);
+            Intent gpoIntent = new Intent(getApplicationContext(),GetProdOFF.class);
+            gpoIntent.putExtra("Scanned Barcode",scanContent);
+            startActivity(gpoIntent);
         }else {
             Toast.makeText(getApplicationContext(), "No Scan Data Received", Toast.LENGTH_SHORT).show();
         }
