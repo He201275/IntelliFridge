@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -17,7 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class GetProdOFF extends AppCompatActivity {
+public class GetJsonFromOffDb extends AppCompatActivity {
     TextView txtJson;
     ProgressDialog pd;
     String resBarcodeReader;
@@ -25,7 +23,7 @@ public class GetProdOFF extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_get_prod_off);
+        setContentView(R.layout.activity_get_json_from_off_db);
         Bundle extras = getIntent().getExtras();
         if(extras != null){
             resBarcodeReader = extras.getString("Scanned Barcode");
@@ -39,7 +37,7 @@ public class GetProdOFF extends AppCompatActivity {
         protected  void onPreExecute(){
             super.onPreExecute();
 
-            pd = new ProgressDialog(GetProdOFF.this);
+            pd = new ProgressDialog(GetJsonFromOffDb.this);
             pd.setMessage("Please Wait...");
             pd.setCancelable(false);
             pd.show();
