@@ -12,7 +12,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,6 +30,27 @@
                 android:layout_marginStart="51dp"
                 android:layout_marginTop="37dp"
                 android:id="@+id/textViewGPO" />
+            <TextView
+                android:layout_width="133dp"
+                android:layout_height="wrap_content"
+                android:text="Product"
+                android:id="@+id/productLabel"
+                android:labelFor="@+id/productName"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/productName" />
+
+            <TextView
+                android:layout_width="133dp"
+                android:layout_height="wrap_content"
+                android:text="Quantity"
+                android:id="@+id/quantityLabel"
+                android:labelFor="@+id/quantityName"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/quantityName" />
         </LinearLayout>
     </ScrollView>
 

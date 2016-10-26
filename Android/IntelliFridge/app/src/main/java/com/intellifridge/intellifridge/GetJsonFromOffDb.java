@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,9 +19,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class GetJsonFromOffDb extends AppCompatActivity {
-    TextView txtJson;
+    TextView txtJson, txtProduct, txtQuantity;
     ProgressDialog pd;
     String resBarcodeReader;
+    JSONObject code, product, genericName, imageUrl, imageSmallUrl, imageFrontUrl, ingredients, productName, quantity, json;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,8 @@ public class GetJsonFromOffDb extends AppCompatActivity {
 
         new JsonTask().execute("http://fr.openfoodfacts.org/api/v0/product/"+resBarcodeReader+".json");
         txtJson = (TextView) findViewById(R.id.textViewGPO);
+        txtProduct = (TextView) findViewById(R.id.productName);
+        txtQuantity = (TextView) findViewById(R.id.quantityName);
     }
 
     private class JsonTask extends AsyncTask<String, String, String>{
@@ -38,7 +44,7 @@ public class GetJsonFromOffDb extends AppCompatActivity {
             super.onPreExecute();
 
             pd = new ProgressDialog(GetJsonFromOffDb.this);
-            pd.setMessage("Please Wait...");
+            pd.setMessage(getString(R.string.pdMessage));
             pd.setCancelable(false);
             pd.show();
         }
@@ -64,10 +70,13 @@ public class GetJsonFromOffDb extends AppCompatActivity {
                     Log.d("Response: ", "> " + line); //here u ll get whole response...... :-)
                 }
 
+                //Getting required fields from JSON
+                /**/
+
                 return buffer.toString();
             }catch (MalformedURLException e){
                 e.printStackTrace();
-            }catch (IOException e){
+            }catch (IOException /*| JSONException*/ e){
                 e.printStackTrace();
             }finally {
                 if (connection != null){
@@ -89,7 +98,43 @@ public class GetJsonFromOffDb extends AppCompatActivity {
             if (pd.isShowing()){
                 pd.dismiss();
             }
-            txtJson.setText(result);
+            try {
+                json = new JSONObject(result);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            //txtJson.setText(result);
+            Log.d("IntelliFridge", json.toString());
+
+            try {
+                if (json.has("product")){
+                    product = json.getJSONObject("product");
+                    Log.d("IntelliFridge",product.toString());
+                    genericName = product.getJSONObject("generic_name");
+                    imageUrl = product.getJSONObject("image_url");
+                    imageSmallUrl = product.getJSONObject("image_small_url");
+                    imageFrontUrl = product.getJSONObject("image_front_url");
+                    ingredients = product.getJSONObject("ingredients");
+                    quantity = product.getJSONObject("quantity");
+                    productName = product.getJSONObject("product_name");
+                    productName = product.getJSONObject("product");
+                    quantity = product.getJSONObject("quantity");
+
+                    txtProduct.setText(productName.toString());
+                    txtQuantity.setText(quantity.toString());
+                }else {
+                    Log.e("IntelliFridge","Error retrieving product!");
+                }
+
+                if (json.has("code")){
+                    code = json.getJSONObject("code");
+                }else {
+                    //TODO
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

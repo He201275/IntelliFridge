@@ -9,9 +9,22 @@
     <string name="nav_input">Ranger Dans Frigo</string>
     <string name="nav_share">Partager</string>
     <string name="nav_subgroup">Autres</string>
-    <string name="navigation_drawer_close"></string>
+    <string name="navigation_drawer_close">Fermer le tiroir navigation</string>
     <string name="scan_button">Scanner</string>
     <string name="title_activity_main2">Accueil</string>
     <string name="main_fragment">Fragment Principal</string>
     <string name="scanner_prompt">Scanner Code-Barres</string>
+    <string name="action_sign_in">"Se connecter "</string>
+    <string name="error_field_required">Ce champ est requis</string>
+    <string name="error_incorrect_password">Ce mot de passe est incorrect</string>
+    <string name="error_invalid_email">Cette adresse est invalide</string>
+    <string name="error_invalid_password">Ce mot de masse est trop court</string>
+    <string name="prompt_password">Mot de passe</string>
+    <string name="title_activity_login">Se connecter</string>
+    <string name="title_activity_main">IntelliFridge</string>
+    <string name="prompt_email">Email</string>
+    <string name="pdMessage">Recherche du produit...</string>
+    <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
+    <string name="action_sign_in_short">Se connecter</string>
+    <string name="action_sign_up">Créer un compte</string>
 </resources>
