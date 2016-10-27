@@ -46,4 +46,10 @@
     <string name="create_account_prompt">No account yet? Create one</string>
     <string name="title_activity_signup">Sign up</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="productNameTitle" >Product :</string>
+    <string name="productQuantityTitle" >Quantity :</string>
+    <string name="title_activity_main2">Home</string>
+    <string name="categoryLabel" >Category</string>
+    <string name="IngredientsLabel" >Ingredients</string>
+    <string name="BrandsLabel" >Brand</string>
 </resources>

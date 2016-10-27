@@ -22,9 +22,14 @@
     <string name="prompt_password">Mot de passe</string>
     <string name="title_activity_login">Se connecter</string>
     <string name="title_activity_main">IntelliFridge</string>
-    <string name="prompt_email">Email</string>
+    <string name="prompt_email">Adresse Email</string>
     <string name="pdMessage">Recherche du produit...</string>
     <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
     <string name="action_sign_in_short">Se connecter</string>
     <string name="action_sign_up">Créer un compte</string>
+    <string name="productNameTitle">Produit :</string>
+    <string name="productQuantityTitle">Quantité :</string>
+    <string name="nav_allergies">Mes Allergies</string>
+    <string name="create_account_prompt">Pas de compte? Crée-en un !</string>
+    <string name="title_activity_signup">Créer un compte</string>
 </resources>
