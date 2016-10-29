@@ -52,4 +52,5 @@
     <string name="categoryLabel" >Category</string>
     <string name="IngredientsLabel" >Ingredients</string>
     <string name="BrandsLabel" >Brand</string>
+    <string name="url_login">http://192.168.0.165/login.php</string>
 </resources>
