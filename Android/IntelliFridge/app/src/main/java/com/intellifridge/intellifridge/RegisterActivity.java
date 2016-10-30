@@ -24,47 +24,53 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+/**
+ * Created by franc on 29-10-16.
+ */
 
-public class LoginActivity extends AppCompatActivity{
-    EditText etEmail,etPassword;
-    AppCompatButton button;
-    Button signup_link;
-
+public class RegisterActivity extends AppCompatActivity {
+    EditText etName,etEmail,etPassword;
+    AppCompatButton register_btn;
+    Button login_btn;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
+        etName = (EditText) findViewById(R.id.name);
         etEmail = (EditText) findViewById(R.id.email);
         etPassword = (EditText) findViewById(R.id.password);
-        button = (AppCompatButton) findViewById(R.id.login_btn);
-        button.setOnClickListener(new View.OnClickListener() {
+        register_btn = (AppCompatButton) findViewById(R.id.btnRegister);
+        login_btn = (Button) findViewById(R.id.btnLinkToLoginScreen);
+
+        register_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OnLogin();
+                OnReg();
             }
         });
 
-        signup_link = (Button) findViewById(R.id.link_signup);
-        signup_link.setOnClickListener(new View.OnClickListener() {
+        login_btn.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
                 startActivity(intent);
             }
         });
     }
 
-    public void OnLogin(){
+    public void OnReg(){
+        String name = etName.getText().toString();
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
-        String type = "login";
+        String type = "register";
 
-        new BackgroundWorker(this).execute(type,email,password);
+        new RegisterActivity.BackgroundWorker(this).execute(type,email,password,name);
     }
 
     private class BackgroundWorker extends AsyncTask<String,String,String> {
         Context context;
-        ProgressDialog pd = new ProgressDialog(LoginActivity.this);
+        ProgressDialog pd = new ProgressDialog(RegisterActivity.this);
 
         BackgroundWorker(Context ctx){
             context = ctx;
@@ -81,12 +87,13 @@ public class LoginActivity extends AppCompatActivity{
             String type = params[0];
             String email = params[1];
             String password = params[2];
+            String name = params[3];
 
-            String login_url = "http://94.225.237.163/login.php";
+            String register_url = "http://94.225.237.163/register.php";
 
-            if (type.equals("login")){
+            if (type.equals("register")){
                 try {
-                    URL url = new URL(login_url);
+                    URL url = new URL(register_url);
                     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                     httpURLConnection.setRequestMethod("POST");
                     httpURLConnection.setDoOutput(true);
@@ -96,7 +103,8 @@ public class LoginActivity extends AppCompatActivity{
                     BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
 
                     String post_data = URLEncoder.encode("email","UTF-8")+"="+URLEncoder.encode(email,"UTF-8")+"&"
-                            +URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8");
+                            +URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8")+"&"
+                            +URLEncoder.encode("name","UTF-8")+"="+URLEncoder.encode(name,"UTF-8");
                     bufferedWriter.write(post_data);
 
                     bufferedWriter.flush();
@@ -132,11 +140,12 @@ public class LoginActivity extends AppCompatActivity{
         @Override
         protected void onPostExecute(String result){
             pd.dismiss();
-            if (result.equals("Login Success")){
-                Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+            if (result.equals("Successful Registration")){
+                Toast.makeText(RegisterActivity.this, "Registration Successful!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
                 startActivity(intent);
-            }else if (result.equals("Login Unsuccesful")){
-                Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_LONG).show();
+            }else if (result.equals("Registration Error")){
+                Toast.makeText(RegisterActivity.this, "Registration Error!", Toast.LENGTH_LONG).show();
             }
         }
     }

@@ -2,6 +2,7 @@ package com.intellifridge.intellifridge;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
@@ -98,7 +99,11 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+            startActivity(intent);
+        }else if (id == R.id.action_logout){
+            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -111,13 +116,16 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_fridges) {
-
+            // TODO: 29-10-16
         } else if (id == R.id.nav_input) {
-
+            // TODO: 29-10-16  
         } else if (id == R.id.nav_manage) {
-
+            Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_share) {
-
+            // TODO: 29-10-16
+        } else if (id == R.id.nav_profile){
+            // TODO: 29-10-16  
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

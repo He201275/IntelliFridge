@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="144dp"
         app:srcCompat="@drawable/intellifridge_dark"
-        android:id="@+id/imageView2" />
+        android:id="@+id/login_logo" />
 
     <ProgressBar
         android:id="@+id/login_progress"
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -70,25 +70,25 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/login_btn"
-                style="?android:textAppearanceSmall"
-                android:layout_marginTop="16dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dip"
+                android:background="#ff0004"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold"
-                android:onClick="OnLogin"/>
+                android:textColor="@color/white" />
 
-            <TextView
+            <Button
                 android:id="@+id/link_signup"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
+                android:layout_marginTop="40dip"
+                android:background="@null"
                 android:text="@string/create_account_prompt"
-                android:gravity="center"
-                android:textSize="16dip"/>
-
+                android:textAllCaps="false"
+                android:textColor="@color/fabIcon"
+                android:textSize="15dp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
