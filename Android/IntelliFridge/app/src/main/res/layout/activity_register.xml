@@ -3,18 +3,18 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/bg_register"
+    android:background="@color/bg_login_register"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="10dp">
-
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="144dp"
         app:srcCompat="@drawable/intellifridge_mono_light"
         android:id="@+id/login_logo"
-        android:layout_marginBottom="25dp"/>
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="0dp"/>
 
     <ProgressBar
         android:id="@+id/login_progress"
@@ -33,12 +33,25 @@
         android:paddingRight="20dp" >
 
         <EditText
-            android:id="@+id/name"
+            android:id="@+id/fName"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@color/input_register_bg"
-            android:hint="@string/hint_name"
+            android:background="@color/input_bg"
+            android:hint="@string/hint_Fname"
+            android:padding="10dp"
+            android:inputType="textCapWords"
+            android:textColor="@color/input_register"
+            android:textColorHint="@color/input_register_hint"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/lName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@color/input_bg"
+            android:hint="@string/hint_Lname"
             android:padding="10dp"
             android:inputType="textCapWords"
             android:textColor="@color/input_register"
@@ -50,8 +63,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@color/input_register_bg"
-            android:hint="@string/prompt_email"
+            android:background="@color/input_bg"
+            android:hint="@string/hint_email"
             android:inputType="textEmailAddress"
             android:padding="10dp"
             android:textColor="@color/input_register"
@@ -63,8 +76,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:background="@color/input_register_bg"
-            android:hint="@string/prompt_password"
+            android:background="@color/input_bg"
+            android:hint="@string/hint_password"
             android:inputType="textPassword"
             android:padding="10dp"
             android:textColor="@color/input_register"
@@ -85,7 +98,7 @@
         <!-- Link to Login Screen -->
 
         <Button
-            android:id="@+id/btnLinkToLoginScreen"
+            android:id="@+id/login_link"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dip"
@@ -93,7 +106,6 @@
             android:text="@string/already_regist"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="15dp" />
+            android:textSize="15sp" />
     </LinearLayout>
-
 </LinearLayout>

@@ -1,21 +1,24 @@
 package com.intellifridge.intellifridge;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -78,8 +81,8 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        }else {
+            moveTaskToBack(true);
         }
     }
 
@@ -104,9 +107,18 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.action_logout){
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             startActivity(intent);
+            clearSharedPrefs();
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void clearSharedPrefs() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -125,7 +137,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_share) {
             // TODO: 29-10-16
         } else if (id == R.id.nav_profile){
-            // TODO: 29-10-16  
+            Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

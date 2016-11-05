@@ -27,7 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class GetJsonFromOffDb extends AppCompatActivity {
-    TextView txtJson, txtProduct, txtQuantity;
+    TextView txtProduct, txtQuantity;
     ProgressDialog pd;
     String resBarcodeReader;
     JSONObject code, product, json;
@@ -48,7 +48,6 @@ public class GetJsonFromOffDb extends AppCompatActivity {
         }
 
         new JsonTask().execute("http://fr.openfoodfacts.org/api/v0/product/" + resBarcodeReader + ".json");
-        //txtJson = (TextView) findViewById(R.id.textViewGPO);
         txtProduct = (TextView) findViewById(R.id.productName);
         txtQuantity = (TextView) findViewById(R.id.quantityName);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -157,8 +156,6 @@ public class GetJsonFromOffDb extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            //txtJson.setText(result);
-            Log.d("ProductScan", json.toString());
 
             try {
                 if (json.has("product")) {
@@ -218,7 +215,6 @@ public class GetJsonFromOffDb extends AppCompatActivity {
                         Log.d("ProductScan", "Product_name_fr excist");
                         productName = product.getString("product_name_fr");
                     }
-                    //quantity = product.getString("quantity");
 
                     txtProduct.setText(productName);
                 } else {

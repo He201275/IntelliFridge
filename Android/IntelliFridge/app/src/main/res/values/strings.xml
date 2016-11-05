@@ -1,40 +1,51 @@
 <resources>
     <string name="app_name">IntelliFridge</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_logout">Logout</string>
+    <string name="server_ip">192.168.0.163</string>
+
+    <!-- Barcode scanner -->
+    <string name="scanner_prompt">Scan Barcode</string>
+    <string name="scan_error">No Scan Data Received</string>
+
+    <!--Navigation Drawer -->
     <string name="nav_share">Share</string>
     <string name="nav_fridges">My Fridges</string>
     <string name="nav_allergies">My Allergies</string>
     <string name="nav_input">Store Food</string>
     <string name="nav_subgroup">Misc.</string>
     <string name="nav_profile">My Profile</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!-- Profile Activity -->
+    <string name="profile_title_name">My Profile</string>
+
+    <!-- Menu -->
+    <string name="action_settings">Settings</string>
+    <string name="action_logout">Logout</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Tabs -->
     <string-array name="MenuList">
         <item>Groceries List</item>
         <item>Home</item>
         <item>Fridges</item>
     </string-array>
-
-    <string name="scan_button">Scan</string>
-    <string name="title_activity_main">IntelliFridge</string>
-
     <string name="name_tab1">Fridges</string>
     <string name="name_tab2">Home</string>
     <string name="name_tab3">Grocery List</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="main_fragment">Main Fragment</string>
-    <string name="scanner_prompt">Scan Barcode</string>
+
 
     <!-- JSON parser -->
-    <string name="pdMessage">Fetching product data...</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="pdMessage">Fetching product data…</string>
 
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
+    <!-- Strings related to login/register -->
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_Fname">First Name</string>
+    <string name="hint_Lname">Last Name</string>
     <string name="action_sign_up">Sign up</string>
     <string name="action_sign_in">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
@@ -45,22 +56,20 @@
         completions."
     </string>
     <string name="login_image_descr">IntelliFridge Logo</string>
-    <!-- Strings related to signup -->
     <string name="create_account_prompt">No account yet? Create one</string>
-    <string name="title_activity_signup">Sign up</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="hint_name">Name</string>
-    <string name="btn_register">Register</string>
+    <string name="btn_register">Sign Up</string>
     <string name="already_regist">Already have an account? Sign in.</string>
+    <string name="login_error">Invalid email or password!</string>
+    <string name="register_success">Registration Successful!</string>
 
+    <!-- Product -->
     <string name="productNameTitle">Product :</string>
     <string name="productQuantityTitle">Quantity :</string>
     <string name="title_activity_main2">Home</string>
     <string name="categoryLabel">Category</string>
     <string name="IngredientsLabel">Ingredients</string>
     <string name="BrandsLabel">Brand</string>
-    <string name="url_login">http://192.168.0.165/login.php</string>
-    <string name="title_activity_settings">Settings</string>
+
 
     <!-- Strings related to Settings -->
 

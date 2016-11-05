@@ -1,143 +1,63 @@
 package com.intellifridge.intellifridge;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-
-
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     EditText etEmail,etPassword;
     AppCompatButton button;
     Button signup_link;
+    String email_register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        etEmail = (EditText) findViewById(R.id.email);
-        etPassword = (EditText) findViewById(R.id.password);
-        button = (AppCompatButton) findViewById(R.id.login_btn);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                OnLogin();
-            }
-        });
 
-        signup_link = (Button) findViewById(R.id.link_signup);
-        signup_link.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        etEmail = (EditText)findViewById(R.id.email_login);
+        etPassword = (EditText)findViewById(R.id.password_login);
+        button = (AppCompatButton) findViewById(R.id.login_btn);
+        signup_link = (Button)findViewById(R.id.link_signup);
+
+        button.setOnClickListener(this);
+        signup_link.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.login_btn:
+                onLogin(view);
+                break;
+            case R.id.link_signup:
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
-            }
-        });
+                break;
+        }
     }
 
-    public void OnLogin(){
-        String email = etEmail.getText().toString();
-        String password = etPassword.getText().toString();
-        String type = "login";
-
-        new BackgroundWorker(this).execute(type,email,password);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null){
+            email_register = extras.getString("new_user_email");
+            etEmail.setText(email_register);
+        }
     }
 
-    private class BackgroundWorker extends AsyncTask<String,String,String> {
-        Context context;
-        ProgressDialog pd = new ProgressDialog(LoginActivity.this);
+    private void onLogin(View view) {
+        String user_email, user_pass,type;
+        user_email = etEmail.getText().toString();
+        user_pass = etPassword.getText().toString();
+        type = "login";
 
-        BackgroundWorker(Context ctx){
-            context = ctx;
-        }
-        @Override
-        protected void onPreExecute(){
-            pd.setMessage("\tLoading...");
-            pd.setCancelable(false);
-            pd.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String type = params[0];
-            String email = params[1];
-            String password = params[2];
-
-            String login_url = "http://94.225.237.163/login.php";
-
-            if (type.equals("login")){
-                try {
-                    URL url = new URL(login_url);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                    httpURLConnection.setRequestMethod("POST");
-                    httpURLConnection.setDoOutput(true);
-                    httpURLConnection.setDoInput(true);
-
-                    OutputStream outputStream = httpURLConnection.getOutputStream();
-                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
-
-                    String post_data = URLEncoder.encode("email","UTF-8")+"="+URLEncoder.encode(email,"UTF-8")+"&"
-                            +URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8");
-                    bufferedWriter.write(post_data);
-
-                    bufferedWriter.flush();
-                    bufferedWriter.close();
-                    outputStream.close();
-
-                    InputStream inputStream = httpURLConnection.getInputStream();
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
-                    String result="", line="";
-
-                    while ((line = bufferedReader.readLine()) != null){
-                        result += line;
-                    }
-                    bufferedReader.close();
-                    inputStream.close();
-                    httpURLConnection.disconnect();
-
-                    return result;
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values){
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected void onPostExecute(String result){
-            pd.dismiss();
-            if (result.equals("Login Success")){
-                Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                startActivity(intent);
-            }else if (result.equals("Login Unsuccesful")){
-                Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_LONG).show();
-            }
-        }
+        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+        backgroundWorker.execute(type,user_email,user_pass);
     }
 }
