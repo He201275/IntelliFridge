@@ -9,7 +9,7 @@ if (isset($_POST["fName"]) && isset($_POST["lName"]) && isset($_POST["email"]) &
 	//$user_lang_id = $_POST["langId"];
 	$user_pass = $_POST["password"];
 
-	$query= "insert into User (UserPrenom,UserNom,UserAdresseMail,UserLangue,UserPassword) values ('$user_prenom','$user_nom','$user_mail','$user_lang','$user_pass');";
+	$query= "insert into user (UserPrenom,UserNom,UserAdresseMail,UserLangue,UserPassword) values ('$user_prenom','$user_nom','$user_mail','$user_lang','$user_pass');";
 
 	if($conn->query($query) === TRUE){
 		echo "Registration Successful!";
@@ -19,6 +19,6 @@ if (isset($_POST["fName"]) && isset($_POST["lName"]) && isset($_POST["email"]) &
 
 	$conn->close();
 }else {
-	echo "Registration Error!";
+	echo "Connection Error!";
 }
 ?>

@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         user_pass = etPassword.getText().toString();
         type = "login";
 
-        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
-        backgroundWorker.execute(type,user_email,user_pass);
+        LoginBackgroundWorker backgroundWorker = new LoginBackgroundWorker(this);
+        backgroundWorker.execute(user_email,user_pass);
     }
 }

@@ -1,8 +1,8 @@
 package com.intellifridge.intellifridge;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +17,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
         etFname = (EditText) findViewById(R.id.fName);
         etLname = (EditText) findViewById(R.id.lName);
         etEmail = (EditText) findViewById(R.id.email);
@@ -47,9 +46,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         String lName = etLname.getText().toString();
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
-        String type = "register";
 
-        new BackgroundWorker(this).execute(type,email,password,fName,lName);
+        new RegisterBackgroundWorker(this).execute(email,password,fName,lName);
     }
 
 }

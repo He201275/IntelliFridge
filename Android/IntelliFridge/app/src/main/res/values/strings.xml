@@ -27,11 +27,11 @@
     <!-- Tabs -->
     <string-array name="MenuList">
         <item>Groceries List</item>
-        <item>Home</item>
+        <item>Allergies</item>
         <item>Fridges</item>
     </string-array>
     <string name="name_tab1">Fridges</string>
-    <string name="name_tab2">Home</string>
+    <string name="name_tab2">Allergies</string>
     <string name="name_tab3">Grocery List</string>
 
 

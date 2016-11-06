@@ -1,19 +1,33 @@
 package com.intellifridge.intellifridge;
 
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+
 public class ProfileActivity extends AppCompatActivity {
     TextView fullName,email,firstName,lastName,locale,gender,language;
-    String[] userData;
     String user_email;
-    JSONObject userJson;
+    String json_string;
+    JSONObject jsonObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,36 +41,94 @@ public class ProfileActivity extends AppCompatActivity {
         gender = (TextView)findViewById(R.id.user_profile_gender);
         language = (TextView)findViewById(R.id.user_profile_language);
 
-        try {
-            getUserDataDb();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        user_email = getUserEmail();
+
+        new BackgroundTask().execute(user_email);
 
         email.setText(user_email);
-        firstName.setText(userData[0]);
-        lastName.setText(userData[1]);
-        locale.setText(userData[2]);
-        gender.setText(userData[3]);
-        language.setText(userData[4]);
     }
 
     private String getUserEmail(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String user_email = sharedPreferences.getString("user_email","");
-        return user_email;
+        String userMail = sharedPreferences.getString("user_email","");
+        return userMail;
     }
 
-    public void getUserDataDb() throws JSONException {
-        user_email = getUserEmail();
-        String type = "getUserData";
-        BackgroundWorker backgroundWorker = new BackgroundWorker(this);
-        backgroundWorker.execute(type,user_email);
-        userJson = backgroundWorker.jsonObject;
-        userData[0] = userJson.getString("UserPrenom");
-        userData[1] = userJson.getString("UserNom");
-        userData[2] = userJson.getString("UserLocalite");
-        userData[3] = userJson.getString("UserGenre");
-        userData[4] = userJson.getString("UserLangue");
+    class BackgroundTask extends AsyncTask<String,String,String>{
+        String json_url;
+        @Override
+        protected void onPreExecute() {
+            json_url = "http://192.168.0.163/android_api/getProfileData.php";
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String email_user = params[0];
+            try {
+                URL url = new URL(json_url);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
+                String post_data = URLEncoder.encode("email","UTF-8")+"="+URLEncoder.encode(email_user,"UTF-8");
+                bufferedWriter.write(post_data);
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ((json_string = bufferedReader.readLine()) != null){
+                    stringBuilder.append(json_string);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+
+                return stringBuilder.toString().trim();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                jsonObject = new JSONObject(result);
+                updateUserDataViews(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void updateUserDataViews(JSONObject userJson) throws JSONException {
+            JSONArray dataArray = userJson.getJSONArray("server_response");
+            JSONObject test = dataArray.getJSONObject(0);
+
+            String fName = test.getString("UserPrenom");
+            String lName = test.getString("UserNom");
+            String loc = test.getString("UserLocalite");
+            String gen = test.getString("UserAdresseMail");
+            String lang = test.getString("UserLangue");
+
+            firstName.setText(fName);
+            lastName.setText(lName);
+            locale.setText(loc);
+            gender.setText(gen);
+            language.setText(lang);
+        }
     }
 }
