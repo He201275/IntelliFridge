@@ -27,7 +27,7 @@ public class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
     String email;
     Context context;
     ProgressDialog progressDialog;
-    String register_url = "http://192.168.0.163/android_api/register.php";
+    String register_url = "http://intellifridge.franmako.com/register.php";
 
     public RegisterBackgroundWorker(Context ctx) {
         context = ctx;
@@ -103,6 +103,7 @@ public class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
                 Toast.makeText(context, "Registration Successful", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(context,LoginActivity.class);
                 intent.putExtra("new_user_email",email);
+                intent.putExtra("activity_id","Registration");
                 context.startActivity(intent);
                 break;
             case "Registration Error!":

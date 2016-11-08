@@ -46,9 +46,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onResume();
         Bundle extras = getIntent().getExtras();
         if (extras != null){
-            email_register = extras.getString("new_user_email");
-            etEmail.setText(email_register);
+            if (extras.getString("activity_id").equals("Registration")){
+                email_register = extras.getString("new_user_email");
+                etEmail.setText(email_register);
+            }else if (extras.getString("activity_id").equals("Logout")){
+                etEmail.setText("");
+                etPassword.setText("");
+            }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
     }
 
     private void onLogin(View view) {

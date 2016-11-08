@@ -105,13 +105,18 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
             startActivity(intent);
         }else if (id == R.id.action_logout){
-            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-            startActivity(intent);
-            clearSharedPrefs();
-            finish();
+            logout();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logout() {
+        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+        intent.putExtra("activity_id","Logout");
+        startActivity(intent);
+        clearSharedPrefs();
+        finish();
     }
 
     private void clearSharedPrefs() {
@@ -131,12 +136,16 @@ public class MainActivity extends AppCompatActivity
             // TODO: 29-10-16
         } else if (id == R.id.nav_input) {
             // TODO: 29-10-16  
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_allergy) {
+            // TODO: 29-10-16
+        }else if (id == R.id.nav_manage) {
             Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_shop) {
             // TODO: 29-10-16
-        } else if (id == R.id.nav_profile){
+        }else if (id == R.id.nav_logout) {
+            logout();
+        }else if (id == R.id.nav_profile){
             Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
             startActivity(intent);
         }

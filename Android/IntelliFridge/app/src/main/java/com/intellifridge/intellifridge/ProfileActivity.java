@@ -58,7 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
         String json_url;
         @Override
         protected void onPreExecute() {
-            json_url = "http://192.168.0.163/android_api/getProfileData.php";
+            json_url = "http://intellifridge.franmako.com/getProfileData.php";
         }
 
         @Override

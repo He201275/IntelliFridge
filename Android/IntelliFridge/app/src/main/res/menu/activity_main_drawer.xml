@@ -5,7 +5,7 @@
         <item
             android:id="@+id/nav_fridges"
             android:title="@string/nav_fridges"
-            android:icon="@drawable/ic_restaurant_menu_black_24dp"/>
+            android:icon="@drawable/ic_kitchen_black_24px"/>
         <item
             android:id="@+id/nav_input"
             android:icon="@drawable/ic_add_black_24dp"
@@ -13,24 +13,28 @@
         <item
             android:id="@+id/nav_allergy"
             android:title="@string/nav_allergies"
-            android:icon="@drawable/ic_mood_bad_black_24dp"
+            android:icon="@drawable/ic_allergy"
             />
     </group>
 
     <item android:title="@string/nav_subgroup">
         <menu>
             <item
+                android:title="@string/nav_shop"
+                android:id="@+id/nav_shop"
+                android:icon="@drawable/ic_shopping" />
+            <item
                 android:title="@string/nav_profile"
                 android:id="@+id/nav_profile"
                 android:icon="@drawable/ic_account_box_black_24dp" />
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="@string/nav_share" />
-            <item
                 android:id="@+id/nav_manage"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="@string/action_settings" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_logout"
+                android:title="@string/action_logout" />
         </menu>
     </item>
 

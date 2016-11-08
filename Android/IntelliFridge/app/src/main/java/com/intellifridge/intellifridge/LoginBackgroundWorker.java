@@ -45,7 +45,7 @@ public class LoginBackgroundWorker extends AsyncTask<String,String,String> {
     protected String doInBackground(String... params) {
         email = params[0];
         password = params[1];
-        String login_url = "http://192.168.0.163/android_api/login.php";
+        String login_url = "http://intellifridge.franmako.com/login.php";
 
         try {
             URL url = new URL(login_url);
