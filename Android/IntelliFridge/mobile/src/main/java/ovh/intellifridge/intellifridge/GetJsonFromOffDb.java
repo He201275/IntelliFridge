@@ -2,8 +2,8 @@ package ovh.intellifridge.intellifridge;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +21,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Classe permettant de récolter les infos à propos du numéro de code barres reçu par la classe BarcodeReader, de la bdd OpenFoodFacts
+ * Reçoit les infos en JSON
+ * Affiche les informations récoltées dans une vue
+ */
 public class GetJsonFromOffDb extends AppCompatActivity {
     TextView txtProduct, txtQuantity;
     ProgressDialog pd;

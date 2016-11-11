@@ -33,4 +33,9 @@
     <string name="section1">Historique</string>
     <string name="section2">Mes Frigos</string>
     <string name="section3">Mes Allergies</string>
+    <string name="settings_mod_allergy">Alerte allergie</string>
+    <string name="settings_mod_fridge">Gestion du stock alimentaire</string>
+    <string name="login_error">Email ou mot de passe incorrect</string>
+    <string name="register_error">Erreur d\'inscription!</string>
+    <string name="title_activity_shop">Boutique IntelliFridge</string>
 </resources>

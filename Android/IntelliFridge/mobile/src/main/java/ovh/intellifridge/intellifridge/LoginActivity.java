@@ -8,6 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * Activité de login
+ * Appele la classe LoginBackgroundWorker pour les requêtes à la base de données
+ */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     EditText etEmail,etPassword;
     AppCompatButton button;

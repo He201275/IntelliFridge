@@ -23,6 +23,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+/**
+ * Activité qui permet de récupérer les infos utilisateur et de les afficher
+ * Elle utilise la classe interne BackgroundWorker pour faire les requêtes à la bdd
+ */
 public class ProfileActivity extends AppCompatActivity {
     TextView fullName,email,firstName,lastName,locale,gender,language;
     String user_email;
@@ -54,6 +58,9 @@ public class ProfileActivity extends AppCompatActivity {
         return userMail;
     }
 
+    /**
+     * Classe permettant de faire les requêtes à la bdd pour récupérer les infos utilisateur, pour ProfileActivity
+     */
     class BackgroundTask extends AsyncTask<String,String,String>{
         String json_url;
         @Override

@@ -8,6 +8,11 @@
         android:title="@string/pref_header_general" />
 
     <header
+        android:fragment="ovh.intellifridge.intellifridge.SettingsActivity$IntelliFridgePreferenceFragment"
+        android:icon="@drawable/ic_fridge"
+        android:title="@string/app_name" />
+
+    <header
         android:fragment="ovh.intellifridge.intellifridge.SettingsActivity$NotificationPreferenceFragment"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/pref_header_notifications" />

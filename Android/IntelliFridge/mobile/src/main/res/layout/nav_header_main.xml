@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="76dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:srcCompat="@drawable/intellifridge_mono_light" />
+        app:srcCompat="@drawable/intellifridge_mono_dark" />
 
     <TextView
         android:id="@+id/email_nav"

@@ -23,7 +23,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 /**
- * Created by franc on 03-11-16.
+ * Fait des requêtes à la bdd pour LoginActivity
+ * Vérifie si l'email existe et le mot de passe correspond
+ * Si c'est le cas, l'utilisateur accède au MainActivity
  */
 
 public class LoginBackgroundWorker extends AsyncTask<String,String,String> {
@@ -100,7 +102,7 @@ public class LoginBackgroundWorker extends AsyncTask<String,String,String> {
                 context.startActivity(intent);
                 break;
             case "Login Unsuccessful!":
-                Toast.makeText(context, "Invalid email or password", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
                 break;
         }
     }

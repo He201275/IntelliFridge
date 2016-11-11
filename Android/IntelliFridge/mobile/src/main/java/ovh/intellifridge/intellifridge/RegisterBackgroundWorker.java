@@ -20,7 +20,8 @@ import java.net.URLEncoder;
 import java.util.Locale;
 
 /**
- * Created by franc on 05-11-16.
+ * Fait des requêtes à la bdd pour RegisterActivity
+ * Le user est envoyé à la page de login si l'inscription se fait avec succès
  */
 
 public class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
@@ -107,7 +108,7 @@ public class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
                 context.startActivity(intent);
                 break;
             case "Registration Error!":
-                Toast.makeText(context, "Registration Error!", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.register_error, Toast.LENGTH_LONG).show();
                 break;
             case "Connection Error!":
                 Toast.makeText(context, "Server Connection Error!", Toast.LENGTH_LONG).show();

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="module_fridge"
+        android:title="@string/settings_mod_fridge"
+        android:summary="@string/mod_fridge_descr"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="module_allergy"
+        android:title="@string/settings_mod_allergy"
+        android:summary="@string/mod_allergy_descr"/>
+</PreferenceScreen>

@@ -8,6 +8,10 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+/**
+ * Classe pour le scan de code barres
+ * Envoie le numéro de code barres à l'activité GetJsonFromOffDb
+ */
 public class BarcodeReader extends AppCompatActivity {
 
     @Override

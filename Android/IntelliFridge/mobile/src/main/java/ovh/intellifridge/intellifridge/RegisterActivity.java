@@ -8,6 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * Activité d'inscription
+ * Appele la classe RegisterBackgroundWorker pour ajouter les nouveaux user à la base de données
+ */
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
     EditText etFname,etLname,etEmail,etPassword;
     AppCompatButton register_btn;

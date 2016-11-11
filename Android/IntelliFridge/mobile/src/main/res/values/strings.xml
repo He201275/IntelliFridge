@@ -25,6 +25,8 @@
     <string name="hint_Lname">Last Name</string>
     <string name="btn_register">Sign Up</string>
     <string name="already_regist">Already have an account? Sign in</string>
+    <string name="login_error">Invalid email or password!</string>
+    <string name="register_error">Registration Error!</string>
     <!-- Navigation -->
     <string name="action_search">Search</string>
     <string name="action_logout">Logout</string>
@@ -107,7 +109,13 @@
 
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
-
+    <!-- Intellifridge settings -->
     <string name="pref_title_vibrate">Vibrate</string>
+    <string name="settings_mod_fridge">Fridge Management</string>
+    <string name="mod_fridge_descr">If deactivated, you will not have access to the food stock management part of the application.</string>
+    <string name="settings_mod_allergy">Allergy Scan</string>
+    <string name="mod_allergy_descr">If deactivated, you will not be able to scan food for allergies.</string>
+    <!-- ShopActivity -->
+    <string name="title_activity_shop">IntelliFridge Shop</string>
 
 </resources>

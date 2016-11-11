@@ -22,8 +22,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+/**
+ * L'activité principale de l'application
+ * Contient les onglets
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
 
     /**
@@ -100,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (id == R.id.action_settings) {
             startSettingsActivity();
         }else if (id == R.id.action_logout){
-            // TODO: 11-11-16
+            logout();
         }
 
         return super.onOptionsItemSelected(item);
@@ -136,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else if (id == R.id.nav_manage) {
             startSettingsActivity();
         } else if (id == R.id.nav_shop) {
-            // TODO: 29-10-16
+            startShopActivity();
         }else if (id == R.id.nav_logout) {
             logout();
         }else if (id == R.id.nav_profile){
@@ -146,6 +149,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void startShopActivity() {
+        Intent intent = new Intent(MainActivity.this,ShopActivity.class);
+        startActivity(intent);
     }
 
     private void startProfileActivty() {
