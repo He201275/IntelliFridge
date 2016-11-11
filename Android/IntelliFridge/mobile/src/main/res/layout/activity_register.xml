@@ -1,0 +1,110 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/bg_login_register"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="144dp"
+        app:srcCompat="@drawable/intellifridge_mono_light"
+        android:id="@+id/login_logo"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="0dp"/>
+
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp" >
+
+        <EditText
+            android:id="@+id/fName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@color/input_bg"
+            android:hint="@string/hint_Fname"
+            android:padding="10dp"
+            android:inputType="textCapWords"
+            android:textColor="@color/input_login_register"
+            android:textColorHint="@color/input_login_register_hint"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/lName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@color/input_bg"
+            android:hint="@string/hint_Lname"
+            android:padding="10dp"
+            android:inputType="textCapWords"
+            android:textColor="@color/input_login_register"
+            android:textColorHint="@color/input_login_register_hint"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/email"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@color/input_bg"
+            android:hint="@string/hint_email"
+            android:inputType="textEmailAddress"
+            android:padding="10dp"
+            android:textColor="@color/input_login_register"
+            android:textColorHint="@color/input_login_register_hint"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@color/input_bg"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:padding="10dp"
+            android:textColor="@color/input_login_register"
+            android:textColorHint="@color/input_login_register_hint"
+            android:maxLines="1" />
+
+        <!-- Login Button -->
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btnRegister"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
+            android:background="@color/btn_login_register_bg"
+            android:text="@string/btn_register"
+            android:textColor="@color/btn_login_register" />
+
+        <!-- Link to Login Screen -->
+
+        <Button
+            android:id="@+id/login_link"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dip"
+            android:background="@null"
+            android:text="@string/already_regist"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </LinearLayout>
+</LinearLayout>

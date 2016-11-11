@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IntelliFridge</string>
+    <string name="BrandsLabel">Marque</string>
+    <string name="IngredientsLabel">Ingrédients</string>
+    <string name="action_logout">Se déconnecter</string>
+    <string name="action_search">Recherche</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="action_sign_in">Se connecter</string>
+    <string name="already_regist">Déjà inscrit? Se connecter</string>
+    <string name="btn_register">S\'inscrire</string>
+    <string name="categoryLabel">Catégorie</string>
+    <string name="create_account_prompt">Pas encore inscrit? Inscrivez-vous</string>
+    <string name="hint_Fname">Prénom</string>
+    <string name="hint_Lname">Nom</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Mot de passe</string>
+    <string name="nav_allergies">Mes Allergies</string>
+    <string name="nav_fridges">Mes Frigos</string>
+    <string name="nav_input">Conserver dans frigo</string>
+    <string name="nav_profile">Mon Profil</string>
+    <string name="nav_shop">Boutique</string>
+    <string name="nav_subgroup">Divers</string>
+    <string name="navigation_drawer_close">Fermer panneau de navigation</string>
+    <string name="navigation_drawer_open">Ouvrir panneau de navigation</string>
+    <string name="pdMessage">Récupération des infos…</string>
+    <string name="productNameTitle">Produit</string>
+    <string name="productQuantityTitle">Quantité</string>
+    <string name="scan_error">Erreur du scan!</string>
+    <string name="scanner_prompt">Scanner le code barre</string>
+    <string name="section_format">Section: %1$d</string>
+    <string name="title_activity_settings">Paramètres</string>
+    <string name="section1">Historique</string>
+    <string name="section2">Mes Frigos</string>
+    <string name="section3">Mes Allergies</string>
+</resources>
