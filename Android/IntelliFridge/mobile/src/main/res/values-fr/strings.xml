@@ -38,4 +38,6 @@
     <string name="login_error">Email ou mot de passe incorrect</string>
     <string name="register_error">Erreur d\'inscription!</string>
     <string name="title_activity_shop">Boutique IntelliFridge</string>
+    <string name="mod_allergy_descr">Activer/Désactiver le module allergie</string>
+    <string name="mod_fridge_descr">Activer/Désactiver le module gestion de stock</string>
 </resources>

@@ -228,15 +228,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            int nbTabs;
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            Boolean fridge_mod = sharedPreferences.getBoolean(SettingsActivity.MOD_FRIDGE_KEY,true);
+            Boolean allergy_mod = sharedPreferences.getBoolean(SettingsActivity.MOD_ALLERGY_KEY,true);
+            if (fridge_mod && !allergy_mod){
+                nbTabs = 2;
+            }else if (allergy_mod && !fridge_mod){
+                nbTabs = 1;
+            }else{
+                nbTabs = 3;
+            }
+            return nbTabs;
         }
 
         @Override
         public String getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return getString(R.string.section1);
+                    if (getCount() == 1){
+                        return getString(R.string.section3);
+                    }else {
+                        return getString(R.string.section1);
+                    }
                 case 1:
                     return getString(R.string.section2);
                 case 2:

@@ -37,6 +37,8 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+    public static String MOD_FRIDGE_KEY = "module_fridge";
+    public static String MOD_ALLERGY_KEY = "module_allergy";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -231,8 +233,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_intellifridge);
             setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference("module_fridge"));
-            bindPreferenceSummaryToValue(findPreference("module_allergy"));
+            bindPreferenceSummaryToValue(findPreference(MOD_FRIDGE_KEY));
+            bindPreferenceSummaryToValue(findPreference(MOD_ALLERGY_KEY));
         }
     }
 
