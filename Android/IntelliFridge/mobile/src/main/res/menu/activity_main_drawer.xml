@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/nav_action">
         <item
             android:id="@+id/nav_fridges"
             android:title="@string/nav_fridges"
@@ -17,25 +17,29 @@
             />
     </group>
 
-    <item android:title="@string/nav_subgroup">
-        <menu>
-            <item
-                android:title="@string/nav_shop"
-                android:id="@+id/nav_shop"
-                android:icon="@drawable/ic_shopping_cart_black" />
-            <item
-                android:title="@string/nav_profile"
-                android:id="@+id/nav_profile"
-                android:icon="@drawable/ic_profile" />
-            <item
-                android:id="@+id/nav_manage"
-                android:icon="@drawable/ic_settings_black"
-                android:title="@string/action_settings" />
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_exit"
-                android:title="@string/action_logout" />
-        </menu>
-    </item>
+    <group android:id="@+id/nav_misc">
+        <item
+            android:title="@string/nav_shop"
+            android:id="@+id/nav_shop"
+            android:icon="@drawable/ic_shopping_cart_black" />
+        <item
+            android:title="@string/nav_profile"
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_profile" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_settings_black"
+            android:title="@string/action_settings" />
+    </group>
 
+    <group android:id="@+id/nav_contact_info">
+        <item
+            android:id="@+id/nav_contact"
+            android:icon="@drawable/ic_email_black_24px"
+            android:title="@string/action_contact" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_info_black_24px"
+            android:title="@string/nav_about" />
+    </group>
 </menu>

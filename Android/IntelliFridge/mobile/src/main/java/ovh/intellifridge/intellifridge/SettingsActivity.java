@@ -22,6 +22,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -144,6 +145,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         setupActionBar();
     }
 
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this,R.string.settings_back,Toast.LENGTH_LONG).show();
+    }
+
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
      */
@@ -207,13 +213,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
         }
 
         @Override
@@ -228,6 +227,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class IntelliFridgePreferenceFragment extends PreferenceFragment{
+        SwitchPreference fridge,allergy;
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -236,6 +236,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(MOD_FRIDGE_KEY));
             bindPreferenceSummaryToValue(findPreference(MOD_ALLERGY_KEY));
         }
+
+
     }
 
     /**

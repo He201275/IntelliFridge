@@ -4,12 +4,14 @@
     <SwitchPreference
         android:key="module_fridge"
         android:title="@string/settings_mod_fridge"
-        android:summary="@string/mod_fridge_descr"
+        android:summaryOn="@string/mod_fridge_descr_on"
+        android:summaryOff="@string/mod_fridge_descr_off"
         android:defaultValue="true"/>
 
     <SwitchPreference
         android:key="module_allergy"
         android:title="@string/settings_mod_allergy"
-        android:summary="@string/mod_allergy_descr"
+        android:summaryOn="@string/mod_allergy_descr_on"
+        android:summaryOff="@string/mod_allergy_descr_off"
         android:defaultValue="true"/>
 </PreferenceScreen>

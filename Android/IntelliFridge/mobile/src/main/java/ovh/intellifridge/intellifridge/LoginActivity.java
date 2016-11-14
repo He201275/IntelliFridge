@@ -1,7 +1,10 @@
 package ovh.intellifridge.intellifridge;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
@@ -43,16 +46,35 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Boolean isLogged = sharedPreferences.getBoolean("isLoggedIn",false);
+        if (isLogged){
+            startMainActivty();
+        }
+    }
+
+    private void startMainActivty() {
+        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.login_btn:
                 onLogin(view);
                 break;
             case R.id.link_signup:
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
+                startRegisterActivity();
                 break;
         }
+    }
+
+    private void startRegisterActivity() {
+        Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+        startActivity(intent);
     }
 
 

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">IntelliFridge</string>
     <string name="action_settings">Settings</string>
-
+    <!-- Tab titles -->
     <string name="section1">Recent</string>
     <string name="section2">My Fridges</string>
     <string name="section3">My Allergies</string>
@@ -39,35 +39,15 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="action_contact">Contact</string>
+    <string name="nav_about">About</string>
 
-    <!-- Strings related to Settings -->
-
-    <!-- Example General settings -->
+    <!-- Settings -->
+    <string name="settings_back">Please use the arrow on the top of screen to apply changes</string>
     <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
     <string name="pref_title_display_name">Display name</string>
     <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-    <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
-
     <string name="pref_title_sync_frequency">Sync frequency</string>
     <string-array name="pref_sync_frequency_titles">
         <item>15 minutes</item>
@@ -97,24 +77,19 @@
         <item>2</item>
         <item>3</item>
     </string-array>
-
     <string-array name="multi_select_list_preference_default_value" />
-
     <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
-
     <string name="pref_title_new_message_notifications">New message notifications</string>
-
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
-    <!-- Intellifridge settings -->
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="settings_mod_fridge">Fridge Management</string>
-    <string name="mod_fridge_descr">If deactivated, you will not have access to the food stock management part of the application.</string>
+    <string name="mod_fridge_descr_on">Disable the food stock management module</string>
+    <string name="mod_fridge_descr_off">Enable the food stock management module</string>
     <string name="settings_mod_allergy">Allergy Scan</string>
-    <string name="mod_allergy_descr">If deactivated, you will not be able to scan food for allergies.</string>
+    <string name="mod_allergy_descr_on">Disable the allergy scan module</string>
+    <string name="mod_allergy_descr_off">Enable the allergy scan module</string>
     <!-- ShopActivity -->
     <string name="title_activity_shop">IntelliFridge Shop</string>
 

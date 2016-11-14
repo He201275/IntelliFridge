@@ -38,6 +38,14 @@
     <string name="login_error">Email ou mot de passe incorrect</string>
     <string name="register_error">Erreur d\'inscription!</string>
     <string name="title_activity_shop">Boutique IntelliFridge</string>
-    <string name="mod_allergy_descr">Activer/Désactiver le module allergie</string>
-    <string name="mod_fridge_descr">Activer/Désactiver le module gestion de stock</string>
+    <string name="mod_allergy_descr_on">Désactiver le module scan \"allergie\"</string>
+    <string name="mod_fridge_descr_on">Désactiver le module de gestion du stock alimentaire</string>
+    <string name="mod_allergy_descr_off">Activer le module scan \"allergie\"</string>
+    <string name="mod_fridge_descr_off">Activer le module de gestion du stock alimentaire</string>
+    <string name="settings_back">Utilisez la flèche en haut de l\'écran pour sauvegarder vos modifications</string>
+    <string name="pref_ringtone_silent">Silence</string>
+    <string name="pref_title_display_name">Nom d\'utilisateur</string>
+    <string name="pref_title_new_message_notifications"></string>
+    <string name="nav_about">A Propos</string>
+    <string name="action_contact">Contact</string>
 </resources>

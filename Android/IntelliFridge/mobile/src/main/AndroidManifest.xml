@@ -54,6 +54,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ovh.intellifridge.intellifridge.MainActivity" />
         </activity>
+        <activity android:name=".ContactActivity"></activity>
     </application>
 
 </manifest>

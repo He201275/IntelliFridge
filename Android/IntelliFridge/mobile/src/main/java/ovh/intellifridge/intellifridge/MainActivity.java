@@ -12,16 +12,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 /**
  * L'activité principale de l'application
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    public Boolean fridge_mod_status,allergy_mod_status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        fridge_mod_status = getFridgeModStatus();
+        allergy_mod_status = getAllergyModStatus();
     }
 
     @Override
@@ -89,7 +93,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // perform query here
+
+                // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
+                // see https://code.google.com/p/android/issues/detail?id=24599
+                searchView.clearFocus();
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -140,15 +164,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startSettingsActivity();
         } else if (id == R.id.nav_shop) {
             startShopActivity();
-        }else if (id == R.id.nav_logout) {
-            logout();
         }else if (id == R.id.nav_profile){
             startProfileActivty();
+        }else if (id == R.id.nav_contact){
+            startContactActivity();
+        }else if (id == R.id.nav_about){
+            // TODO: 14-11-16
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void startContactActivity() {
+        Intent intent = new Intent(MainActivity.this,ContactActivity.class);
+        startActivity(intent);
     }
 
     private void startShopActivity() {
@@ -176,38 +207,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editor.apply();
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
+    public Boolean getFridgeModStatus() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return sharedPreferences.getBoolean(SettingsActivity.MOD_FRIDGE_KEY,true);
     }
+    public Boolean getAllergyModStatus(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return sharedPreferences.getBoolean(SettingsActivity.MOD_ALLERGY_KEY,true);
+    }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -229,12 +237,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public int getCount() {
             int nbTabs;
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            Boolean fridge_mod = sharedPreferences.getBoolean(SettingsActivity.MOD_FRIDGE_KEY,true);
-            Boolean allergy_mod = sharedPreferences.getBoolean(SettingsActivity.MOD_ALLERGY_KEY,true);
-            if (fridge_mod && !allergy_mod){
+            if (getFridgeModStatus() && !getAllergyModStatus()){
                 nbTabs = 2;
-            }else if (allergy_mod && !fridge_mod){
+            }else if (getAllergyModStatus() && !getFridgeModStatus()){
                 nbTabs = 1;
             }else{
                 nbTabs = 3;
@@ -244,17 +249,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         public String getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    if (getCount() == 1){
-                        return getString(R.string.section3);
-                    }else {
+            if (getFridgeModStatus() && !getAllergyModStatus()){
+                switch (position){
+                    case 0:
                         return getString(R.string.section1);
-                    }
-                case 1:
-                    return getString(R.string.section2);
-                case 2:
-                    return getString(R.string.section3);
+                    case 1:
+                        return getString(R.string.section2);
+                }
+            }else if (getAllergyModStatus() && !getFridgeModStatus()){
+                switch (position){
+                    case 0:
+                        return getString(R.string.section3);
+                }
+            }else{
+                switch (position) {
+                    case 0:
+                        return getString(R.string.section1);
+                    case 1:
+                        return getString(R.string.section2);
+                    case 2:
+                        return getString(R.string.section3);
+                }
             }
             return null;
         }
