@@ -1,18 +1,29 @@
 <?php
-require "conn.php";
+require "api_functions.php";
 $user_email= $_POST["email"];
 $user_pass= $_POST["password"];
 
 if (isset($_POST["email"]) && isset($_POST["password"])) {
-    $mysql_query= "select * from User where UserAdresseMail like '$user_email' and UserPassword like '$user_pass';";
-    $result = mysqli_query($conn,$mysql_query);
+    $mysql_query= "SELECT `UserId`, `UserPrenom`, `UserNom`, `UserLocalite`, `UserAdresseMail`, `UserGenre`, `UserLangue` FROM `User` WHERE UserAdresseMail like '$user_email' AND UserPassword like '$user_pass';";
+    $jsonReturn = array();
+    $db = dbConnect();
+    if(!is_int($db)){
+        $jsonReturn["server-status"] = "Database accessible";
+        $answer =$db->query($mysql_query);
+        if ($answer->rowCount() >0){
+            $jsonReturn["reponse-status"] = "Login Successful!";
+            while($data = $answer->fetch(PDO::FETCH_ASSOC)){
+                $jsonReturn["reponse-data"] = $data;
+            }
+            echo  json_encode($jsonReturn);
+        } else{
+            $jsonReturn["reponse-status"] = "Login Unsuccessful!";
+            echo json_encode($jsonReturn);
+        }
 
-    if(mysqli_num_rows($result) > 0){
-        echo "Login Success!";
-    }else {
-        echo "Login Unsuccessful!";
+        $answer->closeCursor();
+    }else{
+        $jsonReturn["server-status"] = "Database not accessible!";
+        echo json_encode($jsonReturn);
     }
-
-    $conn->close();
 }
-?>

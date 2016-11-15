@@ -2,7 +2,7 @@
 include "conn.php";
 if(isset($_POST["email"])){
     $user_email = $_POST["email"];
-    $mysql_query = "SELECT `UserPrenom`, `UserNom`, `UserLocalite`, `UserAdresseMail`, `UserGenre`, `UserLangue` FROM `user` WHERE UserAdresseMail like '$user_email';";
+    $mysql_query = "";
     $result = mysqli_query($conn,$mysql_query);
     $response = array();
 

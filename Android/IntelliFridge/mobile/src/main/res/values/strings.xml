@@ -92,5 +92,6 @@
     <string name="mod_allergy_descr_off">Enable the allergy scan module</string>
     <!-- ShopActivity -->
     <string name="title_activity_shop">IntelliFridge Shop</string>
+    <string name="db_connect_error">Connection Error! Please try again later</string>
 
 </resources>
