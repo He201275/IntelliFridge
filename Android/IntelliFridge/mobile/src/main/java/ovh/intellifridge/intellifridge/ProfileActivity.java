@@ -35,10 +35,20 @@ public class ProfileActivity extends AppCompatActivity {
         firstName.setText(user_fName);
         String user_lName = sharedPreferences.getString("user_lName","");
         lastName.setText(user_lName);
+        fullName.setText(user_fName+" "+user_lName);
         String localite = sharedPreferences.getString("user_localite","");
-        locale.setText(localite);
+        if (localite == null){
+            locale.setText("Pas de localité");
+        }else {
+            locale.setText(localite);
+        }
+
         String genre = sharedPreferences.getString("user_genre","");
-        gender.setText(genre);
+        if (genre == null){
+            locale.setText("Pas de genre");
+        }else {
+            gender.setText(genre);
+        }
         String langue = sharedPreferences.getString("user_language","");
         language.setText(langue);
     }

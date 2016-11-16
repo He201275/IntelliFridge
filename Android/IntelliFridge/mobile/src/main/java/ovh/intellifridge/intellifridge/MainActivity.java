@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 /**
  * L'activité principale de l'application
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private ViewPager mViewPager;
     public Boolean fridge_mod_status,allergy_mod_status;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +74,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        setEmailNav();
 
         fridge_mod_status = getFridgeModStatus();
         allergy_mod_status = getAllergyModStatus();
+    }
+
+    private void setEmailNav() {
+        View header = navigationView.getHeaderView(0);
+        TextView email_nav = (TextView)header.findViewById(R.id.email_nav);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String user_email = sharedPreferences.getString("user_email","");
+        email_nav.setText(user_email);
     }
 
     @Override

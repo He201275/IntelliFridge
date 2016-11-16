@@ -23,7 +23,7 @@
                 android:layout_marginTop="76dp"
                 android:text=""
                 android:textColor="#fff"
-                android:textSize="24sp"
+                android:textSize="35sp"
                 android:textStyle="bold" />
 
             <TextView

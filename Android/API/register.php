@@ -1,5 +1,5 @@
 <?php
-require "conn.php";
+require "api_functions.php";
 
 if (isset($_POST["fName"]) && isset($_POST["lName"]) && isset($_POST["email"]) && isset($_POST["langue"]) && isset($_POST["password"])) {
     $user_prenom = $_POST["fName"];
@@ -7,7 +7,6 @@ if (isset($_POST["fName"]) && isset($_POST["lName"]) && isset($_POST["email"]) &
     $user_mail = $_POST["email"];
     $user_lang = $_POST["langue"];
     $user_pass = $_POST["password"];
-
     switch ($user_lang){
         case "Français":
             $user_lang_id = 1;
@@ -20,16 +19,18 @@ if (isset($_POST["fName"]) && isset($_POST["lName"]) && isset($_POST["email"]) &
             break;
     }
 
-    $query= "insert into User (UserPrenom,UserNom,UserAdresseMail,UserLangue,UserPassword,LangueId) values ('$user_prenom','$user_nom','$user_mail','$user_lang','$user_pass','$user_lang_id');";
+    $mysql_query= "insert into User (UserPrenom,UserNom,UserAdresseMail,UserLangue,UserPassword,LangueId) values ('$user_prenom','$user_nom','$user_mail','$user_lang','$user_pass','$user_lang_id');";
+    $db = dbConnect();
 
-    if($conn->query($query) === TRUE){
-        echo "Registration Successful!";
+    if(!is_int($db)){
+        if ($db->exec($mysql_query)){
+            echo "Registration Successful!";
+        }else{
+            echo "Registration Error!";
+        }
     }else{
-        echo "Registration Error!";
+        echo "Database not accessible!";
     }
-
-    $conn->close();
 }else {
-    echo "Connection Error!";
+    echo "Required field(s) empty!";
 }
-?>

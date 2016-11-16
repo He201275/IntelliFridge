@@ -27,6 +27,9 @@
     <string name="already_regist">Already have an account? Sign in</string>
     <string name="login_error">Invalid email or password!</string>
     <string name="register_error">Registration Error!</string>
+    <string name="db_connect_error">Connection Error! Please try again later</string>
+    <string name="field_error">Required field empty!</string>
+    <string name="register_success">Registration Successful!</string>
     <!-- Navigation -->
     <string name="action_search">Search</string>
     <string name="action_logout">Logout</string>
@@ -92,6 +95,5 @@
     <string name="mod_allergy_descr_off">Enable the allergy scan module</string>
     <!-- ShopActivity -->
     <string name="title_activity_shop">IntelliFridge Shop</string>
-    <string name="db_connect_error">Connection Error! Please try again later</string>
 
 </resources>

@@ -48,4 +48,7 @@
     <string name="pref_title_new_message_notifications"></string>
     <string name="nav_about">A Propos</string>
     <string name="action_contact">Contact</string>
+    <string name="db_connect_error">Erreur! Ré-essayez plus tard</string>
+    <string name="field_error">Champ requis vide!</string>
+    <string name="register_success">Inscription réussie!</string>
 </resources>

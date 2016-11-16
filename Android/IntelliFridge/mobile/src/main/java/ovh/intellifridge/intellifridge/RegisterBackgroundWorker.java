@@ -14,7 +14,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Locale;
@@ -24,13 +23,13 @@ import java.util.Locale;
  * Le user est envoyé à la page de login si l'inscription se fait avec succès
  */
 
-public class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
+class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
     String email;
     Context context;
     ProgressDialog progressDialog;
     String register_url = "http://intellifridge.franmako.com/register.php";
 
-    public RegisterBackgroundWorker(Context ctx) {
+    RegisterBackgroundWorker(Context ctx) {
         context = ctx;
     }
 
@@ -87,8 +86,6 @@ public class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
             httpURLConnection.disconnect();
 
             return result;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,7 +98,7 @@ public class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
 
         switch (result){
             case "Registration Successful!":
-                Toast.makeText(context, "Registration Successful", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.register_success, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(context,LoginActivity.class);
                 intent.putExtra("new_user_email",email);
                 intent.putExtra("activity_id","Registration");
@@ -110,8 +107,11 @@ public class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
             case "Registration Error!":
                 Toast.makeText(context, R.string.register_error, Toast.LENGTH_LONG).show();
                 break;
-            case "Connection Error!":
-                Toast.makeText(context, "Server Connection Error!", Toast.LENGTH_LONG).show();
+            case "Database not accessible!":
+                Toast.makeText(context, R.string.db_connect_error, Toast.LENGTH_LONG).show();
+                break;
+            case "Required field(s) empty!":
+                Toast.makeText(context, R.string.field_error, Toast.LENGTH_LONG).show();
         }
     }
 }
