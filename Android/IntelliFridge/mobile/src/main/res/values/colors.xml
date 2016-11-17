@@ -13,4 +13,7 @@
     <color name="input_login_register_hint">#999999</color>
     <color name="btn_login_register_bg">#ff0008</color>
     <color name="btn_login_register">#ffffff</color>
+
+    <color name="btn_add">#00ff11</color>
+    <color name="btn_cancel">#b90000</color>
 </resources>

@@ -126,6 +126,31 @@
                         android:background="@drawable/cell_shape"/>
 
                 </TableRow>
+                <TableRow android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <Spinner android:id="@+id/fridge_spinner"
+                        android:layout_height="wrap_content"
+                        android:layout_width="fill_parent"
+                        />
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/add_product_btn"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:drawableStart="@drawable/ic_fridge"
+                        android:background="@color/btn_add"
+                        android:text="Store in fridge"/>
+                </TableRow>
+                <TableRow android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView android:text=""/>
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/cancel_add_btn"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:drawableStart="@drawable/ic_delete_black_24px"
+                        android:background="@color/btn_cancel"
+                        android:text="Cancel"/>
+                </TableRow>
             </TableLayout>
         </LinearLayout>
     </ScrollView>

@@ -1,15 +1,20 @@
 package ovh.intellifridge.intellifridge;
 
 import android.app.ProgressDialog;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,22 +73,16 @@ public class GetJsonFromOffDb extends AppCompatActivity {
                 URL url = new URL(params[0]);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
-
                 InputStream stream = connection.getInputStream();
-
                 reader = new BufferedReader((new InputStreamReader(stream)));
-
                 StringBuffer buffer = new StringBuffer();
                 String line = "";
 
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line + "\n");
-                    Log.d("Response: ", "> " + line); //here u ll get whole response...... :-)
                 }
 
                 return buffer.toString();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
             } catch (IOException /*| JSONException*/ e) {
                 e.printStackTrace();
             } finally {
@@ -104,6 +103,20 @@ public class GetJsonFromOffDb extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            Spinner spinner = (Spinner)findViewById(R.id.fridge_spinner);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            JSONArray fridge_list_json = null;
+            String[] list= null;
+            String fridge_list_string = prefs.getString("fridge_list","");
+            try {
+                fridge_list_json = new JSONArray(fridge_list_string);
+                list = getStringArrayFridge(fridge_list_json);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ArrayAdapter<String> fridgeList= new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
+            fridgeList.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(fridgeList);
 
             if (pd.isShowing()) {
                 pd.dismiss();
@@ -113,15 +126,12 @@ public class GetJsonFromOffDb extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             try {
                 if (json.has("product")) {
                     product = json.getJSONObject("product");
-                    Log.d("tamere", product.toString());
                     if (product.has("generic_name")){
                         genericName = product.getString("generic_name");
                     }
-
                     if (product.has("image_url")) {
                         imageUrl = product.getString("image_url");
                         ImageView pic1 = (ImageView) findViewById(R.id.pic1);
@@ -129,14 +139,11 @@ public class GetJsonFromOffDb extends AppCompatActivity {
                                 .fit().centerInside()
                                 .into(pic1);
                     }
-
                     if (product.has("categories")) {
                         cat = product.getString("categories");
                         TextView txtProductCat = (TextView) findViewById(R.id.productCat);
                         txtProductCat.setText(cat);
-
                     }
-
                     if (product.has("ingredients")){
                         ingredients = product.getString("ingredients");
                         TextView txtIngredients = (TextView) findViewById(R.id.productIngredients);
@@ -150,7 +157,6 @@ public class GetJsonFromOffDb extends AppCompatActivity {
                         quantity = product.getString("quantity");
                         txtQuantity = (TextView) findViewById(R.id.quantityName);
                         txtQuantity.setText(quantity);
-
                     }
                     if (product.has("brands")){
                         String brands = new String();
@@ -158,18 +164,11 @@ public class GetJsonFromOffDb extends AppCompatActivity {
                         TextView txtBrands = (TextView) findViewById(R.id.productBrands);
                         txtBrands.setText(brands);
                     }
-                    /*
-                    A optimiser si possible :-)
-                     */
                     if (product.has("product_name")) {
-                        Log.d("ProductScan", "Product_name excist");
                         productName = product.getString("product_name");
                     } else if (product.has("product_name_en")) {
-                        Log.d("ProductScan", "Product_name_en excist");
                         productName = product.getString("product_name_en");
-
                     } else if (product.has("product_name_fr")) {
-                        Log.d("ProductScan", "Product_name_fr excist");
                         productName = product.getString("product_name_fr");
                     }
 
@@ -183,10 +182,26 @@ public class GetJsonFromOffDb extends AppCompatActivity {
                 } else {
                     //TODO
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        private String[] getStringArrayFridge(JSONArray fridge_list_json) {
+            String string;
+            String[] stringArray = null;
+            int length = fridge_list_json.length();
+            stringArray = new String[length];
+            for(int i=0;i<length;i++){
+                string = fridge_list_json.optString(i);
+                try {
+                    JSONObject jsonObj = new JSONObject(string);
+                    stringArray[i] = jsonObj.getString("FrigoNom");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return stringArray;
         }
     }
 }

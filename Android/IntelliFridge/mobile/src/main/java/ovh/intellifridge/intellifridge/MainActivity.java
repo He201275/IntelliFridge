@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         fridge_mod_status = getFridgeModStatus();
         allergy_mod_status = getAllergyModStatus();
+        mViewPager.setCurrentItem(1);
     }
 
     private void setEmailNav() {
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.nav_shop) {
             startShopActivity();
         }else if (id == R.id.nav_profile){
-            startProfileActivty();
+            startProfileActivity();
         }else if (id == R.id.nav_contact){
             startContactActivity();
         }else if (id == R.id.nav_about){
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    private void startProfileActivty() {
+    private void startProfileActivity() {
         Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
         startActivity(intent);
     }

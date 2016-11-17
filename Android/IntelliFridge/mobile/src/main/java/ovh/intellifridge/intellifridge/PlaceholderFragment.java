@@ -156,7 +156,7 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
         return stringArray;
     }
 
-    private String[] getStringArrayFridge(JSONArray fridge_list_json) {
+    public String[] getStringArrayFridge(JSONArray fridge_list_json) {
         String string;
         String[] stringArray = null;
         int length = fridge_list_json.length();
