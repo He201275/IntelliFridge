@@ -24,10 +24,10 @@ public class ProfileActivity extends AppCompatActivity {
         gender = (TextView)findViewById(R.id.user_profile_gender);
         language = (TextView)findViewById(R.id.user_profile_language);
 
-        setUserData();
+        getUserData();
     }
 
-    public void setUserData(){
+    public void getUserData(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String user_email = sharedPreferences.getString("user_email","");
         email.setText(user_email);
@@ -37,19 +37,24 @@ public class ProfileActivity extends AppCompatActivity {
         lastName.setText(user_lName);
         fullName.setText(user_fName+" "+user_lName);
         String localite = sharedPreferences.getString("user_localite","");
-        if (localite == null){
-            locale.setText("Pas de localité");
+        if (isEmptyString(localite)){
+            locale.setText(R.string.location_empty);
         }else {
             locale.setText(localite);
         }
 
         String genre = sharedPreferences.getString("user_genre","");
-        if (genre == null){
-            locale.setText("Pas de genre");
+        if (isEmptyString(genre)){
+            gender.setText(R.string.gender_empty);
         }else {
             gender.setText(genre);
         }
         String langue = sharedPreferences.getString("user_language","");
         language.setText(langue);
+    }
+
+    public static boolean isEmptyString(String text) {
+        return (text == null || text.trim().equals("null") || text.trim()
+                .length() <= 0);
     }
 }

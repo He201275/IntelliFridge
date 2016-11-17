@@ -227,7 +227,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class IntelliFridgePreferenceFragment extends PreferenceFragment{
-        SwitchPreference fridge,allergy;
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -236,8 +235,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(MOD_FRIDGE_KEY));
             bindPreferenceSummaryToValue(findPreference(MOD_ALLERGY_KEY));
         }
-
-
     }
 
     /**

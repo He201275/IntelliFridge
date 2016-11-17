@@ -189,16 +189,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             progressDialog.dismiss();
             try {
                 api_response = new JSONObject(result);
-                Log.wtf("Test",api_response.toString());
                 server_status = api_response.getString("server-status");
                 reponse_status = api_response.getString("reponse-status");
-                Log.wtf("Test1",server_status);
-                Log.wtf("Test2",reponse_status);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            Log.wtf("Test3",server_status);
-            Log.wtf("Test4",reponse_status);
 
             if (reponse_status.equals("Login Unsuccessful!")){
                 Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();

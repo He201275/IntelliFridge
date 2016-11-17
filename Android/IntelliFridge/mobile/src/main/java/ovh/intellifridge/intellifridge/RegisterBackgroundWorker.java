@@ -24,10 +24,9 @@ import java.util.Locale;
  */
 
 class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
-    String email;
-    Context context;
-    ProgressDialog progressDialog;
-    String register_url = "http://intellifridge.franmako.com/register.php";
+    private String email;
+    private Context context;
+    private ProgressDialog progressDialog;
 
     RegisterBackgroundWorker(Context ctx) {
         context = ctx;
@@ -50,9 +49,9 @@ class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
         String fName = params[2];
         String lName = params[3];
         String langue = Locale.getDefault().getDisplayLanguage();
-        //String langueId;
 
         try {
+            String register_url = "http://intellifridge.franmako.com/register.php";
             URL url = new URL(register_url);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("POST");

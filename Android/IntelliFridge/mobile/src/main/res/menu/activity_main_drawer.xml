@@ -4,7 +4,7 @@
     <group android:id="@+id/nav_action">
         <item
             android:id="@+id/nav_fridges"
-            android:title="@string/nav_fridges"
+            android:title="@string/nav_multiple_input"
             android:icon="@drawable/ic_fridge"/>
         <item
             android:id="@+id/nav_input"

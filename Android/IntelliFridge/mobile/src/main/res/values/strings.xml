@@ -30,11 +30,14 @@
     <string name="db_connect_error">Connection Error! Please try again later</string>
     <string name="field_error">Required field empty!</string>
     <string name="register_success">Registration Successful!</string>
+    <!-- Profile -->
+    <string name="location_empty">No location set</string>
+    <string name="gender_empty">No gender set</string>
     <!-- Navigation -->
     <string name="action_search">Search</string>
     <string name="action_logout">Logout</string>
-    <string name="nav_fridges">My Fridge(s)</string>
-    <string name="nav_input">Store Food</string>
+    <string name="nav_multiple_input">Multiple input</string>
+    <string name="nav_input">Food without barcode</string>
     <string name="nav_subgroup">Misc</string>
     <string name="nav_shop">Shop</string>
     <string name="nav_profile">My Profile</string>
@@ -95,5 +98,7 @@
     <string name="mod_allergy_descr_off">Enable the allergy scan module</string>
     <!-- ShopActivity -->
     <string name="title_activity_shop">IntelliFridge Shop</string>
+    <string name="fridge_list_empty">You don\'t have any fridge</string>
+    <string name="allergy_list_empty">Allergy list is empty! Please try again later</string>
 
 </resources>

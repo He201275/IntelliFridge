@@ -16,8 +16,7 @@
     <string name="hint_email">Email</string>
     <string name="hint_password">Mot de passe</string>
     <string name="nav_allergies">Mes Allergies</string>
-    <string name="nav_fridges">Mes Frigos</string>
-    <string name="nav_input">Conserver dans frigo</string>
+    <string name="nav_input">Aliments sans code-barre</string>
     <string name="nav_profile">Mon Profil</string>
     <string name="nav_shop">Boutique</string>
     <string name="nav_subgroup">Divers</string>
@@ -51,4 +50,8 @@
     <string name="db_connect_error">Erreur! Ré-essayez plus tard</string>
     <string name="field_error">Champ requis vide!</string>
     <string name="register_success">Inscription réussie!</string>
+    <string name="gender_empty">Pas de genre</string>
+    <string name="location_empty">Pas de localité</string>
+    <string name="fridge_list_empty">Vous n\'avez pas de frigo</string>
+    <string name="nav_multiple_input">Ajout multiple</string>
 </resources>
