@@ -23,7 +23,7 @@ import java.util.Locale;
  * Le user est envoyé à la page de login si l'inscription se fait avec succès
  */
 
-class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
+public class RegisterBackgroundWorker extends AsyncTask<String,String,String> {
     private String email;
     private Context context;
     private ProgressDialog progressDialog;

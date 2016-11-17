@@ -12,6 +12,7 @@ import android.widget.TextView;
  */
 public class ProfileActivity extends AppCompatActivity {
     TextView fullName,email,firstName,lastName,locale,gender,language;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

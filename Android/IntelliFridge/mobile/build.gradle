@@ -35,4 +35,5 @@ dependencies {
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.android.support:recyclerview-v7:25.0.1'
     testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.2.19'
 }

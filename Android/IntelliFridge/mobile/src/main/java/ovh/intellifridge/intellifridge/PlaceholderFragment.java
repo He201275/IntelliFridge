@@ -166,6 +166,7 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
             try {
                 JSONObject jsonObj = new JSONObject(string);
                 stringArray[i] = jsonObj.getString("FrigoNom");
+                Log.wtf("test",jsonObj.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
