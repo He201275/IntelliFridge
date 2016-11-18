@@ -100,5 +100,15 @@
     <string name="title_activity_shop">IntelliFridge Shop</string>
     <string name="fridge_list_empty">You don\'t have any fridge</string>
     <string name="allergy_list_empty">Allergy list is empty! Please try again later</string>
+    <string name="action_add_fridge">Add fridge</string>
+
+    <!-- Fridge -->
+    <string name="add_fridge_title">Add Fridge</string>
+    <string name="add_fridge_message">Name your new fridge</string>
+    <string name="add_fridge_addBtn">Add</string>
+    <string name="add_fridge_cancelBtn">Cancel</string>
+    <string name="add_fridge_success">Fridge successfuly added!</string>
+    <string name="add_fridge_error">Error adding fridge! Please try again</string>
+    <string name="add_fridge_input_error">Fridge name can\'t be empty!</string>
 
 </resources>

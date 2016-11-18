@@ -13,7 +13,7 @@ if (isset($_POST["userId"])){
         $jsonReturn["server-status"] = "Database accessible";
         $answer =$db->query($query);
         if ($answer->rowCount() >0){
-            $jsonReturn["reponse-status"] = "Fridges found";
+            $jsonReturn["reponse-status"] = "Fridge list found";
             while($data = $answer->fetch(PDO::FETCH_ASSOC)){
                 $jsonReturn["reponse-data"][] = $data;
             }

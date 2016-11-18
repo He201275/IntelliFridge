@@ -2,6 +2,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ovh.intellifridge.intellifridge.MainActivity">
+
+    <item
+        android:id="@+id/action_add_fridge"
+        android:orderInCategory="10"
+        android:icon="@drawable/ic_fridge_white"
+        android:title="@string/action_add_fridge"
+        app:showAsAction="ifRoom|collapseActionView"/>
+
     <item
         android:id="@+id/action_search"
         android:orderInCategory="30"

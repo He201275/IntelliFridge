@@ -9,7 +9,7 @@
 
     <header
         android:fragment="ovh.intellifridge.intellifridge.SettingsActivity$IntelliFridgePreferenceFragment"
-        android:icon="@drawable/ic_fridge"
+        android:icon="@drawable/ic_fridge_black"
         android:title="@string/app_name" />
 
     <header

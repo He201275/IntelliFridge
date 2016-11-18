@@ -1,5 +1,6 @@
 package ovh.intellifridge.intellifridge;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,12 +17,15 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 /**
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewPager mViewPager;
     public Boolean fridge_mod_status,allergy_mod_status;
     NavigationView navigationView;
+    String fridge_name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,9 +147,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startSettingsActivity();
         }else if (id == R.id.action_logout){
             logout();
+        }else if (id == R.id.action_add_fridge){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.add_fridge_title);
+            // Set up the input
+            final EditText input = new EditText(this);
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+            // Set up the buttons
+            builder.setPositiveButton(R.string.add_fridge_addBtn, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    fridge_name = input.getText().toString();
+                    String type = "add_fridge";
+                    int userId = getUserId();
+                    new FridgeBackgroundWorker(MainActivity.this).execute(String.valueOf(userId),type,fridge_name);
+                }
+            });
+            builder.setNegativeButton(R.string.add_fridge_cancelBtn, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.show();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private int getUserId() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        int userId = prefs.getInt("user_id",0);
+        return userId;
+    }
+
+    private void addFridge() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int userId = prefs.getInt("user_id",0);
+        String userId_string = String.valueOf(userId);
+        String type = "add_fridge";
+        new FridgeBackgroundWorker(this).execute(userId_string,type);
     }
 
     private void startSettingsActivity() {

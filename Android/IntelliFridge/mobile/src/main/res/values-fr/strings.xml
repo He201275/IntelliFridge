@@ -54,4 +54,8 @@
     <string name="location_empty">Pas de localité</string>
     <string name="fridge_list_empty">Vous n\'avez pas de frigo</string>
     <string name="nav_multiple_input">Ajout multiple</string>
+    <string name="action_add_fridge">Ajouter frigo</string>
+    <string name="add_fridge_message">Nom du frigo</string>
+    <string name="add_fridge_title">Ajout d\'un frigo</string>
+    <string name="allergy_list_empty">La liste d\'allergie est vide! Ré-essayer plus tard.</string>
 </resources>

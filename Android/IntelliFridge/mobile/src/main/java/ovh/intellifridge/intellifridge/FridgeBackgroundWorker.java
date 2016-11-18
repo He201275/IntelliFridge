@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -26,64 +27,98 @@ import java.net.URLEncoder;
  * Created by franc on 16-11-16.
  */
 
-public class FridgeBackgroundWorker extends AsyncTask<String,String,String> {
-    private String fridgeList_url = "http://intellifridge.franmako.com/getFridgeList.php";
-    ProgressDialog progressDialog;
+class FridgeBackgroundWorker extends AsyncTask<String,String,String> {
     Context context;
     JSONObject api_response;
-    String server_status, reponse_status;
+    String server_status, reponse_status, type, fridge_name;
 
     FridgeBackgroundWorker(Context ctx){
         context = ctx;
     }
 
-    protected void onPreExecute() {
-        progressDialog = ProgressDialog.show(context, "", "Fetching fridge list...",true);
-    }
-
     @Override
     protected String doInBackground(String... params) {
         String userId = params[0];
+        type = params[1];
 
-        try {
-            URL url = new URL(fridgeList_url);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setDoInput(true);
+        if (type.equals("add_fridge")){ //Add fridge
+            fridge_name = params[2];
+            String fridgeAdd_url = "http://intellifridge.franmako.com/addFridge.php";
+            try { // TODO: 17-11-16
+                URL url = new URL(fridgeAdd_url);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
 
-            OutputStream outputStream = httpURLConnection.getOutputStream();
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
 
-            String post_data = URLEncoder.encode("userId","UTF-8")+"="+URLEncoder.encode(String.valueOf(userId),"UTF-8");
-            bufferedWriter.write(post_data);
+                String post_data = URLEncoder.encode("userId","UTF-8")+"="+URLEncoder.encode(userId,"UTF-8")+"&"
+                        +URLEncoder.encode("fridgeName","UTF-8")+"="+URLEncoder.encode(fridge_name,"UTF-8");
+                bufferedWriter.write(post_data);
 
-            bufferedWriter.flush();
-            bufferedWriter.close();
-            outputStream.close();
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
 
-            InputStream inputStream = httpURLConnection.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
-            String result="";
-            StringBuilder stringBuilder = new StringBuilder();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+                String result="";
+                StringBuilder stringBuilder = new StringBuilder();
 
-            while ((result = bufferedReader.readLine()) != null){
-                stringBuilder.append(result);
+                while ((result = bufferedReader.readLine()) != null){
+                    stringBuilder.append(result);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+
+                return stringBuilder.toString().trim();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            bufferedReader.close();
-            inputStream.close();
-            httpURLConnection.disconnect();
+        }else if (type.equals("get_list")){ //Get fridge list
+            String fridgeList_url = "http://intellifridge.franmako.com/getFridgeList.php";
+            try {
+                URL url = new URL(fridgeList_url);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
 
-            return stringBuilder.toString().trim();
-        } catch (IOException e) {
-            e.printStackTrace();
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
+
+                String post_data = URLEncoder.encode("userId","UTF-8")+"="+URLEncoder.encode(userId,"UTF-8");
+                bufferedWriter.write(post_data);
+
+                bufferedWriter.flush();
+                bufferedWriter.close();
+                outputStream.close();
+
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
+                String result="";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ((result = bufferedReader.readLine()) != null){
+                    stringBuilder.append(result);
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+
+                return stringBuilder.toString().trim();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
 
     @Override
     protected void onPostExecute(String result) {
-        progressDialog.dismiss();
         try {
             api_response = new JSONObject(result);
             server_status = api_response.getString("server-status");
@@ -96,13 +131,17 @@ public class FridgeBackgroundWorker extends AsyncTask<String,String,String> {
             Toast.makeText(context,R.string.db_connect_error,Toast.LENGTH_LONG).show();
         }else if (reponse_status.equals("No Fridges")){
             Toast.makeText(context,R.string.fridge_list_empty,Toast.LENGTH_LONG).show();
-        }else {
+        }else if (reponse_status.equals("Fridge list found")){
             try {
                 JSONArray fridgeData = api_response.getJSONArray("reponse-data");
                 saveFridgeList(fridgeData);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }else if (reponse_status.equals("Fridge added")){
+            Toast.makeText(context,R.string.add_fridge_success,Toast.LENGTH_LONG).show();
+        }else if (reponse_status.equals("Fridge add error")){
+            Toast.makeText(context,R.string.add_fridge_error,Toast.LENGTH_LONG).show();
         }
     }
 

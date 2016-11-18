@@ -59,7 +59,8 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
             }else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2){
                 View rootView = inflater.inflate(R.layout.fragment_fridge, container, false);
                 int userId = getUserId();
-                new FridgeBackgroundWorker(getActivity()).execute(String.valueOf(userId));
+                String type = "get_list";
+                new FridgeBackgroundWorker(getActivity()).execute(String.valueOf(userId),type);
                 try {
                     getFridgeList(rootView);
                 } catch (JSONException e) {
@@ -92,7 +93,9 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
             }else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2){
                 View rootView = inflater.inflate(R.layout.fragment_fridge, container, false);
                 int userId = getUserId();
-                new FridgeBackgroundWorker(getActivity()).execute(String.valueOf(userId));
+                String type = "get_list";
+                new FridgeBackgroundWorker(getActivity()).execute(String.valueOf(userId),type);
+                // TODO: 17-11-16
                 try {
                     getFridgeList(rootView);
                 } catch (JSONException e) {

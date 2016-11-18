@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -31,7 +33,7 @@ import java.net.URL;
  * Reçoit les infos en JSON
  * Affiche les informations récoltées dans une vue
  */
-public class GetJsonFromOffDb extends AppCompatActivity {
+public class GetJsonFromOffDb extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     TextView txtProduct, txtQuantity;
     ProgressDialog pd;
     String resBarcodeReader;
@@ -51,6 +53,49 @@ public class GetJsonFromOffDb extends AppCompatActivity {
         new JsonTask().execute("http://fr.openfoodfacts.org/api/v0/product/" + resBarcodeReader + ".json");
         txtProduct = (TextView) findViewById(R.id.productName);
         txtQuantity = (TextView) findViewById(R.id.quantityName);
+
+        Spinner spinner = (Spinner)findViewById(R.id.fridge_spinner);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        JSONArray fridge_list_json = null;
+        String[] list= null;
+        String fridge_list_string = prefs.getString("fridge_list","");
+        try {
+            fridge_list_json = new JSONArray(fridge_list_string);
+            list = getStringArrayFridge(fridge_list_json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        ArrayAdapter<String> fridgeList= new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
+        fridgeList.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(fridgeList);
+        spinner.setOnItemClickListener((AdapterView.OnItemClickListener) this);
+    }
+
+    private String[] getStringArrayFridge(JSONArray fridge_list_json) {
+        String string;
+        String[] stringArray = null;
+        int length = fridge_list_json.length();
+        stringArray = new String[length];
+        for(int i=0;i<length;i++){
+            string = fridge_list_json.optString(i);
+            try {
+                JSONObject jsonObj = new JSONObject(string);
+                stringArray[i] = jsonObj.getString("FrigoNom");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return stringArray;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 
     private class JsonTask extends AsyncTask <String,String,String>{
@@ -103,21 +148,6 @@ public class GetJsonFromOffDb extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Spinner spinner = (Spinner)findViewById(R.id.fridge_spinner);
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            JSONArray fridge_list_json = null;
-            String[] list= null;
-            String fridge_list_string = prefs.getString("fridge_list","");
-            try {
-                fridge_list_json = new JSONArray(fridge_list_string);
-                list = getStringArrayFridge(fridge_list_json);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            ArrayAdapter<String> fridgeList= new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
-            fridgeList.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(fridgeList);
-
             if (pd.isShowing()) {
                 pd.dismiss();
             }
@@ -159,8 +189,7 @@ public class GetJsonFromOffDb extends AppCompatActivity {
                         txtQuantity.setText(quantity);
                     }
                     if (product.has("brands")){
-                        String brands = new String();
-                        brands = product.getString("brands");
+                        String brands = product.getString("brands");
                         TextView txtBrands = (TextView) findViewById(R.id.productBrands);
                         txtBrands.setText(brands);
                     }
@@ -185,23 +214,6 @@ public class GetJsonFromOffDb extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
-
-        private String[] getStringArrayFridge(JSONArray fridge_list_json) {
-            String string;
-            String[] stringArray = null;
-            int length = fridge_list_json.length();
-            stringArray = new String[length];
-            for(int i=0;i<length;i++){
-                string = fridge_list_json.optString(i);
-                try {
-                    JSONObject jsonObj = new JSONObject(string);
-                    stringArray[i] = jsonObj.getString("FrigoNom");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            return stringArray;
         }
     }
 }
