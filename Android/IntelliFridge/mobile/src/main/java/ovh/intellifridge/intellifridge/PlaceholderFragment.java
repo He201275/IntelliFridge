@@ -1,14 +1,18 @@
 package ovh.intellifridge.intellifridge;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +28,8 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private SwipeRefreshLayout swipeContainer;
+
 
     public PlaceholderFragment() {
     }
@@ -50,6 +56,11 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
     }
 
     @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (getFridgeModStatus() && !getAllergyModStatus()){
@@ -57,9 +68,10 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
                 View rootView = inflater.inflate(R.layout.fragment_recent, container, false);
                 return rootView;
             }else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2){
+                //initSwipeRefresh();
                 View rootView = inflater.inflate(R.layout.fragment_fridge, container, false);
                 int userId = getUserId();
-                String type = "get_list";
+                String type = "get_fridge_list";
                 new FridgeBackgroundWorker(getActivity()).execute(String.valueOf(userId),type);
                 try {
                     getFridgeList(rootView);
@@ -91,6 +103,7 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
                 View rootView = inflater.inflate(R.layout.fragment_recent, container, false);
                 return rootView;
             }else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2){
+                //initSwipeRefresh();
                 View rootView = inflater.inflate(R.layout.fragment_fridge, container, false);
                 int userId = getUserId();
                 String type = "get_list";
@@ -169,7 +182,6 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
             try {
                 JSONObject jsonObj = new JSONObject(string);
                 stringArray[i] = jsonObj.getString("FrigoNom");
-                Log.wtf("test",jsonObj.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -181,9 +193,8 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         JSONArray fridge_list_json = null;
         String fridge_list_string = prefs.getString("fridge_list","");
-        String[] list= null;
         fridge_list_json = new JSONArray(fridge_list_string);
-        list = getStringArrayFridge(fridge_list_json);
+        final String[] list = getStringArrayFridge(fridge_list_json);
 
         ListView listView = (ListView) rootView.findViewById(R.id.fridge_list);
         ArrayAdapter<String> listViewAdapter = new ArrayAdapter<String>(
@@ -192,5 +203,14 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
                 list
         );
         listView.setAdapter(listViewAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                Intent intent = new Intent(getActivity().getApplicationContext(),FridgeContentActivity.class);
+                intent.putExtra("fridge_name",list[position]);
+                startActivity(intent);
+            }
+        });
     }
 }

@@ -183,14 +183,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return userId;
     }
 
-    private void addFridge() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        int userId = prefs.getInt("user_id",0);
-        String userId_string = String.valueOf(userId);
-        String type = "add_fridge";
-        new FridgeBackgroundWorker(this).execute(userId_string,type);
-    }
-
     private void startSettingsActivity() {
         Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
         startActivity(intent);
