@@ -83,7 +83,7 @@
             android:textColorHint="@color/input_login_register_hint"
             android:maxLines="1" />
 
-        <!-- Login Button -->
+        <!-- LoginActivity Button -->
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnRegister"
@@ -94,7 +94,7 @@
             android:text="@string/btn_register"
             android:textColor="@color/btn_login_register" />
 
-        <!-- Link to Login Screen -->
+        <!-- Link to LoginActivity Screen -->
 
         <Button
             android:id="@+id/login_link"

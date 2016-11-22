@@ -18,7 +18,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -27,19 +30,24 @@ import java.net.URLEncoder;
  */
 
 public class AllergyBackgroundWorker extends AsyncTask<String,String,String> {
-    private Context context;
-    private JSONObject api_response;
-    private String server_status, reponse_status;
+    private String url_allergy = "http://intellifridge.franmako.com/getAllergyList.php";
+    ProgressDialog progressDialog;
+    Context context;
+    JSONObject api_response;
+    String server_status, reponse_status;
 
     AllergyBackgroundWorker(Context ctx){
         context = ctx;
+    }
+
+    protected void onPreExecute() {
+        progressDialog = ProgressDialog.show(context, "", "Fetching allergy list...",true);
     }
 
     @Override
     protected String doInBackground(String... params) {
         String userId = params[0];
         try {
-            String url_allergy = "http://intellifridge.franmako.com/getAllergyList.php";
             URL url = new URL(url_allergy);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("POST");
@@ -77,6 +85,7 @@ public class AllergyBackgroundWorker extends AsyncTask<String,String,String> {
 
     @Override
     protected void onPostExecute(String result) {
+        progressDialog.dismiss();
         try {
             api_response = new JSONObject(result);
             server_status = api_response.getString("server-status");

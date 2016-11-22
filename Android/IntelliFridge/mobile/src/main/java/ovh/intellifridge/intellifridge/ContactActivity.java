@@ -8,6 +8,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import static ovh.intellifridge.intellifridge.Config.CONTACT_URL;
+import static ovh.intellifridge.intellifridge.Config.DOMAIN_URL;
+
 public class ContactActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,7 +19,7 @@ public class ContactActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         WebView webView = (WebView)findViewById(R.id.contact_webview);
         webView.setWebViewClient(new MyWebViewClient());
-        webView.loadUrl("http://www.intellifridge.ovh/contact.php");
+        webView.loadUrl(CONTACT_URL);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
     }
@@ -24,7 +27,7 @@ public class ContactActivity extends AppCompatActivity {
     private class MyWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (Uri.parse(url).getHost().equals("www.intellifridge.ovh")) {
+            if (Uri.parse(url).getHost().equals(DOMAIN_URL)) {
                 // This is my web site, so do not override; let my WebView load the page
                 return false;
             }

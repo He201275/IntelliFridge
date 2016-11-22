@@ -58,4 +58,12 @@
     <string name="add_fridge_message">Nom du frigo</string>
     <string name="add_fridge_title">Ajout d\'un frigo</string>
     <string name="allergy_list_empty">La liste d\'allergie est vide! Ré-essayer plus tard.</string>
+    <string name="add_fridge_addBtn">Ajouter</string>
+    <string name="add_fridge_cancelBtn">Annuler</string>
+    <string name="add_fridge_error">Erreur à l\'ajout. Veuillez ré-essayer</string>
+    <string name="add_fridge_input_error">Le nom du frigo ne peut être vide</string>
+    <string name="add_fridge_success">Nouveau frigo ajouté!</string>
+    <string name="logout_confirm">Confirmer la déconnexion</string>
+    <string name="logout_negative">Non</string>
+    <string name="logout_positive">Oui</string>
 </resources>

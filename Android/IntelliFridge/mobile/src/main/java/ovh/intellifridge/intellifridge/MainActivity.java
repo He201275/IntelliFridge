@@ -1,5 +1,6 @@
 package ovh.intellifridge.intellifridge;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,6 +28,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import static ovh.intellifridge.intellifridge.Config.USER_EMAIL_PREFS;
 
 /**
  * L'activité principale de l'application
@@ -93,8 +96,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setEmailNav() {
         View header = navigationView.getHeaderView(0);
         TextView email_nav = (TextView)header.findViewById(R.id.email_nav);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String user_email = sharedPreferences.getString("user_email","");
+        SharedPreferences preferences = getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        String user_email = preferences.getString(USER_EMAIL_PREFS,"");
         email_nav.setText(user_email);
     }
 
@@ -183,6 +186,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return userId;
     }
 
+    private void addFridge() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int userId = prefs.getInt("user_id",0);
+        String userId_string = String.valueOf(userId);
+        String type = "add_fridge";
+        new FridgeBackgroundWorker(this).execute(userId_string,type);
+    }
+
     private void startSettingsActivity() {
         Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
         startActivity(intent);
@@ -219,12 +230,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else if (id == R.id.nav_contact){
             startContactActivity();
         }else if (id == R.id.nav_about){
-            // TODO: 14-11-16
+            startAboutActivity();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void startAboutActivity() {
+        Intent intent = new Intent(MainActivity.this,AboutActivity.class);
+        startActivity(intent);
     }
 
     private void startContactActivity() {
@@ -243,18 +259,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void logout() {
-        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-        intent.putExtra("activity_id","Logout");
-        startActivity(intent);
-        clearSharedPrefs();
-        finish();
+        //Creating an alert dialog to confirm logout
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage(R.string.logout_confirm);
+        alertDialogBuilder.setPositiveButton(R.string.logout_positive,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        SharedPreferences preferences = getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean(Config.LOGGEDIN_SHARED_PREF, false);
+                        editor.putString(USER_EMAIL_PREFS, "");
+                        editor.apply();
+
+                        startLoginActivty();
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton(R.string.logout_negative,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
-    private void clearSharedPrefs() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+    private void startLoginActivty() {
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 
     public Boolean getFridgeModStatus() {

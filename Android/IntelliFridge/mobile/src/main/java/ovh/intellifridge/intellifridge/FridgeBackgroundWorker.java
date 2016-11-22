@@ -26,9 +26,9 @@ import java.net.URLEncoder;
  */
 
 class FridgeBackgroundWorker extends AsyncTask<String,String,String> {
-    private Context context;
-    private JSONObject api_response;
-    private String server_status,reponse_status;
+    Context context;
+    JSONObject api_response;
+    String server_status, reponse_status, type, fridge_name;
 
     FridgeBackgroundWorker(Context ctx){
         context = ctx;
@@ -37,12 +37,12 @@ class FridgeBackgroundWorker extends AsyncTask<String,String,String> {
     @Override
     protected String doInBackground(String... params) {
         String userId = params[0];
-        String type = params[1];
+        type = params[1];
 
         if (type.equals("add_fridge")){ //Add fridge
-            String fridge_name = params[2];
+            fridge_name = params[2];
             String fridgeAdd_url = "http://intellifridge.franmako.com/addFridge.php";
-            try {
+            try { // TODO: 17-11-16
                 URL url = new URL(fridgeAdd_url);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
@@ -76,7 +76,7 @@ class FridgeBackgroundWorker extends AsyncTask<String,String,String> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else if (type.equals("get_fridge_list")){ //Get fridge list
+        }else if (type.equals("get_list")){ //Get fridge list
             String fridgeList_url = "http://intellifridge.franmako.com/getFridgeList.php";
             try {
                 URL url = new URL(fridgeList_url);
@@ -89,43 +89,6 @@ class FridgeBackgroundWorker extends AsyncTask<String,String,String> {
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
 
                 String post_data = URLEncoder.encode("userId","UTF-8")+"="+URLEncoder.encode(userId,"UTF-8");
-                bufferedWriter.write(post_data);
-
-                bufferedWriter.flush();
-                bufferedWriter.close();
-                outputStream.close();
-
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream,"iso-8859-1"));
-                String result="";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ((result = bufferedReader.readLine()) != null){
-                    stringBuilder.append(result);
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-
-                return stringBuilder.toString().trim();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (type.equals("get_fridge_content")){//getFRidge content
-            String fridge_name = params[2];
-            String fridgeContent_url = "http://intellifridge.franmako.com/getFridgeContent.php";
-            try {
-                URL url = new URL(fridgeContent_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8"));
-
-                String post_data = URLEncoder.encode("userId","UTF-8")+"="+URLEncoder.encode(userId,"UTF-8")+"&"
-                        +URLEncoder.encode("fridgeName","UTF-8")+"="+URLEncoder.encode(fridge_name,"UTF-8");
                 bufferedWriter.write(post_data);
 
                 bufferedWriter.flush();

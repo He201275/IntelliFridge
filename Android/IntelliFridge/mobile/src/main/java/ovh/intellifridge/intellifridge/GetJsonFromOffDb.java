@@ -1,7 +1,6 @@
 package ovh.intellifridge.intellifridge;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -68,13 +68,7 @@ public class GetJsonFromOffDb extends AppCompatActivity implements AdapterView.O
         ArrayAdapter<String> fridgeList= new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_item,list);
         fridgeList.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(fridgeList);
-        spinner.setOnItemSelectedListener(this);
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(GetJsonFromOffDb.this,MainActivity.class);
-        startActivity(intent);
+        spinner.setOnItemClickListener((AdapterView.OnItemClickListener) this);
     }
 
     private String[] getStringArrayFridge(JSONArray fridge_list_json) {
@@ -134,7 +128,7 @@ public class GetJsonFromOffDb extends AppCompatActivity implements AdapterView.O
                 }
 
                 return buffer.toString();
-            } catch (IOException e) {
+            } catch (IOException /*| JSONException*/ e) {
                 e.printStackTrace();
             } finally {
                 if (connection != null) {

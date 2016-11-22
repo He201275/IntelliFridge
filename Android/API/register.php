@@ -20,17 +20,23 @@ if (isset($_POST["fName"]) && isset($_POST["lName"]) && isset($_POST["email"]) &
     }
 
     $mysql_query= "insert into User (UserPrenom,UserNom,UserAdresseMail,UserLangue,UserPassword,LangueId) values ('$user_prenom','$user_nom','$user_mail','$user_lang','$user_pass','$user_lang_id');";
+    $jsonReturn = array();
     $db = dbConnect();
 
     if(!is_int($db)){
+        $jsonReturn["server-status"] = "Database accessible";
         if ($db->exec($mysql_query)){
-            echo "Registration Successful!";
+            $jsonReturn["reponse-status"] = "Registration Successful!";
+            echo  json_encode($jsonReturn);
         }else{
-            echo "Registration Error!";
+            $jsonReturn["reponse-status"] = "Registration Error!";
+            echo  json_encode($jsonReturn);
         }
     }else{
-        echo "Database not accessible!";
+        $jsonReturn["server-status"] = "Database not accessible!";
+        echo  json_encode($jsonReturn);
     }
 }else {
-    echo "Required field(s) empty!";
+    $jsonReturn["reponse-status"] = "Required field(s) empty!";
+    echo  json_encode($jsonReturn);
 }

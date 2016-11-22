@@ -55,7 +55,11 @@
                 android:value="ovh.intellifridge.intellifridge.MainActivity" />
         </activity>
         <activity android:name=".ContactActivity" />
-        <activity android:name=".FridgeContentActivity"></activity>
+        <activity android:name=".FridgeContentActivity" />
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/title_activity_about"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
