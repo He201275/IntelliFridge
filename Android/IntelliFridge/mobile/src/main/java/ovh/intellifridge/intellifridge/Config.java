@@ -5,14 +5,15 @@ package ovh.intellifridge.intellifridge;
  */
 
 public class Config {
-    public static final String LOGIN_URL = "http://intellifridge.franmako.com/login.php";
-    public static final String REGISTER_URL = "http://intellifridge.franmako.com/register.php";
-    public static final String ALLERGY_GET_LIST_URL = "";
-    public static final String FRIDGE_GET_LIST_URL = "";
-    public static final String FRIDGE_ADD_URL = "";
-    public static final String CONTACT_URL = "http://www.intellifridge.ovh/contact.php";
-    public static final String SHOP_URL = "http://www.intellifridge.ovh/shop.php";
     public static final String DOMAIN_URL = "http://www.intellifridge.ovh";
+    public static final String DOMAIN_API_URL = "http://intellifridge.franmako.com";
+    public static final String LOGIN_URL = DOMAIN_API_URL+"/login.php";
+    public static final String REGISTER_URL = DOMAIN_API_URL+"/register.php";
+    public static final String ALLERGY_GET_LIST_URL = DOMAIN_API_URL+"/getAllergyList.php";
+    public static final String FRIDGE_GET_LIST_URL = DOMAIN_API_URL+"/getFridgeList.php";
+    public static final String FRIDGE_ADD_URL = DOMAIN_API_URL+"/addFridge.php";
+    public static final String CONTACT_URL = DOMAIN_API_URL+"/contact.php";
+    public static final String SHOP_URL = DOMAIN_API_URL+"/shop.php";
 
     //LoginActivity array index
     public static final String SERVER_STATUS = "server-status";
@@ -26,6 +27,10 @@ public class Config {
     public static final String REQUIRED_FIELD_ERROR = "Required field(s) empty!";
     public static final String LOGIN_SUCCESS = "Login Successful!";
     public static final String LOGIN_ERROR = "Login Unsuccessful!";
+    public static final String FRIDGE_LIST_SUCCESS = "Fridge list found";
+    public static final String FRIDGE_LIST_ERROR = "No Fridges";
+    public static final String ALLERGY_LIST_SUCCESS = "Allergy List found";
+    public static final String ALLERGY_LIST_ERROR = "No allergy List";
 
     //Keys for email and password as defined in our $_POST['key']
     public static final String KEY_EMAIL = "email";
@@ -33,6 +38,7 @@ public class Config {
     public static final String KEY_FNAME = "fName";
     public static final String KEY_LNAME = "lName";
     public static final String KEY_LANGUE = "langue";
+    public static final String KEY_USERID = "userId";
 
     //Keys for Sharedpreferences
     public static final String SHARED_PREF_NAME = "intellifridge";
@@ -44,6 +50,8 @@ public class Config {
     public static final String USER_LOCALITE_PREFS = "user_localite";
     public static final String USER_GENRE_PREFS = "user_genre";
     public static final String USER_LANG_PREFS = "user_language";
+    public static final String FRIDGE_LIST_PREFS = "user_fridge_list";
+    public static final String ALLERGY_LIST_PREFS = "allergy_list";
 
     //LoginActivity table column names
     public static final String USER_ID_DB = "UserId";

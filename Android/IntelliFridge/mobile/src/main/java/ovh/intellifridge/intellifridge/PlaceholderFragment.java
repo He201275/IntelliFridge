@@ -1,5 +1,6 @@
 package ovh.intellifridge.intellifridge;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,16 +10,44 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static ovh.intellifridge.intellifridge.Config.ALLERGY_GET_LIST_URL;
+import static ovh.intellifridge.intellifridge.Config.ALLERGY_LIST_ERROR;
+import static ovh.intellifridge.intellifridge.Config.ALLERGY_LIST_PREFS;
+import static ovh.intellifridge.intellifridge.Config.ALLERGY_LIST_SUCCESS;
+import static ovh.intellifridge.intellifridge.Config.DATA;
+import static ovh.intellifridge.intellifridge.Config.DB_CONNECTION_ERROR;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_GET_LIST_URL;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_ERROR;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_PREFS;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_SUCCESS;
+import static ovh.intellifridge.intellifridge.Config.SERVER_RESPONSE;
+import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
+import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
+import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 
 /**
  * Created by franc on 13-11-16.
  */
 
 public class PlaceholderFragment extends android.support.v4.app.Fragment {
+    JSONObject jsonObject;
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -58,11 +87,11 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
                 return rootView;
             }else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2){
                 View rootView = inflater.inflate(R.layout.fragment_fridge, container, false);
-                int userId = getUserId();
-                String type = "get_list";
-                new FridgeBackgroundWorker(getActivity()).execute(String.valueOf(userId),type);
+                getFridgeListDb();
                 try {
-                    getFridgeList(rootView);
+                    String fridge_list = getFridgeList();
+                    JSONArray jsonArray = new JSONArray(fridge_list);
+                    getFridgeList(rootView,jsonArray);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -74,10 +103,11 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
         }else if (getAllergyModStatus() && !getFridgeModStatus()){
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1){
                 View rootView = inflater.inflate(R.layout.fragment_allergy, container, false);
-                int userId = getUserId();
-                //new AllergyBackgroundWorker(getActivity()).execute(String.valueOf(userId));
+                getAllergyListDb();
                 try {
-                    getAllergyList(rootView);
+                    String allergy_list = getAllergyList();
+                    JSONArray jsonArray = new JSONArray(allergy_list);
+                    getAllergyList(rootView,jsonArray);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -92,22 +122,22 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
                 return rootView;
             }else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2){
                 View rootView = inflater.inflate(R.layout.fragment_fridge, container, false);
-                int userId = getUserId();
-                String type = "get_list";
-                new FridgeBackgroundWorker(getActivity()).execute(String.valueOf(userId),type);
-                // TODO: 17-11-16
+                getFridgeListDb();
                 try {
-                    getFridgeList(rootView);
+                    String fridge_list = getFridgeList();
+                    JSONArray jsonArray = new JSONArray(fridge_list);
+                    getFridgeList(rootView,jsonArray);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 return rootView;
             }else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3){
                 View rootView = inflater.inflate(R.layout.fragment_allergy, container, false);
-                int userId = getUserId();
-                //new AllergyBackgroundWorker(getActivity()).execute(String.valueOf(userId));
+                getAllergyListDb();
                 try {
-                    getAllergyList(rootView);
+                    String allergy_list = getAllergyList();
+                    JSONArray jsonArray = new JSONArray(allergy_list);
+                    getAllergyList(rootView,jsonArray);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -119,19 +149,129 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    private int getUserId() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        return sharedPreferences.getInt("user_id",0);
+    private void getFridgeListDb() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, FRIDGE_GET_LIST_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            jsonObject = new JSONObject(response);
+                            String server_status = jsonObject.getString(SERVER_STATUS);
+                            String server_response = jsonObject.getString(SERVER_RESPONSE);
+                            if (server_response.equals(FRIDGE_LIST_ERROR)){
+                                Toast.makeText(getActivity().getApplicationContext(), R.string.fridge_list_empty, Toast.LENGTH_LONG).show();
+                            }else if (server_response.equals(FRIDGE_LIST_SUCCESS)){
+                                JSONArray fridgeList = jsonObject.getJSONArray(DATA);
+                                saveFridgeList(fridgeList);
+                            }else if (server_status.equals(DB_CONNECTION_ERROR)){
+                                Toast.makeText(getActivity().getApplicationContext(),R.string.db_connect_error,Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: 21-11-16
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                int user_id = getUserId();
+                Map<String,String> params = new HashMap<>();
+                //Adding parameters to POST request
+                params.put(Config.KEY_USERID, String.valueOf(user_id));
+                return params;
+            }
+        };
+
+        //Adding the string request to the queue
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
     }
 
-    private void getAllergyList(View rootView)throws JSONException {
-        /*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        JSONArray allergy_list_json = null;
-        String allergy_list_string = prefs.getString("allergy_list","");
+    private void getAllergyListDb(){
+        StringRequest stringRequest = new StringRequest(ALLERGY_GET_LIST_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            jsonObject = new JSONObject(response);
+                            String server_status = jsonObject.getString(SERVER_STATUS);
+                            String server_response = jsonObject.getString(SERVER_RESPONSE);
+                            if (server_response.equals(ALLERGY_LIST_ERROR)){
+                                Toast.makeText(getActivity().getApplicationContext(), R.string.allergy_list_empty, Toast.LENGTH_LONG).show();
+                            }else if (server_response.equals(ALLERGY_LIST_SUCCESS)){
+                                JSONArray allergyList = jsonObject.getJSONArray(DATA);
+                                // TODO: 22-11-16 Bug - doesn't get array from API
+                                saveAllergyList(allergyList);
+                            }else if (server_status.equals(DB_CONNECTION_ERROR)){
+                                Toast.makeText(getActivity().getApplicationContext(),R.string.db_connect_error,Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: 21-11-16
+                    }
+                });
+        //Adding the string request to the queue
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
+    private void saveFridgeList(JSONArray fridgeList) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(FRIDGE_LIST_PREFS,fridgeList.toString());
+        editor.apply();
+    }
+
+    private void saveAllergyList(JSONArray allergyList){
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(ALLERGY_LIST_PREFS,allergyList.toString());
+        editor.apply();
+    }
+
+    private String getFridgeList(){
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
+        return sharedPreferences.getString(FRIDGE_LIST_PREFS,"");
+    }
+
+    private String getAllergyList(){
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
+        return sharedPreferences.getString(ALLERGY_LIST_PREFS,"");
+    }
+
+    private int getUserId() {
+        SharedPreferences preferences = this.getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getInt(USER_ID_PREFS,0);
+    }
+
+    private void getFridgeList(View rootView, JSONArray jsonArray) throws JSONException {
         String[] list= null;
-        allergy_list_json = new JSONArray(allergy_list_string);*/
-        String[] list= {"Gluten","Oeufs","Poisson","Arachides","Lactose","Sésame"};
-        //list = getStringArrayAllergy(allergy_list_json);
+        list = getStringArrayFridge(jsonArray);
+
+        ListView listView = (ListView) rootView.findViewById(R.id.fridge_list);
+        ArrayAdapter<String> listViewAdapter = new ArrayAdapter<String>(
+                getActivity(),
+                android.R.layout.simple_list_item_1,
+                list
+        );
+        listView.setAdapter(listViewAdapter);
+    }
+
+    private void getAllergyList(View rootView, JSONArray jsonArrray)throws JSONException {
+        //String[] list= {"Gluten","Oeufs","Poisson","Arachides","Lactose","Sésame"};
+        String[] list= null;
+        list = getStringArrayAllergy(jsonArrray);
 
         ListView listView = (ListView) rootView.findViewById(R.id.allergy_list);
         ArrayAdapter<String> listViewAdapter = new ArrayAdapter<String>(
@@ -159,38 +299,20 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
         return stringArray;
     }
 
-    public String[] getStringArrayFridge(JSONArray fridge_list_json) {
+    public String[] getStringArrayFridge(JSONArray jsonArray) {
         String string;
         String[] stringArray = null;
-        int length = fridge_list_json.length();
+        int length = jsonArray.length();
         stringArray = new String[length];
         for(int i=0;i<length;i++){
-            string = fridge_list_json.optString(i);
+            string = jsonArray.optString(i);
             try {
                 JSONObject jsonObj = new JSONObject(string);
                 stringArray[i] = jsonObj.getString("FrigoNom");
-                Log.wtf("test",jsonObj.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         return stringArray;
-    }
-
-    private void getFridgeList(View rootView) throws JSONException {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        JSONArray fridge_list_json = null;
-        String fridge_list_string = prefs.getString("fridge_list","");
-        String[] list= null;
-        fridge_list_json = new JSONArray(fridge_list_string);
-        list = getStringArrayFridge(fridge_list_json);
-
-        ListView listView = (ListView) rootView.findViewById(R.id.fridge_list);
-        ArrayAdapter<String> listViewAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                list
-        );
-        listView.setAdapter(listViewAdapter);
     }
 }

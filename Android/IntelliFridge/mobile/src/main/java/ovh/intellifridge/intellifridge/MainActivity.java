@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     fridge_name = input.getText().toString();
                     String type = "add_fridge";
                     int userId = getUserId();
-                    new FridgeBackgroundWorker(MainActivity.this).execute(String.valueOf(userId),type,fridge_name);
+                    // TODO: 22-11-16  
                 }
             });
             builder.setNegativeButton(R.string.add_fridge_cancelBtn, new DialogInterface.OnClickListener() {
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int userId = prefs.getInt("user_id",0);
         String userId_string = String.valueOf(userId);
         String type = "add_fridge";
-        new FridgeBackgroundWorker(this).execute(userId_string,type);
+        // TODO: 22-11-16  
     }
 
     private void startSettingsActivity() {

@@ -16,7 +16,7 @@ if(!is_int($db)){
         }
         echo  json_encode($jsonReturn);
     }else{
-        $jsonReturn["reponse-status"] = "No List";
+        $jsonReturn["reponse-status"] = "No allergy List";
         echo json_encode($jsonReturn);
     }
 }else{
