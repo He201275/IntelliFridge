@@ -1,0 +1,10 @@
+{
+  "user":{
+    "passwordByLogin": "SELECT UserPassword FROM User WHERE UserAdresseMail=:user_email",
+    "idFromLogin": "SELECT UserId FROM User WHERE UserAdresseMail=:user_email",
+    "basicInfosById": "SELECT UserId, UserPrenom, UserNom, UserLocalite, UserAdresseMail, UserGenre, UserLangue FROM User WHERE Userid=:user_id",
+    "accountExists": "tety",
+    "LostPass":"testss"
+  }
+}
+
