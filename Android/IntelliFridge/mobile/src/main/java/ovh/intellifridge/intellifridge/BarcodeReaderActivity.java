@@ -1,23 +1,18 @@
 package ovh.intellifridge.intellifridge;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import static ovh.intellifridge.intellifridge.Config.BARCODE_EXTRA;
-import static ovh.intellifridge.intellifridge.Config.SCAN_ALLERGY;
 import static ovh.intellifridge.intellifridge.Config.SCAN_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.SCAN_FRIDGE;
 
-/**
- * Classe pour le scan de code barres
- * Envoie le numéro de code barres à l'activité GetJsonFromOffDb
- */
-public class BarcodeReader extends AppCompatActivity {
+public class BarcodeReaderActivity extends AppCompatActivity {
     String scan_type;
 
     @Override
@@ -51,13 +46,13 @@ public class BarcodeReader extends AppCompatActivity {
         if (scanningResult != null){
             String scanContent = scanningResult.getContents();
             if (scan_type.equals(SCAN_FRIDGE)){
-                Intent intent1 = new Intent(getApplicationContext(),ProductFridgeAdd.class);
+                /*Intent intent1 = new Intent(getApplicationContext(),ProductFridgeAdd.class);
                 intent1.putExtra(BARCODE_EXTRA,scanContent);
-                startActivity(intent1);
+                startActivity(intent1);*/
             }else {
-                Intent intent1 = new Intent(getApplicationContext(),ProductAllergyAnalysis.class);
+                /*Intent intent1 = new Intent(getApplicationContext(),ProductAllergyAnalysis.class);
                 intent1.putExtra(BARCODE_EXTRA,scanContent);
-                startActivity(intent1);
+                startActivity(intent1);*/
             }
         }else {
             Toast.makeText(getApplicationContext(), R.string.scan_error, Toast.LENGTH_SHORT).show();

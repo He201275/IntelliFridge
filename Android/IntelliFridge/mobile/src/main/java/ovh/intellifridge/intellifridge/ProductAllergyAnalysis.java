@@ -3,11 +3,11 @@ package ovh.intellifridge.intellifridge;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class FridgeContentActivity extends AppCompatActivity {
-    // TODO: 23-11-16
+public class ProductAllergyAnalysis extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fridge_content);
+        setContentView(R.layout.activity_product_allergy_analysis);
     }
 }

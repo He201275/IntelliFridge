@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -27,15 +26,46 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static ovh.intellifridge.intellifridge.Config.DB_CONNECTION_ERROR;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_ADD_ERROR;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_ADD_SUCCESS;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_ADD_URL;
+import static ovh.intellifridge.intellifridge.Config.KEY_FRIDGE_NAME;
+import static ovh.intellifridge.intellifridge.Config.MOD_ALLERGY_KEY;
+import static ovh.intellifridge.intellifridge.Config.MOD_FRIDGE_KEY;
+import static ovh.intellifridge.intellifridge.Config.SCAN_ALLERGY;
+import static ovh.intellifridge.intellifridge.Config.SCAN_EXTRA;
+import static ovh.intellifridge.intellifridge.Config.SCAN_FRIDGE;
+import static ovh.intellifridge.intellifridge.Config.SERVER_RESPONSE;
+import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
 import static ovh.intellifridge.intellifridge.Config.USER_EMAIL_PREFS;
 
 /**
  * L'activité principale de l'application
  * Contient les onglets
  */
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -74,9 +104,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(this);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -91,6 +118,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fridge_mod_status = getFridgeModStatus();
         allergy_mod_status = getAllergyModStatus();
         //mViewPager.setCurrentItem(1);
+
+        addFloatingActionMenu();
+    }
+
+    private void addFloatingActionMenu() {
+        ImageView icon = new ImageView(this);
+        icon.setImageDrawable(getDrawable(R.drawable.ic_camera_black));
+        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+                .setBackgroundDrawable(R.drawable.fab_background)
+                .setContentView(icon)
+                .build();
+
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+        // repeat many times:
+        ImageView fridgeIcon = new ImageView(this);
+        fridgeIcon.setImageDrawable(getDrawable(R.drawable.ic_fridge_black));
+        SubActionButton fridge = itemBuilder.setContentView(fridgeIcon).build();
+        fridge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startBarcodeReader(SCAN_FRIDGE);
+            }
+        });
+
+        ImageView allergyIcon = new ImageView(this);
+        allergyIcon.setImageDrawable(getDrawable(R.drawable.ic_allergy));
+        SubActionButton allergy = itemBuilder.setContentView(allergyIcon).build();
+        allergy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startBarcodeReader(SCAN_ALLERGY);
+            }
+        });
+
+        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(fridge)
+                .addSubActionView(allergy)
+                .attachTo(actionButton)
+                .build();
+    }
+
+    private void startBarcodeReader(String extra) {
+        Intent intent = new Intent(MainActivity.this,BarcodeReaderActivity.class);
+        intent.putExtra(SCAN_EXTRA,extra);
+        startActivity(intent);
     }
 
     private void setEmailNav() {
@@ -163,9 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     fridge_name = input.getText().toString();
-                    String type = "add_fridge";
-                    int userId = getUserId();
-                    // TODO: 22-11-16  
+                    addFridge();
                 }
             });
             builder.setNegativeButton(R.string.add_fridge_cancelBtn, new DialogInterface.OnClickListener() {
@@ -187,26 +257,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addFridge() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        int userId = prefs.getInt("user_id",0);
-        String userId_string = String.valueOf(userId);
-        String type = "add_fridge";
-        // TODO: 22-11-16  
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, FRIDGE_ADD_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String server_status = jsonObject.getString(SERVER_STATUS);
+                            String server_response = jsonObject.getString(SERVER_RESPONSE);
+                            if (server_response.equals(FRIDGE_ADD_ERROR)){
+                                Toast.makeText(getApplicationContext(), R.string.add_fridge_error, Toast.LENGTH_LONG).show();
+                            }else if (server_response.equals(FRIDGE_ADD_SUCCESS)){
+                                Toast.makeText(getApplicationContext(),R.string.add_fridge_success, Toast.LENGTH_LONG).show();
+                            }else if (server_status.equals(DB_CONNECTION_ERROR)){
+                                Toast.makeText(getApplicationContext(),R.string.db_connect_error,Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: 21-11-16
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                int user_id = getUserId();
+                Map<String,String> params = new HashMap<>();
+                //Adding parameters to POST request
+                params.put(Config.KEY_USERID, String.valueOf(user_id));
+                params.put(KEY_FRIDGE_NAME, fridge_name);
+                return params;
+            }
+        };
+
+        //Adding the string request to the queue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 
     private void startSettingsActivity() {
         Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.fab:
-                Intent intent = new Intent(MainActivity.this, BarcodeReader.class);
-                startActivity(intent);
-                break;
-        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -218,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (id == R.id.nav_fridges) {
             // TODO: 29-10-16
         } else if (id == R.id.nav_input) {
-            // TODO: 29-10-16  
+            // TODO: 29-10-16
         } else if (id == R.id.nav_allergy) {
             // TODO: 29-10-16
         }else if (id == R.id.nav_manage) {
@@ -268,8 +363,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onClick(DialogInterface arg0, int arg1) {
                         SharedPreferences preferences = getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = preferences.edit();
-                        editor.putBoolean(Config.LOGGEDIN_SHARED_PREF, false);
-                        editor.putString(USER_EMAIL_PREFS, "");
+                        editor.clear();
                         editor.apply();
 
                         startLoginActivty();
@@ -295,11 +389,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public Boolean getFridgeModStatus() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        return sharedPreferences.getBoolean(SettingsActivity.MOD_FRIDGE_KEY,true);
+        return sharedPreferences.getBoolean(MOD_FRIDGE_KEY,true);
     }
     public Boolean getAllergyModStatus(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        return sharedPreferences.getBoolean(SettingsActivity.MOD_ALLERGY_KEY,true);
+        return sharedPreferences.getBoolean(MOD_ALLERGY_KEY,true);
     }
 
 

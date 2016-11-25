@@ -30,13 +30,20 @@ import java.util.Map;
 import static ovh.intellifridge.intellifridge.Config.ALLERGY_GET_LIST_URL;
 import static ovh.intellifridge.intellifridge.Config.ALLERGY_LIST_ERROR;
 import static ovh.intellifridge.intellifridge.Config.ALLERGY_LIST_PREFS;
+import static ovh.intellifridge.intellifridge.Config.ALLERGY_LIST_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.ALLERGY_LIST_SUCCESS;
+import static ovh.intellifridge.intellifridge.Config.ALLERGY_NAME_DB;
 import static ovh.intellifridge.intellifridge.Config.DATA;
 import static ovh.intellifridge.intellifridge.Config.DB_CONNECTION_ERROR;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_GET_LIST_URL;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_ERROR;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_PREFS;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_SUCCESS;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_DB;
+import static ovh.intellifridge.intellifridge.Config.LOGIN_REQUEST_TAG;
+import static ovh.intellifridge.intellifridge.Config.MOD_ALLERGY_KEY;
+import static ovh.intellifridge.intellifridge.Config.MOD_FRIDGE_KEY;
 import static ovh.intellifridge.intellifridge.Config.SERVER_RESPONSE;
 import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
 import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
@@ -71,11 +78,11 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
 
     public Boolean getFridgeModStatus() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        return sharedPreferences.getBoolean(SettingsActivity.MOD_FRIDGE_KEY,true);
+        return sharedPreferences.getBoolean(MOD_FRIDGE_KEY,true);
     }
     public Boolean getAllergyModStatus(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        return sharedPreferences.getBoolean(SettingsActivity.MOD_ALLERGY_KEY,true);
+        return sharedPreferences.getBoolean(MOD_ALLERGY_KEY,true);
     }
 
     @Override
@@ -187,9 +194,7 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
             }
         };
 
-        //Adding the string request to the queue
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(stringRequest);
+        MySingleton.getInstance(getActivity().getApplicationContext()).addToRequestQueue(stringRequest, FRIDGE_LIST_REQUEST_TAG);
     }
 
     private void getAllergyListDb(){
@@ -222,8 +227,7 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
                     }
                 });
         //Adding the string request to the queue
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(stringRequest);
+        MySingleton.getInstance(getActivity().getApplicationContext()).addToRequestQueue(stringRequest, ALLERGY_LIST_REQUEST_TAG);
     }
 
     private void saveFridgeList(JSONArray fridgeList) {
@@ -291,7 +295,7 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
             string = allergy_list_json.optString(i);
             try {
                 JSONObject jsonObj = new JSONObject(string);
-                stringArray[i] = jsonObj.getString("AllergieNom");
+                stringArray[i] = jsonObj.getString(ALLERGY_NAME_DB);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -308,7 +312,7 @@ public class PlaceholderFragment extends android.support.v4.app.Fragment {
             string = jsonArray.optString(i);
             try {
                 JSONObject jsonObj = new JSONObject(string);
-                stringArray[i] = jsonObj.getString("FrigoNom");
+                stringArray[i] = jsonObj.getString(FRIDGE_NAME_DB);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

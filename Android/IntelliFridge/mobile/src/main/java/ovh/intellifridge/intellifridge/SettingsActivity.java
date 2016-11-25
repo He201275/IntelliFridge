@@ -10,21 +10,21 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
-import android.preference.SwitchPreference;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.support.v4.app.NavUtils;
 
 import java.util.List;
+
+import static ovh.intellifridge.intellifridge.Config.MOD_ALLERGY_KEY;
+import static ovh.intellifridge.intellifridge.Config.MOD_FRIDGE_KEY;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -38,8 +38,6 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
-    public static String MOD_FRIDGE_KEY = "module_fridge";
-    public static String MOD_ALLERGY_KEY = "module_allergy";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -83,14 +81,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     }
                 }
 
-            } else if (preference instanceof CheckBoxPreference){
-                // Trigger the listener immediately with the preference's
-                // current value.
-                sBindPreferenceSummaryToValueListener.onPreferenceChange(
-                        preference,
-                        PreferenceManager.getDefaultSharedPreferences(
-                                preference.getContext()).getBoolean(preference.getKey(),true));
-            }else {
+            } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);
@@ -123,31 +114,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         // Trigger the listener immediately with the preference's
         // current value.
-        if (preference instanceof SwitchPreference)
-        {
-            // Trigger the listener immediately with the preference's
-            // current value.
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(
-                    preference,
-                    PreferenceManager.getDefaultSharedPreferences(
-                            preference.getContext()).getBoolean(preference.getKey(),true));
-        } else {
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                    PreferenceManager
-                            .getDefaultSharedPreferences(preference.getContext())
-                            .getString(preference.getKey(), ""));
-        }
+        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getString(preference.getKey(), ""));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
-    }
-
-    @Override
-    public void onBackPressed() {
-        Toast.makeText(this,R.string.settings_back,Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -213,6 +189,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
+
+            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
+            // to their values. When their values change, their summaries are
+            // updated to reflect the new value, per the Android Design
+            // guidelines.
+            bindPreferenceSummaryToValue(findPreference("example_text"));
+            bindPreferenceSummaryToValue(findPreference("example_list"));
         }
 
         @Override
@@ -225,6 +208,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             return super.onOptionsItemSelected(item);
         }
     }
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class IntelliFridgePreferenceFragment extends PreferenceFragment{
         @Override

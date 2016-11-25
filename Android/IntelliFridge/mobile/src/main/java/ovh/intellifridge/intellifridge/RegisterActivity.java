@@ -31,7 +31,9 @@ import static ovh.intellifridge.intellifridge.Config.KEY_LANGUE;
 import static ovh.intellifridge.intellifridge.Config.KEY_LNAME;
 import static ovh.intellifridge.intellifridge.Config.KEY_PASSWORD;
 import static ovh.intellifridge.intellifridge.Config.LOGIN_REGISTER_EXTRA;
+import static ovh.intellifridge.intellifridge.Config.LOGIN_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.REGISTER_ERROR;
+import static ovh.intellifridge.intellifridge.Config.REGISTER_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.REGISTER_SUCCESS;
 import static ovh.intellifridge.intellifridge.Config.REGISTER_URL;
 import static ovh.intellifridge.intellifridge.Config.REQUIRED_FIELD_ERROR;
@@ -116,8 +118,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         };
 
         //Adding the string request to the queue
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, REGISTER_REQUEST_TAG);
     }
 
     @Override

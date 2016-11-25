@@ -2,8 +2,8 @@ package ovh.intellifridge.intellifridge;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.widget.TextView;
 
 import static ovh.intellifridge.intellifridge.Config.USER_EMAIL_PREFS;
@@ -13,10 +13,6 @@ import static ovh.intellifridge.intellifridge.Config.USER_LOCALITE_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_NOM_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_PRENOM_PREFS;
 
-/**
- * Activité qui permet de récupérer les infos utilisateur et de les afficher
- * Elle utilise la classe interne BackgroundWorker pour faire les requêtes à la bdd
- */
 public class ProfileActivity extends AppCompatActivity {
     TextView fullName,email,firstName,lastName,locale,gender,language;
 
@@ -24,6 +20,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
         fullName = (TextView)findViewById(R.id.user_profile_fullName);
         email = (TextView)findViewById(R.id.user_profile_email);
         firstName = (TextView)findViewById(R.id.user_profile_fName);
