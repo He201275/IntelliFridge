@@ -130,4 +130,14 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="section4">Around me</string>
+    <string name="scanner_prompt_info">Scan to get info about the product</string>
+    <string name="product_info_unavailable">Product information unavailable</string>
+    <string name="product_add_fridge_success">The product has been added to the fridge</string>
+    <string name="context_menu_delete">Delete</string>
+    <string name="context_menu_edit">Edit</string>
+    <string name="product_add_local_db_error">Error adding product to database</string>
+    <string name="fridge_id_error">Unable to get fridge content</string>
+    <string name="pref_modules">Modules</string>
+    <string name="error_permission_map">Location permission denied</string>
 </resources>

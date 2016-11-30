@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,11 +34,9 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
@@ -47,19 +47,29 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static ovh.intellifridge.intellifridge.Config.ADD_FRIDGE_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.DB_CONNECTION_ERROR;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_ADD_ERROR;
-import static ovh.intellifridge.intellifridge.Config.FRIDGE_ADD_SUCCESS;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_ADD_URL;
 import static ovh.intellifridge.intellifridge.Config.KEY_FRIDGE_NAME;
 import static ovh.intellifridge.intellifridge.Config.MOD_ALLERGY_KEY;
 import static ovh.intellifridge.intellifridge.Config.MOD_FRIDGE_KEY;
 import static ovh.intellifridge.intellifridge.Config.SCAN_ALLERGY;
-import static ovh.intellifridge.intellifridge.Config.SCAN_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.SCAN_FRIDGE;
-import static ovh.intellifridge.intellifridge.Config.SERVER_RESPONSE;
+import static ovh.intellifridge.intellifridge.Config.SCAN_INFO;
+import static ovh.intellifridge.intellifridge.Config.SCAN_TYPE_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
+import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
+import static ovh.intellifridge.intellifridge.Config.TAB_ALLERGY_ALLERGY;
+import static ovh.intellifridge.intellifridge.Config.TAB_ALLERGY_DEFAULT;
+import static ovh.intellifridge.intellifridge.Config.TAB_FRIDGE_DEFAULT;
+import static ovh.intellifridge.intellifridge.Config.TAB_FRIDGE_FRIDGE;
+import static ovh.intellifridge.intellifridge.Config.TAB_MAPS_ALLERGY;
+import static ovh.intellifridge.intellifridge.Config.TAB_MAPS_DEFAULT;
+import static ovh.intellifridge.intellifridge.Config.TAB_RECENT_DEFAULT;
+import static ovh.intellifridge.intellifridge.Config.TAB_RECENT_FRIDGE;
 import static ovh.intellifridge.intellifridge.Config.USER_EMAIL_PREFS;
+import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 
 /**
  * L'activité principale de l'application
@@ -81,17 +91,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    public Boolean fridge_mod_status,allergy_mod_status;
     NavigationView navigationView;
     String fridge_name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        if (getAllergyModStatus() && !getFridgeModStatus()){
+            setContentView(R.layout.activity_main_allerance);
+        }else {
+            setContentView(R.layout.activity_main);
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (getAllergyModStatus() && !getFridgeModStatus()){
+            toolbar.setBackgroundColor(getResources().getColor((R.color.colorPrimaryAllerance)));
+        }
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -113,55 +129,137 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        setEmailNav();
+        //setEmailNav();
 
-        fridge_mod_status = getFridgeModStatus();
-        allergy_mod_status = getAllergyModStatus();
-        //mViewPager.setCurrentItem(1);
+        mViewPager.setCurrentItem(1);
 
         addFloatingActionMenu();
     }
 
     private void addFloatingActionMenu() {
-        ImageView icon = new ImageView(this);
-        icon.setImageDrawable(getDrawable(R.drawable.ic_camera_black));
-        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
-                .setBackgroundDrawable(R.drawable.fab_background)
-                .setContentView(icon)
-                .build();
-
-        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
         // repeat many times:
-        ImageView fridgeIcon = new ImageView(this);
-        fridgeIcon.setImageDrawable(getDrawable(R.drawable.ic_fridge_black));
-        SubActionButton fridge = itemBuilder.setContentView(fridgeIcon).build();
-        fridge.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startBarcodeReader(SCAN_FRIDGE);
-            }
-        });
+        if (getFridgeModStatus() && !getAllergyModStatus()){
+            ImageView icon = new ImageView(this);
+            icon.setImageDrawable(getDrawable(R.drawable.ic_camera_black));
+            FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+                    .setBackgroundDrawable(R.drawable.fab_background)
+                    .setContentView(icon)
+                    .build();
 
-        ImageView allergyIcon = new ImageView(this);
-        allergyIcon.setImageDrawable(getDrawable(R.drawable.ic_allergy));
-        SubActionButton allergy = itemBuilder.setContentView(allergyIcon).build();
-        allergy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startBarcodeReader(SCAN_ALLERGY);
-            }
-        });
+            SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
 
-        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
-                .addSubActionView(fridge)
-                .addSubActionView(allergy)
-                .attachTo(actionButton)
-                .build();
+            ImageView fridgeIcon = new ImageView(this);
+            fridgeIcon.setImageDrawable(getDrawable(R.drawable.ic_fridge_black));
+            SubActionButton fridge = itemBuilder.setContentView(fridgeIcon).build();
+            fridge.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startBarcodeReader(SCAN_FRIDGE);
+                }
+            });
+
+            ImageView infoIcon = new ImageView(this);
+            infoIcon.setImageDrawable(getDrawable(R.drawable.ic_info_black_24px));
+            SubActionButton info = itemBuilder.setContentView(infoIcon).build();
+            info.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startBarcodeReader(SCAN_INFO);
+                }
+            });
+
+            FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+                    .addSubActionView(fridge)
+                    .addSubActionView(info)
+                    .attachTo(actionButton)
+                    .build();
+        }else if (!getFridgeModStatus() && getAllergyModStatus()){
+            ImageView icon = new ImageView(this);
+            icon.setImageDrawable(getDrawable(R.drawable.ic_photo_camera_white_24px));
+            FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+                    .setBackgroundDrawable(R.drawable.fab_background_allerance)
+                    .setContentView(icon)
+                    .build();
+
+            SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+
+            ImageView allergyIcon = new ImageView(this);
+            allergyIcon.setImageDrawable(getDrawable(R.drawable.ic_allergy));
+            SubActionButton allergy = itemBuilder.setContentView(allergyIcon).build();
+            allergy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startBarcodeReader(SCAN_ALLERGY);
+                }
+            });
+
+            ImageView infoIcon = new ImageView(this);
+            infoIcon.setImageDrawable(getDrawable(R.drawable.ic_info_black_24px));
+            SubActionButton info = itemBuilder.setContentView(infoIcon).build();
+            info.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startBarcodeReader(SCAN_INFO);
+                }
+            });
+
+            FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+                    .addSubActionView(allergy)
+                    .addSubActionView(info)
+                    .attachTo(actionButton)
+                    .build();
+        }else{
+            ImageView icon = new ImageView(this);
+            icon.setImageDrawable(getDrawable(R.drawable.ic_camera_black));
+            FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+                    .setBackgroundDrawable(R.drawable.fab_background)
+                    .setContentView(icon)
+                    .build();
+
+            SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+
+            ImageView fridgeIcon = new ImageView(this);
+            fridgeIcon.setImageDrawable(getDrawable(R.drawable.ic_fridge_black));
+            SubActionButton fridge = itemBuilder.setContentView(fridgeIcon).build();
+            fridge.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startBarcodeReader(SCAN_FRIDGE);
+                }
+            });
+
+            ImageView allergyIcon = new ImageView(this);
+            allergyIcon.setImageDrawable(getDrawable(R.drawable.ic_allergy));
+            SubActionButton allergy = itemBuilder.setContentView(allergyIcon).build();
+            allergy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startBarcodeReader(SCAN_ALLERGY);
+                }
+            });
+
+            ImageView infoIcon = new ImageView(this);
+            infoIcon.setImageDrawable(getDrawable(R.drawable.ic_info_black_24px));
+            SubActionButton info = itemBuilder.setContentView(infoIcon).build();
+            info.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startBarcodeReader(SCAN_INFO);
+                }
+            });
+
+            FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+                    .addSubActionView(fridge)
+                    .addSubActionView(allergy)
+                    .addSubActionView(info)
+                    .attachTo(actionButton)
+                    .build();
+        }
     }
 
     private void startBarcodeReader(String extra) {
         Intent intent = new Intent(MainActivity.this,BarcodeReaderActivity.class);
-        intent.putExtra(SCAN_EXTRA,extra);
+        intent.putExtra(SCAN_TYPE_EXTRA,extra);
         startActivity(intent);
     }
 
@@ -251,9 +349,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private int getUserId() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        int userId = prefs.getInt("user_id",0);
-        return userId;
+        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getInt(USER_ID_PREFS,0);
     }
 
     private void addFridge() {
@@ -261,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        try {
+                        /*try {
                             JSONObject jsonObject = new JSONObject(response);
                             String server_status = jsonObject.getString(SERVER_STATUS);
                             String server_response = jsonObject.getString(SERVER_RESPONSE);
@@ -274,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                        }
+                        }*/
                     }
                 },
                 new Response.ErrorListener() {
@@ -293,10 +390,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return params;
             }
         };
-
-        //Adding the string request to the queue
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest,ADD_FRIDGE_REQUEST_TAG);
     }
 
     private void startSettingsActivity() {
@@ -314,8 +408,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // TODO: 29-10-16
         } else if (id == R.id.nav_input) {
             // TODO: 29-10-16
-        } else if (id == R.id.nav_allergy) {
-            // TODO: 29-10-16
+        }else if (id == R.id.nav_allergy){
+            // TODO: 28-11-16
         }else if (id == R.id.nav_manage) {
             startSettingsActivity();
         } else if (id == R.id.nav_shop) {
@@ -353,6 +447,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
+
     private void logout() {
         //Creating an alert dialog to confirm logout
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -365,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.clear();
                         editor.apply();
-
+                        finishAllActivities();
                         startLoginActivty();
                     }
                 });
@@ -380,6 +475,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    private void finishAllActivities() {
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction("ovh.intellifridge.ACTION_LOGOUT");
+        sendBroadcast(broadcastIntent);
     }
 
     private void startLoginActivty() {
@@ -409,20 +510,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            if (getFridgeModStatus() && !getAllergyModStatus()){
+                switch (position){
+                    case TAB_RECENT_FRIDGE:
+                        return new RecentFragment();
+                    case TAB_FRIDGE_FRIDGE:
+                        return new FridgeFragment();
+                    default:
+                        return null;
+                }
+            }else if (!getFridgeModStatus() && getAllergyModStatus()){
+                switch (position){
+                    case TAB_ALLERGY_ALLERGY:
+                        return new AllergyFragment();
+                    case TAB_MAPS_ALLERGY:
+                        return new MapsFragment();
+                    default:
+                        return null;
+                }
+            }else {
+                switch (position){
+                    case TAB_RECENT_DEFAULT:
+                        return new RecentFragment();
+                    case TAB_FRIDGE_DEFAULT:
+                        return new FridgeFragment();
+                    case TAB_ALLERGY_DEFAULT:
+                        return new AllergyFragment();
+                    case TAB_MAPS_DEFAULT:
+                        return new MapsFragment();
+                    default:
+                        return null;
+                }
+            }
         }
 
         @Override
         public int getCount() {
             int nbTabs;
-            if (getFridgeModStatus() && !getAllergyModStatus()){
-                nbTabs = 2;
-            }else if (getAllergyModStatus() && !getFridgeModStatus()){
-                nbTabs = 1;
+            if (getFridgeModStatus() && getAllergyModStatus()){
+                nbTabs = 4;
             }else{
-                nbTabs = 3;
+                nbTabs = 2;
             }
             return nbTabs;
         }
@@ -440,6 +568,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 switch (position){
                     case 0:
                         return getString(R.string.section3);
+                    case 1:
+                        return getString(R.string.section4);
                 }
             }else{
                 switch (position) {
@@ -449,6 +579,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         return getString(R.string.section2);
                     case 2:
                         return getString(R.string.section3);
+                    case 3:
+                        return getString(R.string.section4);
                 }
             }
             return null;

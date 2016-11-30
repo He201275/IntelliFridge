@@ -6,42 +6,52 @@ package ovh.intellifridge.intellifridge;
 
 public class Config {
     public static final String DOMAIN_URL = "http://www.intellifridge.ovh";
-    public static final String DOMAIN_API_URL = "http://www.intellifridge.franmako.com";
-    public static final String LOGIN_URL = "http://www.intellifridge.franmako.com/login.php";
-    public static final String REGISTER_URL = "http://www.intellifridge.franmako.com/register.php";
-    public static final String ALLERGY_GET_LIST_URL = "http://www.intellifridge.franmako.com/getAllergyList.php";
-    public static final String FRIDGE_GET_LIST_URL = "http://www.intellifridge.franmako.com/getFridgeList.php";
+    //public static final String DOMAIN_API_URL = "http://www.intellifridge.franmako.com";
+    public static final String LOGIN_URL = "http://api.intellifridge.ovh/v1/user/login";
+    public static final String REGISTER_URL = "http://api.intellifridge.ovh/v1/user/register";
+    public static final String FRIDGE_GET_LIST_URL = "http://api.intellifridge.ovh/v1/fridges/list";
     public static final String FRIDGE_ADD_URL = "http://www.intellifridge.franmako.com/addFridge.php";
     public static final String CONTACT_URL = "http://www.intellifridge.ovh/contact.php";
     public static final String SHOP_URL = "http://www.intellifridge.ovh/shop.php";
+    public static final String PRODUCT_DB_LOCATION_CHECK_URL = "http://www.intellifridge.franmako.com/isInDb.php";
+    public static final String GET_PRODUCT_INFO_LOCAL_URL = "http://www.intellifridge.franmako.com/getProductInfoLocalDb.php";
+    public static final String ADD_PRODUCT_LOCAL_DB = "http://www.intellifridge.franmako.com/addProductLocalDb2.php";
+    public static final String FRIDGE_ID_URL = "http://www.intellifridge.franmako.com/getFridgeId";
+    public static final String FRIDGE_CONTENT_URL = "http://www.intellifridge.franmako.com/getFridgeContent.php";
+
+    public static final String JWT_KEY = "wAMxBauED07a4GurMpuD";
 
     //LoginActivity array index
-    public static final String SERVER_STATUS = "server-status";
-    public static final String SERVER_RESPONSE = "reponse-status";
-    public static final String DATA = "reponse-data";
+    public static final String DATA = "data";
+    public static final String SERVER_STATUS = "status";
 
     //Server response messages
-    public static final String REGISTER_SUCCESS = "Registration Successful!";
+    public static final String SERVER_SUCCESS = "200";
     public static final String REGISTER_ERROR = "Registration Error!";
     public static final String DB_CONNECTION_ERROR = "Database not accessible!";
     public static final String REQUIRED_FIELD_ERROR = "Required field(s) empty!";
-    public static final String LOGIN_SUCCESS = "Login Successful!";
-    public static final String LOGIN_ERROR = "Login Unsuccessful!";
-    public static final String FRIDGE_LIST_SUCCESS = "Fridge list found";
-    public static final String FRIDGE_LIST_ERROR = "No Fridges";
-    public static final String ALLERGY_LIST_SUCCESS = "Allergy List found";
-    public static final String ALLERGY_LIST_ERROR = "No allergy List";
-    public static final String FRIDGE_ADD_SUCCESS = "Fridge added";
     public static final String FRIDGE_ADD_ERROR = "Fridge add error";
+    public static final String BARCODE_IN_LOCALDB = "In local db";
+    public static final String BARCODE_NOT_IN_LOCALDB = "Not in local db";
+    public static final String PRODUCT_INFO_AVAILABLE = "Product info found";
+    public static final String PRODUCT_INFO_UNAVAILABLE = "Product info not found";
+    public static final String PRODUCT_LOCAL_ADD_ERROR = "Product insert db successful error";
 
     //Keys for email and password as defined in our $_POST['key']
-    public static final String KEY_EMAIL = "email";
-    public static final String KEY_PASSWORD = "password";
-    public static final String KEY_FNAME = "fName";
-    public static final String KEY_LNAME = "lName";
-    public static final String KEY_LANGUE = "langue";
-    public static final String KEY_USERID = "userId";
+    public static final String KEY_EMAIL = "UserAdresseMail";
+    public static final String KEY_PASSWORD = "UserPassword";
+    public static final String JWT_POST = "jwt";
+    public static final String KEY_FNAME = "UserPrenom";
+    public static final String KEY_LNAME = "UserNom";
+    public static final String KEY_LANGUE = "LangueCode";
+    public static final String KEY_USERID = "UserId";
+    public static final String KEY_API_KEY = "ApiKey";
     public static final String KEY_FRIDGE_NAME = "fridgeName";
+    public static final String KEY_BARCODE = "barcode";
+    public static final String KEY_PRODUCT_ID = "productId";
+    public static final String KEY_PRODUCT_BRAND = "brand";
+    public static final String KEY_PRODUCT_QUANTITY = "quantity";
+    public static final String KEY_PRODUCT_IMAGEURL = "imageUrl";
 
     //Keys for Sharedpreferences
     public static final String SHARED_PREF_NAME = "intellifridge";
@@ -53,33 +63,63 @@ public class Config {
     public static final String USER_LOCALITE_PREFS = "user_localite";
     public static final String USER_GENRE_PREFS = "user_genre";
     public static final String USER_LANG_PREFS = "user_language";
+    public static final String USER_API_KEY = "user_apiKey";
     public static final String FRIDGE_LIST_PREFS = "user_fridge_list";
-    public static final String ALLERGY_LIST_PREFS = "allergy_list";
-    public static final String OFF_DATA_PREFS = "off_data";
 
-    //LoginActivity table column names
+    //Table column names
     public static final String USER_ID_DB = "UserId";
     public static final String USER_EMAIL_DB = "UserAdresseMail";
     public static final String USER_PRENOM_DB = "UserPrenom";
     public static final String USER_NOM_DB = "UserNom";
-    public static final String USER_LOCALITE_DB = "UserLocalite";
+    public static final String USER_LOCALITE_DB = "CommuneLocalite";
     public static final String USER_GENRE_DB = "UserGenre";
-    public static final String USER_LANG_DB = "UserLangue";
-
+    public static final String USER_LANG_DB = "LangueCode";
+    public static final String USER_API_KEY_DB = "ApiKey";
     public static final String FRIDGE_NAME_DB = "FrigoNom";
-    public static final String ALLERGY_NAME_DB = "AllergieNom";
+    public static final String PRODUCT_S_ID = "ProduitSId";
 
     public static final String LOGIN_REGISTER_EXTRA= "new_user_email";
-    public static final String SCAN_EXTRA = "scan_type";
+    public static final String SCAN_TYPE_EXTRA = "scan_type";
     public static final String SCAN_FRIDGE = "scan_fridge";
     public static final String SCAN_ALLERGY = "scan_allergy";
+    public static final String SCAN_INFO = "scan_info";
     public static final String BARCODE_EXTRA = "scan_result";
+    public static final String FRIDGE_NAME_EXTRA = "fridge_name";
 
-    public static String MOD_FRIDGE_KEY = "module_fridge";
-    public static String MOD_ALLERGY_KEY = "module_allergy";
+    public static final String MOD_FRIDGE_KEY = "module_fridge";
+    public static final String MOD_ALLERGY_KEY = "module_allergy";
 
-    public static String LOGIN_REQUEST_TAG = "ovh.intellifridge.loginrequest";
-    public static String REGISTER_REQUEST_TAG = "ovh.intellifridge.registerrequest";
-    public static String FRIDGE_LIST_REQUEST_TAG = "ovh.intellifridge.fridgelistrequest";
-    public static String ALLERGY_LIST_REQUEST_TAG = "ovh.intellifridge.allergylistrequest";
+    public static final String LOGIN_REQUEST_TAG = "ovh.intellifridge.loginrequest";
+    public static final String REGISTER_REQUEST_TAG = "ovh.intellifridge.registerrequest";
+    public static final String FRIDGE_LIST_REQUEST_TAG = "ovh.intellifridge.fridgelistrequest";
+    public static final String ALLERGY_LIST_REQUEST_TAG = "ovh.intellifridge.allergylistrequest";
+    public static final String PRODUCT_ADD_REQUEST_TAG = "ovh.intellifridge.productaddrequest";
+    public static final String BARCODE_CHECK_REQUEST_TAG = "ovh.intellifridge.barcodecheckrequest";
+    public static final String GET_INFO_LOCAL_REQUEST_TAG = "ovh.intellifridge.getinfolocaldb";
+    public static final String GET_INFO_OFF_REQUEST_TAG = "ovh.intellifridge.getinfooffdb";
+    public static final String ADD_PRODUCT_LOCAL_DB_REQUEST_TAG = "ovh.intellifridge.addproductlocaldb";
+    public static final String FRIDGE_CONTENT_REQUEST_TAG = "ovh.intellifridge.fridgecontent";
+    public static final String FRIDGE_ID_REQUEST_TAG = "ovh.intellifridge.fridgeid";
+    public static final String ADD_FRIDGE_REQUEST_TAG = "ovh.intellifridge.addfridge";
+
+    public static final int TAB_RECENT_DEFAULT = 0;
+    public static final int TAB_FRIDGE_DEFAULT = 1;
+    public static final int TAB_ALLERGY_DEFAULT = 2;
+    public static final int TAB_MAPS_DEFAULT = 3;
+    public static final int TAB_RECENT_FRIDGE = 0;
+    public static final int TAB_FRIDGE_FRIDGE = 1;
+    public static final int TAB_ALLERGY_ALLERGY = 0;
+    public static final int TAB_MAPS_ALLERGY = 1;
+
+    //JSON response OFF
+    public static final String OFF_STATUS_VERBOSE = "status_verbose";
+    public static final String OFF_STATUS_FOUND = "product found";
+    public static final String OFF_PRODUCT = "product";
+    public static final String OFF_PRODUCTNAME = "product_name";
+    public static final String OFF_PRODUCTNAME_EN = "product_name_en";
+    public static final String OFF_PRODUCTNAME_FR = "product_name_fr";
+    public static final String OFF_QUANTITY = "quantity";
+    public static final String OFF_IMAGE_URL = "image_url";
+    public static final String OFF_BRANDS = "brands";
+
 }

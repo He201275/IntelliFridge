@@ -5,9 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-    <ListView
-        android:id="@+id/fridge_list"
+
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </ListView>
+        android:layout_height="match_parent"
+        android:id="@+id/refresh_fridge">
+        <ListView
+            android:id="@+id/fridge_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </ListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

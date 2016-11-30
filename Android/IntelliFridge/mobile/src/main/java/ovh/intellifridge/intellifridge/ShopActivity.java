@@ -4,8 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -28,9 +28,10 @@ public class ShopActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         WebView webView = (WebView)findViewById(R.id.shop_webview);
         webView.setWebViewClient(new MyWebViewClient());
-        webView.loadUrl(SHOP_URL);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+
+        webView.loadUrl(SHOP_URL);
     }
 
     private class MyWebViewClient extends WebViewClient {

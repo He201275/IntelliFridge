@@ -26,4 +26,8 @@ if (isset($_POST["userId"])){
         $jsonReturn["server-status"] = "Database not accessible!";
         echo json_encode($jsonReturn);
     }
+}else{
+    $jsonReturn["reponse-status"] = "Required field(s) empty!";
+    $jsonReturn["server-status"] = "N/A";
+    echo  json_encode($jsonReturn);
 }

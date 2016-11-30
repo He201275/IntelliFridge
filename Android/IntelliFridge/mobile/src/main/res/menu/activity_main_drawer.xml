@@ -10,11 +10,6 @@
             android:id="@+id/nav_input"
             android:icon="@drawable/ic_add_black"
             android:title="@string/nav_input" />
-        <item
-            android:id="@+id/nav_allergy"
-            android:title="@string/nav_allergies"
-            android:icon="@drawable/ic_allergy"
-            />
     </group>
 
     <group android:id="@+id/nav_misc">

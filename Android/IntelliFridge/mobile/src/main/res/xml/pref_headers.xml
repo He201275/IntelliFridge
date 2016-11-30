@@ -3,14 +3,9 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="ovh.intellifridge.intellifridge.SettingsActivity$GeneralPreferenceFragment"
-        android:icon="@drawable/ic_info_black_24dp"
-        android:title="@string/pref_header_general" />
-
-    <header
         android:fragment="ovh.intellifridge.intellifridge.SettingsActivity$IntelliFridgePreferenceFragment"
-        android:icon="@drawable/ic_fridge_black"
-        android:title="@string/app_name" />
+        android:icon="@drawable/ic_dashboard_black_24px"
+        android:title="@string/pref_modules" />
 
     <header
         android:fragment="ovh.intellifridge.intellifridge.SettingsActivity$NotificationPreferenceFragment"

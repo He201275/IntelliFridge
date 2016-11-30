@@ -17,4 +17,7 @@
     <color name="btn_add">#00ff11</color>
     <color name="btn_cancel">#b90000</color>
 
+    <color name="colorPrimaryAllerance">#04A007</color>
+    <color name="colorPrimaryDarkAllerance">#025004</color>
+    <color name="colorAccentAllerance">#00ff11</color>
 </resources>

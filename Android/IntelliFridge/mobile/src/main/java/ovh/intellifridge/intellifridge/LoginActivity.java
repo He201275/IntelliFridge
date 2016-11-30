@@ -3,9 +3,11 @@ package ovh.intellifridge.intellifridge;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,23 +18,35 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.auth0.jwt.JWTSigner;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.JWTVerifyException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.DATA;
-import static ovh.intellifridge.intellifridge.Config.DB_CONNECTION_ERROR;
+import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
+import static ovh.intellifridge.intellifridge.Config.JWT_POST;
+import static ovh.intellifridge.intellifridge.Config.KEY_EMAIL;
+import static ovh.intellifridge.intellifridge.Config.KEY_PASSWORD;
 import static ovh.intellifridge.intellifridge.Config.LOGGEDIN_SHARED_PREF;
-import static ovh.intellifridge.intellifridge.Config.LOGIN_ERROR;
 import static ovh.intellifridge.intellifridge.Config.LOGIN_REGISTER_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.LOGIN_REQUEST_TAG;
-import static ovh.intellifridge.intellifridge.Config.LOGIN_SUCCESS;
 import static ovh.intellifridge.intellifridge.Config.LOGIN_URL;
-import static ovh.intellifridge.intellifridge.Config.SERVER_RESPONSE;
+import static ovh.intellifridge.intellifridge.Config.MOD_ALLERGY_KEY;
+import static ovh.intellifridge.intellifridge.Config.MOD_FRIDGE_KEY;
 import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
+import static ovh.intellifridge.intellifridge.Config.SERVER_SUCCESS;
+import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
+import static ovh.intellifridge.intellifridge.Config.USER_API_KEY_DB;
 import static ovh.intellifridge.intellifridge.Config.USER_EMAIL_DB;
 import static ovh.intellifridge.intellifridge.Config.USER_EMAIL_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_GENRE_DB;
@@ -51,14 +65,21 @@ import static ovh.intellifridge.intellifridge.Config.USER_PRENOM_PREFS;
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     private EditText editTextEmail;
     private EditText editTextPassword;
-    private JSONObject jsonObject;
     AppCompatButton buttonLogin;
     Button signup_link;
+    private String server_status;
+    private JSONObject server_response;
+    private JSONObject userData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        if (getAllergyModStatus() && !getFridgeModStatus()){
+            setContentView(R.layout.activity_login_allerance);
+        }else {
+            setContentView(R.layout.activity_login);
+        }
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         editTextEmail = (EditText) findViewById(R.id.email_login);
         editTextPassword = (EditText) findViewById(R.id.password_login);
@@ -67,6 +88,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         buttonLogin.setOnClickListener(this);
         signup_link.setOnClickListener(this);
+    }
+
+    public Boolean getFridgeModStatus() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return sharedPreferences.getBoolean(MOD_FRIDGE_KEY,true);
+    }
+    public Boolean getAllergyModStatus(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return sharedPreferences.getBoolean(MOD_ALLERGY_KEY,true);
     }
 
     @Override
@@ -97,48 +127,62 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        final String secret = JWT_KEY;
                         try {
-                            jsonObject = new JSONObject(response);
-                            String server_status = jsonObject.getString(SERVER_STATUS);
-                            String server_response = jsonObject.getString(SERVER_RESPONSE);
-
-                            if (server_response.equals(LOGIN_ERROR)){
-                                Toast.makeText(getApplicationContext(), R.string.login_error, Toast.LENGTH_LONG).show();
-                            }else if (server_response.equals(LOGIN_SUCCESS)){
-                                try {
-                                    JSONObject userData = jsonObject.getJSONObject(DATA);
-                                    saveUserData(userData);
-                                    startMainActivity();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }else if (server_status.equals(DB_CONNECTION_ERROR)){
-                                Toast.makeText(getApplicationContext(),R.string.db_connect_error,Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
+                            final JWTVerifier verifier = new JWTVerifier(secret);
+                            final Map<String, Object> claims= verifier.verify(response);
+                            server_response = new JSONObject(claims);
+                            server_status = server_response.getString(SERVER_STATUS);
+                            userData = server_response.getJSONObject(DATA);
+                        } catch (JWTVerifyException e) {
+                            // Invalid Token
+                            // TODO: 30-11-16  
+                        } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
+                        }
+
+                        if (server_status.equals(SERVER_SUCCESS)){
+                            try {
+                                saveUserData(userData);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            startMainActivity();
+                        }else{
+                            Toast.makeText(getApplicationContext(),R.string.login_error,Toast.LENGTH_LONG).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: 21-11-16
+                        Log.wtf("ERROR",error.toString());
+                        // TODO: 30-11-16
                     }
                 }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
+                String jwt = signParams(email,password);
                 Map<String,String> params = new HashMap<>();
                 //Adding parameters to POST request
-                params.put(Config.KEY_EMAIL, email);
-                params.put(Config.KEY_PASSWORD, password);
+                params.put(JWT_POST,jwt);
                 return params;
             }
         };
-
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, LOGIN_REQUEST_TAG);
+    }
+
+    private String signParams(String email, String password) {
+        final String secret = JWT_KEY;
+        String jwt = "";
+
+        final JWTSigner signer = new JWTSigner(secret);
+        final HashMap<String, Object> claims = new HashMap<String, Object>();
+        claims.put(KEY_EMAIL, email);
+        claims.put(KEY_PASSWORD, password);
+        return jwt = signer.sign(claims);
     }
 
     private void startMainActivity() {
@@ -164,6 +208,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editor.putString(USER_GENRE_PREFS,gen);
         String lang = userJson.getString(USER_LANG_DB);
         editor.putString(USER_LANG_PREFS,lang);
+        String apiKey = userJson.getString(USER_API_KEY_DB);
+        editor.putString(USER_API_KEY,apiKey);
         editor.apply();
     }
 

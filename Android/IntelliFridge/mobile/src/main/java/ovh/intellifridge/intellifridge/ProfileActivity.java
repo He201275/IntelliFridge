@@ -2,10 +2,13 @@ package ovh.intellifridge.intellifridge;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
+import static ovh.intellifridge.intellifridge.Config.MOD_ALLERGY_KEY;
+import static ovh.intellifridge.intellifridge.Config.MOD_FRIDGE_KEY;
 import static ovh.intellifridge.intellifridge.Config.USER_EMAIL_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_GENRE_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_LANG_PREFS;
@@ -19,7 +22,11 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        if (getAllergyModStatus() && !getFridgeModStatus()){
+            setContentView(R.layout.activity_profile_allerance);
+        }else {
+            setContentView(R.layout.activity_profile);
+        }
 
         fullName = (TextView)findViewById(R.id.user_profile_fullName);
         email = (TextView)findViewById(R.id.user_profile_email);
@@ -61,5 +68,14 @@ public class ProfileActivity extends AppCompatActivity {
     public static boolean isEmptyString(String text) {
         return (text == null || text.trim().equals("null") || text.trim()
                 .length() <= 0);
+    }
+
+    public Boolean getFridgeModStatus() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return sharedPreferences.getBoolean(MOD_FRIDGE_KEY,true);
+    }
+    public Boolean getAllergyModStatus(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return sharedPreferences.getBoolean(MOD_ALLERGY_KEY,true);
     }
 }
