@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -17,13 +16,13 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +36,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.auth0.jwt.JWTSigner;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.JWTVerifyException;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
@@ -44,14 +46,20 @@ import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.ADD_FRIDGE_REQUEST_TAG;
-import static ovh.intellifridge.intellifridge.Config.DB_CONNECTION_ERROR;
-import static ovh.intellifridge.intellifridge.Config.FRIDGE_ADD_ERROR;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_ADD_URL;
+import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
+import static ovh.intellifridge.intellifridge.Config.JWT_POST;
+import static ovh.intellifridge.intellifridge.Config.KEY_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.KEY_FRIDGE_NAME;
+import static ovh.intellifridge.intellifridge.Config.KEY_USERID;
 import static ovh.intellifridge.intellifridge.Config.MOD_ALLERGY_KEY;
 import static ovh.intellifridge.intellifridge.Config.MOD_FRIDGE_KEY;
 import static ovh.intellifridge.intellifridge.Config.SCAN_ALLERGY;
@@ -59,6 +67,7 @@ import static ovh.intellifridge.intellifridge.Config.SCAN_FRIDGE;
 import static ovh.intellifridge.intellifridge.Config.SCAN_INFO;
 import static ovh.intellifridge.intellifridge.Config.SCAN_TYPE_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
+import static ovh.intellifridge.intellifridge.Config.SERVER_SUCCESS;
 import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
 import static ovh.intellifridge.intellifridge.Config.TAB_ALLERGY_ALLERGY;
 import static ovh.intellifridge.intellifridge.Config.TAB_ALLERGY_DEFAULT;
@@ -68,6 +77,7 @@ import static ovh.intellifridge.intellifridge.Config.TAB_MAPS_ALLERGY;
 import static ovh.intellifridge.intellifridge.Config.TAB_MAPS_DEFAULT;
 import static ovh.intellifridge.intellifridge.Config.TAB_RECENT_DEFAULT;
 import static ovh.intellifridge.intellifridge.Config.TAB_RECENT_FRIDGE;
+import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.USER_EMAIL_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 
@@ -93,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ViewPager mViewPager;
     NavigationView navigationView;
     String fridge_name = "";
+    private JSONObject server_response;
+    private String server_status="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -358,20 +370,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        /*try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String server_status = jsonObject.getString(SERVER_STATUS);
-                            String server_response = jsonObject.getString(SERVER_RESPONSE);
-                            if (server_response.equals(FRIDGE_ADD_ERROR)){
-                                Toast.makeText(getApplicationContext(), R.string.add_fridge_error, Toast.LENGTH_LONG).show();
-                            }else if (server_response.equals(FRIDGE_ADD_SUCCESS)){
-                                Toast.makeText(getApplicationContext(),R.string.add_fridge_success, Toast.LENGTH_LONG).show();
-                            }else if (server_status.equals(DB_CONNECTION_ERROR)){
-                                Toast.makeText(getApplicationContext(),R.string.db_connect_error,Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
+                        final String secret = JWT_KEY;
+                        Log.wtf("ADD",response);
+                        try {
+                            final JWTVerifier verifier = new JWTVerifier(secret);
+                            final Map<String, Object> claims= verifier.verify(response);
+                            server_response = new JSONObject(claims);
+                            server_status = server_response.getString(SERVER_STATUS);
+                        } catch (JWTVerifyException e) {
+                            // Invalid Token
+                            // TODO: 30-11-16
+                        } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
-                        }*/
+                        }
+
+                        if (server_status.equals(SERVER_SUCCESS)){
+                            Toast.makeText(getApplicationContext(),R.string.add_fridge_success,Toast.LENGTH_LONG).show();
+                        }else {
+                            Toast.makeText(getApplicationContext(),R.string.add_fridge_error,Toast.LENGTH_LONG).show();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -382,15 +399,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
+                String apiKey = getApiKey();
                 int user_id = getUserId();
                 Map<String,String> params = new HashMap<>();
+                String jwt = signParamsAdd(fridge_name,user_id,apiKey);
                 //Adding parameters to POST request
-                params.put(Config.KEY_USERID, String.valueOf(user_id));
-                params.put(KEY_FRIDGE_NAME, fridge_name);
+                params.put(JWT_POST,jwt);
                 return params;
             }
         };
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest,ADD_FRIDGE_REQUEST_TAG);
+    }
+
+    private String signParamsAdd(String fridge_name, int user_id, String apiKey) {
+        final String secret = JWT_KEY;
+        String jwt = "";
+
+        final JWTSigner signer = new JWTSigner(secret);
+        final HashMap<String, Object> claims = new HashMap<String, Object>();
+
+        claims.put(KEY_USERID, String.valueOf(user_id));
+        claims.put(KEY_API_KEY, apiKey);
+        claims.put(KEY_FRIDGE_NAME,fridge_name);
+        return jwt = signer.sign(claims);
+    }
+
+    private String getApiKey() {
+        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getString(USER_API_KEY,"");
     }
 
     private void startSettingsActivity() {

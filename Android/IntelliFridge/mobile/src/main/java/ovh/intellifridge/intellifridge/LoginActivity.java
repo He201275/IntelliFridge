@@ -3,6 +3,7 @@ package ovh.intellifridge.intellifridge;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -85,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editTextPassword = (EditText) findViewById(R.id.password_login);
         buttonLogin = (AppCompatButton) findViewById(R.id.login_btn);
         signup_link = (Button)findViewById(R.id.link_signup);
+        signup_link.setPaintFlags(signup_link.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG); //underline
 
         buttonLogin.setOnClickListener(this);
         signup_link.setOnClickListener(this);

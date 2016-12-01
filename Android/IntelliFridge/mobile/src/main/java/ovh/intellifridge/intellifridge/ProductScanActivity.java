@@ -34,10 +34,6 @@ import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_LOCAL_DB;
 import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_LOCAL_DB_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.BARCODE_CHECK_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.BARCODE_EXTRA;
-import static ovh.intellifridge.intellifridge.Config.BARCODE_IN_LOCALDB;
-import static ovh.intellifridge.intellifridge.Config.BARCODE_NOT_IN_LOCALDB;
-import static ovh.intellifridge.intellifridge.Config.DATA;
-import static ovh.intellifridge.intellifridge.Config.DB_CONNECTION_ERROR;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_PREFS;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_DB;
 import static ovh.intellifridge.intellifridge.Config.GET_INFO_LOCAL_REQUEST_TAG;
@@ -58,11 +54,6 @@ import static ovh.intellifridge.intellifridge.Config.OFF_QUANTITY;
 import static ovh.intellifridge.intellifridge.Config.OFF_STATUS_FOUND;
 import static ovh.intellifridge.intellifridge.Config.OFF_STATUS_VERBOSE;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_DB_LOCATION_CHECK_URL;
-import static ovh.intellifridge.intellifridge.Config.PRODUCT_INFO_AVAILABLE;
-import static ovh.intellifridge.intellifridge.Config.PRODUCT_INFO_UNAVAILABLE;
-import static ovh.intellifridge.intellifridge.Config.PRODUCT_LOCAL_ADD_ERROR;
-import static ovh.intellifridge.intellifridge.Config.PRODUCT_S_ID;
-import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
 import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
 
 public class ProductScanActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,View.OnClickListener{

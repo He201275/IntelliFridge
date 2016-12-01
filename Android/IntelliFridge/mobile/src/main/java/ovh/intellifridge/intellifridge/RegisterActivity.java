@@ -2,6 +2,7 @@ package ovh.intellifridge.intellifridge;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -73,6 +74,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         editTextPassword = (EditText) findViewById(R.id.password);
         buttonRegister = (AppCompatButton)findViewById(R.id.btnRegister);
         login_link = (Button)findViewById(R.id.login_link);
+        login_link.setPaintFlags(login_link.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);//underline
 
         buttonRegister.setOnClickListener(this);
         login_link.setOnClickListener(this);
@@ -92,7 +94,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.wtf("RES",response);
                         final String secret = JWT_KEY;
                         try {
                             final JWTVerifier verifier = new JWTVerifier(secret);
@@ -111,7 +112,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             Intent intent = new Intent(RegisterActivity.this,LoginActivity.class);
                             intent.putExtra(LOGIN_REGISTER_EXTRA,email);
                             startActivity(intent);
-                        }else{
+                        }else if (server_status == null){
+                            Toast.makeText(getApplicationContext(),R.string.login_error,Toast.LENGTH_LONG).show();
+                        }else {
                             Toast.makeText(getApplicationContext(),R.string.login_error,Toast.LENGTH_LONG).show();
                         }
                     }
@@ -132,7 +135,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 String jwt = signParams(fName,lName,email,password,langue);
                 Map<String,String> params = new HashMap<>();
                 //Adding parameters to POST request
-                Log.wtf("JWT",jwt);
                 params.put(JWT_POST,jwt);
                 return params;
             }

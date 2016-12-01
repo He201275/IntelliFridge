@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,7 +107,6 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     public void onResponse(String response) {
                         final String secret = JWT_KEY;
                         try {
-                            Log.wtf("RESPONSE",response);
                             final JWTVerifier verifier = new JWTVerifier(secret);
                             final Map<String, Object> claims= verifier.verify(response);
                             server_response = new JSONObject(claims);

@@ -10,14 +10,15 @@ public class Config {
     public static final String LOGIN_URL = "http://api.intellifridge.ovh/v1/user/login";
     public static final String REGISTER_URL = "http://api.intellifridge.ovh/v1/user/register";
     public static final String FRIDGE_GET_LIST_URL = "http://api.intellifridge.ovh/v1/fridges/list";
-    public static final String FRIDGE_ADD_URL = "http://www.intellifridge.franmako.com/addFridge.php";
+    public static final String FRIDGE_ADD_URL = "http://api.intellifridge.ovh/v1/fridges/add";
     public static final String CONTACT_URL = "http://www.intellifridge.ovh/contact.php";
     public static final String SHOP_URL = "http://www.intellifridge.ovh/shop.php";
-    public static final String PRODUCT_DB_LOCATION_CHECK_URL = "http://www.intellifridge.franmako.com/isInDb.php";
-    public static final String GET_PRODUCT_INFO_LOCAL_URL = "http://www.intellifridge.franmako.com/getProductInfoLocalDb.php";
-    public static final String ADD_PRODUCT_LOCAL_DB = "http://www.intellifridge.franmako.com/addProductLocalDb2.php";
-    public static final String FRIDGE_ID_URL = "http://www.intellifridge.franmako.com/getFridgeId";
-    public static final String FRIDGE_CONTENT_URL = "http://www.intellifridge.franmako.com/getFridgeContent.php";
+    public static final String PRODUCT_DB_LOCATION_CHECK_URL = "";
+    public static final String GET_PRODUCT_INFO_LOCAL_URL = "";
+    public static final String ADD_PRODUCT_LOCAL_DB = "";
+    public static final String FRIDGE_ID_URL = "http://api.intellifridge.ovh/v1/fridges/getFridgeId";
+    public static final String FRIDGE_CONTENT_URL = "http://api.intellifridge.ovh/v1/fridges/getFridgeContent";
+    public static final String GET_FRIDGECONTENT_INFO = "http://api.intellifridge.ovh/v1/products/searchById";
 
     public static final String JWT_KEY = "wAMxBauED07a4GurMpuD";
 
@@ -27,15 +28,6 @@ public class Config {
 
     //Server response messages
     public static final String SERVER_SUCCESS = "200";
-    public static final String REGISTER_ERROR = "Registration Error!";
-    public static final String DB_CONNECTION_ERROR = "Database not accessible!";
-    public static final String REQUIRED_FIELD_ERROR = "Required field(s) empty!";
-    public static final String FRIDGE_ADD_ERROR = "Fridge add error";
-    public static final String BARCODE_IN_LOCALDB = "In local db";
-    public static final String BARCODE_NOT_IN_LOCALDB = "Not in local db";
-    public static final String PRODUCT_INFO_AVAILABLE = "Product info found";
-    public static final String PRODUCT_INFO_UNAVAILABLE = "Product info not found";
-    public static final String PRODUCT_LOCAL_ADD_ERROR = "Product insert db successful error";
 
     //Keys for email and password as defined in our $_POST['key']
     public static final String KEY_EMAIL = "UserAdresseMail";
@@ -46,8 +38,9 @@ public class Config {
     public static final String KEY_LANGUE = "LangueCode";
     public static final String KEY_USERID = "UserId";
     public static final String KEY_API_KEY = "ApiKey";
-    public static final String KEY_FRIDGE_NAME = "fridgeName";
-    public static final String KEY_BARCODE = "barcode";
+    public static final String KEY_FRIDGE_NAME = "FrigoNom";
+    public static final String KEY_FRIDGE_ID = "FrigoId";
+    public static final String KEY_BARCODE = "ProductSId";
     public static final String KEY_PRODUCT_ID = "productId";
     public static final String KEY_PRODUCT_BRAND = "brand";
     public static final String KEY_PRODUCT_QUANTITY = "quantity";
