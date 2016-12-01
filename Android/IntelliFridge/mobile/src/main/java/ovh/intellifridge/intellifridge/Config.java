@@ -13,9 +13,9 @@ public class Config {
     public static final String FRIDGE_ADD_URL = "http://api.intellifridge.ovh/v1/fridges/add";
     public static final String CONTACT_URL = "http://www.intellifridge.ovh/contact.php";
     public static final String SHOP_URL = "http://www.intellifridge.ovh/shop.php";
-    public static final String PRODUCT_DB_LOCATION_CHECK_URL = "";
+    public static final String PRODUCT_DB_LOCATION_CHECK_URL = "http://api.intellifridge.ovh/v1/products/isInDB";
     public static final String GET_PRODUCT_INFO_LOCAL_URL = "";
-    public static final String ADD_PRODUCT_LOCAL_DB = "";
+    public static final String ADD_PRODUCT_LOCAL_DB = "http://api.intellifridge.ovh/v1/products/add";
     public static final String FRIDGE_ID_URL = "http://api.intellifridge.ovh/v1/fridges/getFridgeId";
     public static final String FRIDGE_CONTENT_URL = "http://api.intellifridge.ovh/v1/fridges/getFridgeContent";
     public static final String GET_FRIDGECONTENT_INFO = "http://api.intellifridge.ovh/v1/products/searchById";
@@ -41,10 +41,10 @@ public class Config {
     public static final String KEY_FRIDGE_NAME = "FrigoNom";
     public static final String KEY_FRIDGE_ID = "FrigoId";
     public static final String KEY_BARCODE = "ProductSId";
-    public static final String KEY_PRODUCT_ID = "productId";
-    public static final String KEY_PRODUCT_BRAND = "brand";
-    public static final String KEY_PRODUCT_QUANTITY = "quantity";
-    public static final String KEY_PRODUCT_IMAGEURL = "imageUrl";
+    public static final String KEY_PRODUCT_NAME = "ProduitSNom";
+    public static final String KEY_PRODUCT_BRAND = "ProduitSMarque";
+    public static final String KEY_PRODUCT_QUANTITY = "Contenance";
+    public static final String KEY_PRODUCT_IMAGEURL = "ProduitImageUrl";
 
     //Keys for Sharedpreferences
     public static final String SHARED_PREF_NAME = "intellifridge";
@@ -115,4 +115,5 @@ public class Config {
     public static final String OFF_IMAGE_URL = "image_url";
     public static final String OFF_BRANDS = "brands";
 
+    public static final String SHARED_PREF_NAME_ALLERGY = "spAllergy";
 }

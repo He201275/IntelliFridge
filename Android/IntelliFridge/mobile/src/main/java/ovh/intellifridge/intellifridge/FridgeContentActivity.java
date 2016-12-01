@@ -220,12 +220,6 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                         }else {
                             // TODO: 01-12-16
                         }
-                        /*try {
-                            JSONObject jsonArray = new JSONObject(response);
-                            Log.wtf("TEST",jsonArray.toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }*/
                     }
                 },
                 new Response.ErrorListener() {

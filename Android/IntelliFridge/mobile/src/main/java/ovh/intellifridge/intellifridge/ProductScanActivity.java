@@ -21,12 +21,19 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.auth0.jwt.JWTSigner;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.JWTVerifyException;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,16 +41,21 @@ import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_LOCAL_DB;
 import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_LOCAL_DB_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.BARCODE_CHECK_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.BARCODE_EXTRA;
+import static ovh.intellifridge.intellifridge.Config.DATA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_PREFS;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_DB;
 import static ovh.intellifridge.intellifridge.Config.GET_INFO_LOCAL_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.GET_INFO_OFF_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.GET_PRODUCT_INFO_LOCAL_URL;
+import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
+import static ovh.intellifridge.intellifridge.Config.JWT_POST;
+import static ovh.intellifridge.intellifridge.Config.KEY_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.KEY_BARCODE;
 import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_BRAND;
-import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_ID;
 import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_IMAGEURL;
+import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_NAME;
 import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_QUANTITY;
+import static ovh.intellifridge.intellifridge.Config.KEY_USERID;
 import static ovh.intellifridge.intellifridge.Config.OFF_BRANDS;
 import static ovh.intellifridge.intellifridge.Config.OFF_IMAGE_URL;
 import static ovh.intellifridge.intellifridge.Config.OFF_PRODUCT;
@@ -54,13 +66,19 @@ import static ovh.intellifridge.intellifridge.Config.OFF_QUANTITY;
 import static ovh.intellifridge.intellifridge.Config.OFF_STATUS_FOUND;
 import static ovh.intellifridge.intellifridge.Config.OFF_STATUS_VERBOSE;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_DB_LOCATION_CHECK_URL;
+import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
+import static ovh.intellifridge.intellifridge.Config.SERVER_SUCCESS;
 import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
+import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
+import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 
 public class ProductScanActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,View.OnClickListener{
     String barcode,url_off,imageUrl,productName,quantity, off_status, fridge_selected,brands;
     TextView txtQuantity, txtProduct;
     JSONObject product;
     AppCompatButton addProductFridge,cancelAddProduct;
+    private JSONObject server_response;
+    private String server_status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,22 +132,25 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        /*try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String server_status = jsonObject.getString(SERVER_STATUS);
-                            String server_response = jsonObject.getString(SERVER_RESPONSE);
-                            if (server_response.equals(BARCODE_NOT_IN_LOCALDB)){
-                                getProductInfoOFF();
-                            }else if (server_response.equals(BARCODE_IN_LOCALDB)){
-                                JSONObject product_id = jsonObject.getJSONObject(DATA);
-                                int product_id_localdb = product_id.getInt(PRODUCT_S_ID);
-                                getProductInfoLocalDb(product_id_localdb);
-                            }else if (server_status.equals(DB_CONNECTION_ERROR)){
-                                Toast.makeText(getApplicationContext(),R.string.db_connect_error,Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
+                        Log.wtf("Barcode",barcode);
+                        final String secret = JWT_KEY;
+                        try {
+                            final JWTVerifier verifier = new JWTVerifier(secret);
+                            final Map<String, Object> claims= verifier.verify(response);
+                            server_response = new JSONObject(claims);
+                            server_status = server_response.getString(SERVER_STATUS);
+                        } catch (JWTVerifyException e) {
+                            // Invalid Token
+                            // TODO: 30-11-16
+                        } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
-                        }*/
+                        }
+
+                        if (server_status.equals(SERVER_SUCCESS)){
+                            getProductInfoLocalDb(barcode);
+                        }else{
+                            getProductInfoOFF();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -140,35 +161,53 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
                 }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
+                String jwt = signParamsIsInDb(barcode);
                 Map<String,String> params = new HashMap<>();
                 //Adding parameters to POST request
-                params.put(KEY_BARCODE, barcode);
+                params.put(JWT_POST, jwt);
                 return params;
             }
         };
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, BARCODE_CHECK_REQUEST_TAG);
     }
 
-    private void getProductInfoLocalDb(final int product_id_localdb) {
+    private String signParamsIsInDb(String produitSId) {
+        final String secret = JWT_KEY;
+        String jwt = "";
+
+        final JWTSigner signer = new JWTSigner(secret);
+        final HashMap<String, Object> claims = new HashMap<String, Object>();
+        claims.put(KEY_BARCODE, produitSId);
+        return jwt = signer.sign(claims);
+    }
+
+    private void getProductInfoLocalDb(final String product_id_localdb) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, GET_PRODUCT_INFO_LOCAL_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        /*try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String server_status = jsonObject.getString(SERVER_STATUS);
-                            String server_response = jsonObject.getString(SERVER_RESPONSE);
-                            if (server_response.equals(PRODUCT_INFO_AVAILABLE)){
-                                JSONObject product_info = jsonObject.getJSONObject(DATA);
-                                //displayProductInfo(product_info);
-                            }else if (server_response.equals(PRODUCT_INFO_UNAVAILABLE)){
-                                Toast.makeText(getApplicationContext(),getString(R.string.product_info_unavailable),Toast.LENGTH_LONG).show();
-                            }else if (server_status.equals(DB_CONNECTION_ERROR)){
-                                Toast.makeText(getApplicationContext(),R.string.db_connect_error,Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
+                        final String secret = JWT_KEY;
+                        try {
+                            final JWTVerifier verifier = new JWTVerifier(secret);
+                            final Map<String, Object> claims= verifier.verify(response);
+                            server_response = new JSONObject(claims);
+                            server_status = server_response.getString(SERVER_STATUS);
+                        } catch (JWTVerifyException e) {
+                            // Invalid Token
+                            // TODO: 30-11-16
+                        } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
-                        }*/
+                        }
+
+                        if (server_status.equals(SERVER_SUCCESS)){
+                            try {
+                                Log.wtf("TEST", String.valueOf(server_response.getJSONObject(DATA)));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            // TODO: 01-12-16
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -179,13 +218,24 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
                 }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
+                String jwt = signParamsGetProdInfoLocalDb(barcode);
                 Map<String,String> params = new HashMap<>();
                 //Adding parameters to POST request
-                params.put(KEY_PRODUCT_ID, String.valueOf(product_id_localdb));
+                params.put(JWT_POST, jwt);
                 return params;
             }
         };
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, GET_INFO_LOCAL_REQUEST_TAG);
+    }
+
+    private String signParamsGetProdInfoLocalDb(String barcode) {
+        final String secret = JWT_KEY;
+        String jwt = "";
+
+        final JWTSigner signer = new JWTSigner(secret);
+        final HashMap<String, Object> claims = new HashMap<String, Object>();
+        claims.put(KEY_BARCODE, barcode);
+        return jwt = signer.sign(claims);
     }
 
     private void getProductInfoOFF() {
@@ -291,18 +341,28 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
                 (Request.Method.POST, ADD_PRODUCT_LOCAL_DB,new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        /*try {
-                            String server_status = response.getString(SERVER_STATUS);
-                            String server_response = response.getString(SERVER_RESPONSE);
-                            Log.wtf("TEST",response.toString());
-                            if (server_response.equals(PRODUCT_LOCAL_ADD_ERROR)){
-                                Toast.makeText(getApplicationContext(),getString(R.string.product_add_local_db_error),Toast.LENGTH_LONG).show();
-                            }else if (server_status.equals(DB_CONNECTION_ERROR)){
-                                Toast.makeText(getApplicationContext(),R.string.db_connect_error,Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
+                        final String secret = JWT_KEY;
+                        try {
+                            final JWTVerifier verifier = new JWTVerifier(secret);
+                            final Map<String, Object> claims= verifier.verify(String.valueOf(response));
+                            server_response = new JSONObject(claims);
+                            server_status = server_response.getString(SERVER_STATUS);
+                        } catch (JWTVerifyException e) {
+                            // Invalid Token
+                            // TODO: 30-11-16
+                        } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
-                        }*/
+                        }
+
+                        if (server_status.equals(SERVER_SUCCESS)){
+                            try {
+                                Log.wtf("TEST", String.valueOf(server_response.getJSONObject(DATA)));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            // TODO: 01-12-16
+                        }
                     }
                 }, new Response.ErrorListener() {
 
@@ -312,26 +372,41 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
                     }
                 }){
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                return headers;
-            }
-
-            @Override
             protected Map<String, String> getParams() throws AuthFailureError {
+                String jwt = signParamsAddLocalDb(productName,imageUrl,brands,quantity);
                 Map<String,String> params = new HashMap<>();
                 //Adding parameters to POST request
-                Log.wtf("BARCODE",barcode);
-                params.put(KEY_BARCODE,barcode);
-                params.put(KEY_PRODUCT_BRAND,brands);
-                params.put(KEY_PRODUCT_QUANTITY,quantity);
-                params.put(KEY_PRODUCT_IMAGEURL,imageUrl);
+                params.put(JWT_POST,jwt);
                 return params;
             }
         };
 
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsObjRequest, ADD_PRODUCT_LOCAL_DB_REQUEST_TAG);
+    }
+
+    private String signParamsAddLocalDb(String productName, String imageUrl, String brands, String quantity) {
+        int userId = getUserId();
+        String apiKey = getApiKey();
+        final String secret = JWT_KEY;
+        String jwt = "";
+
+        final JWTSigner signer = new JWTSigner(secret);
+        final HashMap<String, Object> claims = new HashMap<String, Object>();
+        claims.put(KEY_PRODUCT_BRAND, brands);
+        claims.put(KEY_PRODUCT_IMAGEURL,imageUrl);
+        claims.put(KEY_PRODUCT_QUANTITY,quantity);
+        claims.put(KEY_PRODUCT_NAME,productName);
+        claims.put(KEY_USERID,userId);
+        claims.put(KEY_API_KEY,apiKey);
+        return jwt = signer.sign(claims);
+    }
+    private String getApiKey() {
+        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getString(USER_API_KEY,"");
+    }
+    private int getUserId() {
+        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getInt(USER_ID_PREFS,0);
     }
 
     private void addProductFridge() {
