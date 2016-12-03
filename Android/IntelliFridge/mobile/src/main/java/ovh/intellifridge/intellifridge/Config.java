@@ -6,7 +6,6 @@ package ovh.intellifridge.intellifridge;
 
 public class Config {
     public static final String DOMAIN_URL = "http://www.intellifridge.ovh";
-    //public static final String DOMAIN_API_URL = "http://www.intellifridge.franmako.com";
     public static final String LOGIN_URL = "http://api.intellifridge.ovh/v1/user/login";
     public static final String REGISTER_URL = "http://api.intellifridge.ovh/v1/user/register";
     public static final String FRIDGE_GET_LIST_URL = "http://api.intellifridge.ovh/v1/fridges/list";
@@ -16,9 +15,7 @@ public class Config {
     public static final String PRODUCT_DB_LOCATION_CHECK_URL = "http://api.intellifridge.ovh/v1/products/isInDB";
     public static final String GET_PRODUCT_INFO_LOCAL_URL = "";
     public static final String ADD_PRODUCT_LOCAL_DB = "http://api.intellifridge.ovh/v1/products/add";
-    public static final String FRIDGE_ID_URL = "http://api.intellifridge.ovh/v1/fridges/getFridgeId";
     public static final String FRIDGE_CONTENT_URL = "http://api.intellifridge.ovh/v1/fridges/getFridgeContent";
-    public static final String GET_FRIDGECONTENT_INFO = "http://api.intellifridge.ovh/v1/products/searchById";
 
     public static final String JWT_KEY = "wAMxBauED07a4GurMpuD";
 
@@ -39,7 +36,6 @@ public class Config {
     public static final String KEY_USERID = "UserId";
     public static final String KEY_API_KEY = "ApiKey";
     public static final String KEY_FRIDGE_NAME = "FrigoNom";
-    public static final String KEY_FRIDGE_ID = "FrigoId";
     public static final String KEY_BARCODE = "ProductSId";
     public static final String KEY_PRODUCT_NAME = "ProduitSNom";
     public static final String KEY_PRODUCT_BRAND = "ProduitSMarque";
@@ -88,14 +84,12 @@ public class Config {
     public static final String LOGIN_REQUEST_TAG = "ovh.intellifridge.loginrequest";
     public static final String REGISTER_REQUEST_TAG = "ovh.intellifridge.registerrequest";
     public static final String FRIDGE_LIST_REQUEST_TAG = "ovh.intellifridge.fridgelistrequest";
-    public static final String ALLERGY_LIST_REQUEST_TAG = "ovh.intellifridge.allergylistrequest";
     public static final String PRODUCT_ADD_REQUEST_TAG = "ovh.intellifridge.productaddrequest";
     public static final String BARCODE_CHECK_REQUEST_TAG = "ovh.intellifridge.barcodecheckrequest";
     public static final String GET_INFO_LOCAL_REQUEST_TAG = "ovh.intellifridge.getinfolocaldb";
     public static final String GET_INFO_OFF_REQUEST_TAG = "ovh.intellifridge.getinfooffdb";
     public static final String ADD_PRODUCT_LOCAL_DB_REQUEST_TAG = "ovh.intellifridge.addproductlocaldb";
     public static final String FRIDGE_CONTENT_REQUEST_TAG = "ovh.intellifridge.fridgecontent";
-    public static final String FRIDGE_ID_REQUEST_TAG = "ovh.intellifridge.fridgeid";
     public static final String ADD_FRIDGE_REQUEST_TAG = "ovh.intellifridge.addfridge";
 
     public static final int TAB_RECENT_DEFAULT = 0;

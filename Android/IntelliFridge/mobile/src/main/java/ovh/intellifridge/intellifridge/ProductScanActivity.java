@@ -141,7 +141,7 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
                             server_status = server_response.getString(SERVER_STATUS);
                         } catch (JWTVerifyException e) {
                             // Invalid Token
-                            // TODO: 30-11-16
+                            Log.e("JWT ERROR",e.toString());
                         } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
                         }
@@ -156,7 +156,7 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: 21-11-16
+                        Log.e("VOLLEY ERROR",error.toString());
                     }
                 }){
             @Override
@@ -194,7 +194,7 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
                             server_status = server_response.getString(SERVER_STATUS);
                         } catch (JWTVerifyException e) {
                             // Invalid Token
-                            // TODO: 30-11-16
+                            Log.e("JWT ERROR",e.toString());
                         } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
                         }
@@ -213,7 +213,7 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: 21-11-16
+                        Log.e("VOLLEY ERROR",error.toString());
                     }
                 }){
             @Override
@@ -253,7 +253,7 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
+                        Log.e("VOLLEY ERROR",error.toString());
                     }
                 }){
             @Override
@@ -349,7 +349,7 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
                             server_status = server_response.getString(SERVER_STATUS);
                         } catch (JWTVerifyException e) {
                             // Invalid Token
-                            // TODO: 30-11-16
+                            Log.e("JWT ERROR",e.toString());
                         } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
                         }
@@ -368,7 +368,7 @@ public class ProductScanActivity extends AppCompatActivity implements AdapterVie
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO Auto-generated method stub
+                        Log.e("VOLLEY ERROR",error.toString());
                     }
                 }){
             @Override

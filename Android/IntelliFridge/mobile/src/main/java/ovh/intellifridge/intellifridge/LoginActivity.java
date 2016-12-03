@@ -138,7 +138,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             userData = server_response.getJSONObject(DATA);
                         } catch (JWTVerifyException e) {
                             // Invalid Token
-                            // TODO: 30-11-16  
+                            Log.e("JWT ERROR",e.toString());
                         } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
                         }
@@ -158,8 +158,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.wtf("ERROR",error.toString());
-                        // TODO: 30-11-16
+                        Log.e("VOLLEY ERROR",error.toString());
                     }
                 }){
             @Override

@@ -7,9 +7,12 @@
             android:title="@string/nav_multiple_input"
             android:icon="@drawable/ic_fridge_black"/>
         <item
-            android:id="@+id/nav_input"
+            android:id="@+id/nav_input_ns"
             android:icon="@drawable/ic_add_black"
-            android:title="@string/nav_input" />
+            android:title="@string/nav_input_ns" />
+        <item
+            android:id="@+id/nav_multiple_input"
+            android:title="@string/nav_multiple_input" />
     </group>
 
     <group android:id="@+id/nav_misc">

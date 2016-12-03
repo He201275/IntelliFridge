@@ -141,9 +141,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //setEmailNav();
-
-        mViewPager.setCurrentItem(1);
+        if (getFridgeModStatus() && getAllergyModStatus()){
+            mViewPager.setCurrentItem(TAB_FRIDGE_DEFAULT);
+            setEmailNav();
+        }
 
         addFloatingActionMenu();
     }
@@ -378,7 +379,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             server_status = server_response.getString(SERVER_STATUS);
                         } catch (JWTVerifyException e) {
                             // Invalid Token
-                            // TODO: 30-11-16
+                            Log.e("JWT ERROR",e.toString());
                         } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
                         }
@@ -393,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: 21-11-16
+                        Log.e("VOLLEY ERROR",error.toString());
                     }
                 }){
             @Override
@@ -440,11 +441,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_fridges) {
-            // TODO: 29-10-16
+            if (getFridgeModStatus() && getAllergyModStatus()){
+                mViewPager.setCurrentItem(TAB_FRIDGE_DEFAULT);
+            }else if (getFridgeModStatus() && !getAllergyModStatus()){
+                mViewPager.setCurrentItem(TAB_FRIDGE_FRIDGE);
+            }else if (!getFridgeModStatus() && getAllergyModStatus()){
+                Toast.makeText(getApplicationContext(),R.string.mod_fridge_disabled,Toast.LENGTH_LONG).show();
+            }
         } else if (id == R.id.nav_input) {
             // TODO: 29-10-16
+        }else if (id == R.id.nav_multiple_input){
+            // TODO: 03-12-16  
         }else if (id == R.id.nav_allergy){
-            // TODO: 28-11-16
+            if (getFridgeModStatus() && getAllergyModStatus()){
+                mViewPager.setCurrentItem(TAB_ALLERGY_DEFAULT);
+            }else if (getFridgeModStatus() && !getAllergyModStatus()){
+                Toast.makeText(getApplicationContext(),R.string.mod_allergy_disabled,Toast.LENGTH_LONG).show();
+            }else if (!getFridgeModStatus() && getAllergyModStatus()){
+                mViewPager.setCurrentItem(TAB_ALLERGY_ALLERGY);
+            }
         }else if (id == R.id.nav_manage) {
             startSettingsActivity();
         } else if (id == R.id.nav_shop) {

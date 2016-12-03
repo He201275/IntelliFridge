@@ -69,4 +69,16 @@
     <string name="scanner_prompt_allergy">Scanner le code-barre pour des infos allergies</string>
     <string name="scanner_prompt_fridge">Scanner le code-barre pour ajouter au frigo</string>
     <string name="title_activity_about">A propos</string>
+    <string name="context_menu_delete">Effacer</string>
+    <string name="context_menu_edit">Modifier</string>
+    <string name="error_permission_map">Accès à la position refusé</string>
+    <string name="fridge_id_error"></string>
+    <string name="product_add_fridge_success">Le produit a été ajouté au frigo</string>
+    <string name="product_add_local_db_error">Erreur de l\'ajout du produit</string>
+    <string name="product_info_unavailable">Les informations sur le produit n\'ont pas été trouvés</string>
+    <string name="scanner_prompt_info">Scanner pour avoir des informations sur le produit</string>
+    <string name="section4">A proximité</string>
+    <string name="fridge_content_list_error">Erreur sur la récupération du contenu</string>
+    <string name="mod_fridge_disabled">Le module frigo est désactivé! Activez-le dans les paramètres</string>
+    <string name="nav_input_ns">Produit sans code-barres</string>
 </resources>

@@ -5,10 +5,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -93,7 +95,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                             server_status = server_response.getString(SERVER_STATUS);
                         } catch (JWTVerifyException e) {
                             // Invalid Token
-                            // TODO: 30-11-16
+                            Log.e("JWT ERROR",e.toString());
                         } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
                         }
@@ -106,14 +108,14 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                                 e.printStackTrace();
                             }
                         }else {
-                            // TODO: 01-12-16
+                            Toast.makeText(getApplicationContext(),R.string.fridge_content_list_error,Toast.LENGTH_LONG).show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // TODO: 21-11-16
+                        Log.e("VOLLEY ERROR",error.toString());
                     }
                 }){
             @Override

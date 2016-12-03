@@ -44,7 +44,7 @@
     <string name="action_search">Search</string>
     <string name="action_logout">Logout</string>
     <string name="nav_multiple_input">Multiple input</string>
-    <string name="nav_input">Food without barcode</string>
+    <string name="nav_input_ns">Food without barcode</string>
     <string name="nav_subgroup">Misc</string>
     <string name="nav_shop">Shop</string>
     <string name="nav_profile">My Profile</string>
@@ -128,8 +128,6 @@
         \t\t Nour-edinne SABBANI\n\t\tNassim \"Nasty Nas\" BRAHMI
     </string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="section4">Around me</string>
     <string name="scanner_prompt_info">Scan to get info about the product</string>
     <string name="product_info_unavailable">Product information unavailable</string>
@@ -140,4 +138,7 @@
     <string name="fridge_id_error">Unable to get fridge content</string>
     <string name="pref_modules">Modules</string>
     <string name="error_permission_map">Location permission denied</string>
+    <string name="fridge_content_list_error">Error fetching fridge content!</string>
+    <string name="mod_allergy_disabled">Allergy module is disabled! Enable it in the settings to continue</string>
+    <string name="mod_fridge_disabled">Fridge module is disabled! Please enable the module in the settings to continue</string>
 </resources>

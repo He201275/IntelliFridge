@@ -102,7 +102,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             server_status = server_response.getString(SERVER_STATUS);
                         } catch (JWTVerifyException e) {
                             // Invalid Token
-                            // TODO: 30-11-16
+                            Log.e("JWT ERROR",e.toString());
                         } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
                         }
