@@ -19,6 +19,9 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
     }
+    defaultConfig {
+        multiDexEnabled true
+    }
     buildTypes {
         release {
             minifyEnabled false

@@ -371,7 +371,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onResponse(String response) {
                         final String secret = JWT_KEY;
-                        Log.wtf("ADD",response);
                         try {
                             final JWTVerifier verifier = new JWTVerifier(secret);
                             final Map<String, Object> claims= verifier.verify(response);

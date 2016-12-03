@@ -70,6 +70,9 @@ public class Config {
     public static final String USER_API_KEY_DB = "ApiKey";
     public static final String FRIDGE_NAME_DB = "FrigoNom";
     public static final String PRODUCT_S_ID = "ProduitSId";
+    public static final String PRODUCT_NAME_DB = "ProduitNom";
+    public static final String PRODUCT_ID_DB = "ProduitId";
+    public static final String PRODUCT_QUANTITY_DB = "Quantite";
 
     public static final String LOGIN_REGISTER_EXTRA= "new_user_email";
     public static final String SCAN_TYPE_EXTRA = "scan_type";
