@@ -1,9 +1,5 @@
 package ovh.intellifridge.intellifridge;
 
-/**
- * Created by franc on 24-11-16.
- */
-
 public class Config {
     public static final String DOMAIN_URL = "http://www.intellifridge.ovh";
     public static final String LOGIN_URL = "http://api.intellifridge.ovh/v1/user/login";
@@ -112,5 +108,5 @@ public class Config {
     public static final String OFF_IMAGE_URL = "image_url";
     public static final String OFF_BRANDS = "brands";
 
-    public static final String SHARED_PREF_NAME_ALLERGY = "spAllergy";
+    public static final String SHARED_PREF_NAME_ALLERGY = "spAllergy"; // TODO: 04-12-16
 }

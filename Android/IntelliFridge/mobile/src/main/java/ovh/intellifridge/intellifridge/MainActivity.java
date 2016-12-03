@@ -367,16 +367,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void addFridge() {
+        // TODO: 03-12-16
         StringRequest stringRequest = new StringRequest(Request.Method.POST, FRIDGE_ADD_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        final String secret = JWT_KEY;
-                        try {
-                            final JWTVerifier verifier = new JWTVerifier(secret);
-                            final Map<String, Object> claims= verifier.verify(response);
-                            server_response = new JSONObject(claims);
-                            server_status = server_response.getString(SERVER_STATUS);
+                        String secret = JWT_KEY;
+                            try {
+                                final JWTVerifier verifier = new JWTVerifier(secret);
+                                final Map<String, Object> claims= verifier.verify(response);
+                                server_response = new JSONObject(claims);
+                                server_status = server_response.getString(SERVER_STATUS);
                         } catch (JWTVerifyException e) {
                             // Invalid Token
                             Log.e("JWT ERROR",e.toString());
@@ -413,7 +414,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private String signParamsAdd(String fridge_name, int user_id, String apiKey) {
         final String secret = JWT_KEY;
-        String jwt = "";
 
         final JWTSigner signer = new JWTSigner(secret);
         final HashMap<String, Object> claims = new HashMap<String, Object>();
@@ -421,7 +421,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         claims.put(KEY_USERID, String.valueOf(user_id));
         claims.put(KEY_API_KEY, apiKey);
         claims.put(KEY_FRIDGE_NAME,fridge_name);
-        return jwt = signer.sign(claims);
+        return signer.sign(claims);
     }
 
     private String getApiKey() {
@@ -440,26 +440,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_fridges) {
-            if (getFridgeModStatus() && getAllergyModStatus()){
-                mViewPager.setCurrentItem(TAB_FRIDGE_DEFAULT);
-            }else if (getFridgeModStatus() && !getAllergyModStatus()){
-                mViewPager.setCurrentItem(TAB_FRIDGE_FRIDGE);
-            }else if (!getFridgeModStatus() && getAllergyModStatus()){
-                Toast.makeText(getApplicationContext(),R.string.mod_fridge_disabled,Toast.LENGTH_LONG).show();
-            }
-        } else if (id == R.id.nav_input) {
+        if (id == R.id.nav_input_ns) {
             // TODO: 29-10-16
         }else if (id == R.id.nav_multiple_input){
             // TODO: 03-12-16  
-        }else if (id == R.id.nav_allergy){
-            if (getFridgeModStatus() && getAllergyModStatus()){
-                mViewPager.setCurrentItem(TAB_ALLERGY_DEFAULT);
-            }else if (getFridgeModStatus() && !getAllergyModStatus()){
-                Toast.makeText(getApplicationContext(),R.string.mod_allergy_disabled,Toast.LENGTH_LONG).show();
-            }else if (!getFridgeModStatus() && getAllergyModStatus()){
-                mViewPager.setCurrentItem(TAB_ALLERGY_ALLERGY);
-            }
         }else if (id == R.id.nav_manage) {
             startSettingsActivity();
         } else if (id == R.id.nav_shop) {

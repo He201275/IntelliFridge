@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -136,16 +138,11 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
     private void getFridgeContentList(JSONArray jsonArray) {
         Product[] fridgeContent = getFridgeContentArray(jsonArray);
 
-        ListView listView = (ListView)findViewById(R.id.fridge_content_list);
-        ArrayAdapter<Product> listViewAdapter = listViewAdapter = new ArrayAdapter<Product>(
-                this,android.R.layout.simple_list_item_1,fridgeContent);
-        listView.setAdapter(listViewAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                // TODO: 03-12-16
-            }
-        });
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.fridge_content_recyclerview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        FridgeContentRVAdapter adapter = new FridgeContentRVAdapter(fridgeContent);
+        recyclerView.setAdapter(adapter);
     }
 
     private Product[] getFridgeContentArray(JSONArray jsonArray){

@@ -3,8 +3,8 @@
     <string name="action_settings">Settings</string>
     <!-- Tab titles -->
     <string name="section1">Recent</string>
-    <string name="section2">My Fridges</string>
-    <string name="section3">My Allergies</string>
+    <string name="section2">Fridges</string>
+    <string name="section3">Allergies</string>
 
     <!-- Barcode reader -->
     <string name="scanner_prompt_fridge">Scan barcode to add to fridge</string>
@@ -48,7 +48,7 @@
     <string name="nav_subgroup">Misc</string>
     <string name="nav_shop">Shop</string>
     <string name="nav_profile">My Profile</string>
-    <string name="nav_allergies">My Allergies</string>
+    <string name="nav_allergies">Allergies</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_settings">Settings</string>
@@ -141,4 +141,5 @@
     <string name="fridge_content_list_error">Error fetching fridge content!</string>
     <string name="mod_allergy_disabled">Allergy module is disabled! Enable it in the settings to continue</string>
     <string name="mod_fridge_disabled">Fridge module is disabled! Please enable the module in the settings to continue</string>
+    <string name="fridge_content_card_quantity_lbl">Quantity</string>
 </resources>

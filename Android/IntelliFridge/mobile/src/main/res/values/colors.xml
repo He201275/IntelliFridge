@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#ff4046</color>
+    <!-- TODO: Choose color scheme
+    <color name="colorPrimary">#F44336</color>
+    <color name="colorPrimaryDark">#F44336</color>
+    <color name="colorAccent">#000000</color> -->
+
+    <color name="colorPrimary">#4C5454</color>
+    <color name="colorPrimaryDark">#252828</color>
+    <color name="colorAccent">#F44336</color>
 
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
@@ -11,13 +16,15 @@
     <color name="input_bg">#3b4148</color>
     <color name="input_login_register">#888888</color>
     <color name="input_login_register_hint">#999999</color>
-    <color name="btn_login_register_bg">#ff0008</color>
+    <color name="btn_login_register_bg">#F44336</color>
     <color name="btn_login_register">#ffffff</color>
 
     <color name="btn_add">#00ff11</color>
-    <color name="btn_cancel">#b90000</color>
+    <color name="btn_cancel">#F44336</color>
 
     <color name="colorPrimaryAllerance">#04A007</color>
     <color name="colorPrimaryDarkAllerance">#025004</color>
     <color name="colorAccentAllerance">#00ff11</color>
+
+    <color name="colorFridgeContent">#B7B6C2</color>
 </resources>

@@ -15,7 +15,7 @@
     <string name="hint_Lname">Nom</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Mot de passe</string>
-    <string name="nav_allergies">Mes Allergies</string>
+    <string name="nav_allergies">Allergies</string>
     <string name="nav_input">Aliments sans code-barre</string>
     <string name="nav_profile">Mon Profil</string>
     <string name="nav_shop">Boutique</string>
@@ -29,9 +29,9 @@
     <string name="scanner_prompt">Scanner le code barre</string>
     <string name="section_format">Section: %1$d</string>
     <string name="title_activity_settings">Paramètres</string>
-    <string name="section1">Historique</string>
-    <string name="section2">Mes Frigos</string>
-    <string name="section3">Mes Allergies</string>
+    <string name="section1">Récent</string>
+    <string name="section2">Frigos</string>
+    <string name="section3">Allergies</string>
     <string name="settings_mod_allergy">Alerte allergie</string>
     <string name="settings_mod_fridge">Gestion du stock alimentaire</string>
     <string name="login_error">Email ou mot de passe incorrect</string>
@@ -80,4 +80,5 @@
     <string name="fridge_content_list_error">Erreur sur la récupération du contenu</string>
     <string name="mod_fridge_disabled">Le module frigo est désactivé! Activez-le dans les paramètres</string>
     <string name="nav_input_ns">Produit sans code-barres</string>
+    <string name="fridge_content_card_quantity_lbl">Quantité</string>
 </resources>
