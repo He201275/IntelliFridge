@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, Link, browserHistory } from 'react-router'; 
+import { Router, Route, Link, browserHistory } from 'react-router';
+import SkyLight from 'react-skylight'; 
 import logo from './logo.svg';
 
 
@@ -84,14 +85,33 @@ class RightHome extends Component {
 }
 
 class RightList extends Component {
+	constructor(props){
+		super(props);
+	}
+
 	render() {
+
+		var emptyPopupStyle = {
+			position: 'absolute',
+			backgroundColor: '#d6d6d6',
+			borderRadius: '1.5em',
+			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
+			opacity: '0',
+			visibility: 'hidden',
+			transition: 'opacity 0.2s linear',
+			top: '37.5%',
+			left: '41%',
+			width: '18%',
+			height: '25%'
+		}
+
 		return (
 			<div id="right-part" className="side-part main-part">
 				<h2>Ma liste de<br/>courses</h2>
 				<div id="right-block" className="side-block">
 					<div className="separator"></div>
 					<div className="separator"></div>
-					<a href="#">
+					<a href="#" onClick={() => this.refs.popupEmpty.show()}>
 						<div id="empty-list" className="right-button">
 						    <i className="fa fa-trash fa-4x" aria-hidden="true"></i>
 						    <h3>Vider</h3>
@@ -110,6 +130,17 @@ class RightList extends Component {
 						</div>
 					</a>
 				</div>
+				<SkyLight hideOnOnverlayClicked="true" ref="popupEmpty" id="empty-list-popup" className="popup">
+					<h1>Vider la liste ?</h1>
+					<div id="confirm-buttons">
+						<a href="#">
+						<img src="./assets/images/dark-red/confirm-button.svg"/>
+						</a>
+						<a href="#">
+							<img src="./assets/images/dark-red/X-button.svg" className="popup-x"/>
+						</a>
+					</div>
+				</SkyLight>
 			</div>
 		);
 	}
@@ -289,9 +320,6 @@ class Home extends Component {
 				<div id="wrapper">
 					<Left />
 					<MiddleHome />
-					<PopupSendList />
-					<PopupAddItems />
-					<PopupRemoveItems />
 					<RightHome />
 				</div>
 			</div>
@@ -306,9 +334,6 @@ class List extends Component {
 				<TopPages />
 				<div id="wrapper">
 					<MiddleList />
-					<PopupEmpty />
-					<PopupRemoveFromList />
-					<PopupSendList />
 					<RightList />
 				</div>
 			</div>
@@ -324,45 +349,3 @@ var routes = (
 );
 
 ReactDOM.render(routes, document.querySelector('#root'));
-
-document.querySelector('#send-list').onclick =  function(){
-	document.querySelector('#send-method-popup').style.zIndex = "25";
-	document.querySelector('#send-method-popup').style.opacity = "1";
-	document.querySelector('#send-method-popup').style.visibility = "visible";
-	document.querySelector('#send-method-popup').style.display = "block";
-}
-
-document.querySelector('#empty-list').onclick =  function(){
-	document.querySelector('#empty-list-popup').style.zIndex = "25";
-	document.querySelector('#empty-list-popup').style.opacity = "1";
-	document.querySelector('#empty-list-popup').style.visibility = "visible";
-	document.querySelector('#empty-list-popup').style.display = "block";
-}
-
-document.querySelector('#fridge-add').onclick =  function(){
-	document.querySelector('#add-items-popup').style.zIndex = "25";
-	document.querySelector('#add-items-popup').style.opacity = "1";
-	document.querySelector('#add-items-popup').style.visibility = "visible";
-	document.querySelector('#add-items-popup').style.display = "block";
-}
-
-document.querySelector('#fridge-remove').onclick =  function(){
-	document.querySelector('#remove-items-popup').style.zIndex = "25";
-	document.querySelector('#remove-items-popup').style.opacity = "1";
-	document.querySelector('#remove-items-popup').style.visibility = "visible";
-	document.querySelector('#remove-items-popup').style.display = "block";
-}
-
-document.querySelector('.remove-item').onclick =  function(){
-	document.querySelector('#remove-from-list-popup').style.zIndex = "25";
-	document.querySelector('#remove-from-list-popup').style.opacity = "1";
-	document.querySelector('#remove-from-list-popup').style.visibility = "visible";
-	document.querySelector('#remove-from-list-popup').style.display = "block";
-}
-
-document.querySelector('.popup-x').onclick = function(event){
-	document.querySelector('.popup').style.zIndex = "0";
-	document.querySelector('.popup').style.opacity = "0";
-	document.querySelector('.popup').style.visibility = "hidden";
-	document.querySelector('.popup').style.display = "none";
-}
