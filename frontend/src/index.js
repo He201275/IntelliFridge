@@ -262,8 +262,8 @@ class PopupSendList extends Component {
 	render(){
 		return (
 			<div id="send-method-popup" className="popup">
-				<a href="#">
-					<img src="./assets/images/dark-red/X-button.svg" className="close-popup popup-x"/>
+				<a href="#" className="close-popup popup-x">
+					<img src="./assets/images/dark-red/X-button.svg" className="close-popup" id="close-send"/>
 				</a>
 				<h1>Comment ?</h1>
 				<div className="send-fields">
@@ -290,8 +290,8 @@ class Home extends Component {
 					<Left />
 					<MiddleHome />
 					<PopupSendList />
-					<PopupRemoveItems />
 					<PopupAddItems />
+					<PopupRemoveItems />
 					<RightHome />
 				</div>
 			</div>
@@ -307,9 +307,8 @@ class List extends Component {
 				<div id="wrapper">
 					<MiddleList />
 					<PopupEmpty />
-					<PopupSendList />
 					<PopupRemoveFromList />
-					<PopupAddItems />
+					<PopupSendList />
 					<RightList />
 				</div>
 			</div>
@@ -330,35 +329,40 @@ document.querySelector('#send-list').onclick =  function(){
 	document.querySelector('#send-method-popup').style.zIndex = "25";
 	document.querySelector('#send-method-popup').style.opacity = "1";
 	document.querySelector('#send-method-popup').style.visibility = "visible";
-
+	document.querySelector('#send-method-popup').style.display = "block";
 }
 
 document.querySelector('#empty-list').onclick =  function(){
 	document.querySelector('#empty-list-popup').style.zIndex = "25";
 	document.querySelector('#empty-list-popup').style.opacity = "1";
 	document.querySelector('#empty-list-popup').style.visibility = "visible";
+	document.querySelector('#empty-list-popup').style.display = "block";
 }
 
 document.querySelector('#fridge-add').onclick =  function(){
 	document.querySelector('#add-items-popup').style.zIndex = "25";
 	document.querySelector('#add-items-popup').style.opacity = "1";
 	document.querySelector('#add-items-popup').style.visibility = "visible";
+	document.querySelector('#add-items-popup').style.display = "block";
 }
 
 document.querySelector('#fridge-remove').onclick =  function(){
 	document.querySelector('#remove-items-popup').style.zIndex = "25";
 	document.querySelector('#remove-items-popup').style.opacity = "1";
 	document.querySelector('#remove-items-popup').style.visibility = "visible";
+	document.querySelector('#remove-items-popup').style.display = "block";
 }
 
-document.querySelector('#remove-item').onclick =  function(){
+document.querySelector('.remove-item').onclick =  function(){
 	document.querySelector('#remove-from-list-popup').style.zIndex = "25";
 	document.querySelector('#remove-from-list-popup').style.opacity = "1";
 	document.querySelector('#remove-from-list-popup').style.visibility = "visible";
+	document.querySelector('#remove-from-list-popup').style.display = "block";
 }
 
-document.querySelector('.popup-x').onclick = function(){
+document.querySelector('.popup-x').onclick = function(event){
 	document.querySelector('.popup').style.zIndex = "0";
 	document.querySelector('.popup').style.opacity = "0";
 	document.querySelector('.popup').style.visibility = "hidden";
+	document.querySelector('.popup').style.display = "none";
 }
