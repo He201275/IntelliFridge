@@ -66,7 +66,7 @@ class Left extends Component {
 						<img id="fridge-remove" className="left-button" src="./assets/images/remove-from-fridge.svg"/>
 					</a>
 				</div>
-				<SkyLight hideOnOverlayClick dialogStyles={itemsInOutPopupStyle} ref="popupAddItems" id="add-items-popup" className="popup items-in-out">
+				<SkyLight hideOnOverlayClicked dialogStyles={itemsInOutPopupStyle} ref="popupAddItems" id="add-items-popup" className="popup items-in-out">
 					<h1>Comment ?</h1>
 					<div className="methods-buttons">
 						<a href="#" className="method">
@@ -83,7 +83,7 @@ class Left extends Component {
 						</a>
 					</div>
 				</SkyLight>
-				<SkyLight hideOnOverlayClick dialogStyles={itemsInOutPopupStyle} ref="popupRemoveItems" id="add-items-popup" className="popup items-in-out">
+				<SkyLight hideOnOverlayClicked dialogStyles={itemsInOutPopupStyle} ref="popupRemoveItems" id="remove-items-popup" className="popup items-in-out">
 					<h1>Comment ?</h1>
 					<div className="methods-buttons">
 						<a href="#" className="method">
@@ -95,7 +95,7 @@ class Left extends Component {
 						<a href="#" className="method">
 							<span>
 								<img src="./assets/images/hand.svg"/>
-								<h3>Ajouter manuellement</h3>
+								<h3>Retirer manuellement</h3>
 							</span>
 						</a>
 					</div>
@@ -294,20 +294,44 @@ class ShoppingList extends Component {
 			-> Chaque Item dans
 				<li>**ITEM** <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>	
 */
+	constructor(props){
+		super(props);
+	}
+
 	render() {
+
+		var removeItemPopupStyle = {
+			backgroundColor: '#d6d6d6',
+			borderRadius: '20px',
+			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
+			height: '220px',
+			width: '300px',
+			margin: '0',
+		    top: '190px',
+    		left: '362px'
+		}
+
 		return (
 			<ul id="list">
 				<li></li>
-				<li>Tomates <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-				<li>Jus de pomme <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-				<li>Crème fraîche <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-				<li>Gouda <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-				<li>Confiture <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-				<li>Lait <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-				<li>Jambon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-				<li>Bacon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-				<li>Margarine <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-				<li>Oeufs <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+				<li>Tomates <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Jus de pomme <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Crème fraîche <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Gouda <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Confiture <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Lait <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Jambon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Bacon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Margarine <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Oeufs <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<SkyLight hideOnOverlayClicked dialogStyles={removeItemPopupStyle} ref="popupRemoveItem" id="empty-list-popup" className="popup">
+					<h1>Retirer de la liste ?</h1>
+					<div id="confirm-buttons">
+						<a href="#">
+							<img src="./assets/images/dark-red/confirm-button.svg"/>
+						</a>
+					</div>
+				</SkyLight>
 			</ul>
 		);
 	}
