@@ -8,7 +8,6 @@ public class Product {
     String productName;
     int productId;
     int productQuantity;
-    String urlImage; // TODO: 03-12-16 : Implement urlImage 
 
     public Product(){
         super();
@@ -18,11 +17,6 @@ public class Product {
         this.productName = pName;
         this.productId = pId;
         this.productQuantity = pQuantity;
-    }
-
-    @Override
-    public String toString() {
-        return this.productName + " Qtt. :" +this.productQuantity;
     }
 
     public int getProductId() {
@@ -37,10 +31,6 @@ public class Product {
         return productName;
     }
 
-    public String getUrlImage() {
-        return urlImage;
-    }
-
     public void setProductId(int productId) {
         this.productId = productId;
     }
@@ -51,9 +41,5 @@ public class Product {
 
     public void setProductQuantity(int productQuantity) {
         this.productQuantity = productQuantity;
-    }
-
-    public void setUrlImage(String urlImage) {
-        this.urlImage = urlImage;
     }
 }

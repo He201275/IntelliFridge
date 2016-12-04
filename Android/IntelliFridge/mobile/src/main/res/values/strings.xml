@@ -142,4 +142,6 @@
     <string name="mod_allergy_disabled">Allergy module is disabled! Enable it in the settings to continue</string>
     <string name="mod_fridge_disabled">Fridge module is disabled! Please enable the module in the settings to continue</string>
     <string name="fridge_content_card_quantity_lbl">Quantity</string>
+    <string name="open_fridge">Opening fridge...</string>
+    <string name="fridge_empty">The fridge is empty!</string>
 </resources>
