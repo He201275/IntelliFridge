@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import { Router, Route, Link, browserHistory } from 'react-router';
 import SkyLight from 'react-skylight'; 
 import logo from './logo.svg';
+import $ from 'jquery';
 
-
+var itemNumber = 0;
 
 class TopHome extends Component {
 	render() {
@@ -298,7 +299,10 @@ class ShoppingList extends Component {
 		super(props);
 	}
 
-
+	_updateItem(item){
+		//itemNumber = item;
+		console.log(item);
+	}
 
 	render() {
 		var removeItemPopupStyle = {
@@ -314,17 +318,17 @@ class ShoppingList extends Component {
 
 		return (
 			<ol id="list">
-				<li value="0"></li>
-				<li value="1">Tomates <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value="2">Jus de pomme <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value="3">Crème fraîche <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value="4">Gouda <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value="5">Confiture <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value="6">Lait <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value="7">Jambon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value="8">Bacon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value="9">Margarine <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value="10">Oeufs <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li value='0'></li>
+				<li value='1'>Tomates <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" beforeOpen={this._updateItem(this)} onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li value='2'>Jus de pomme <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" beforeOpen={this._updateItem(this)} onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li value='3'>Crème fraîche <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" beforeOpen={this._updateItem(this)} onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li value='4'>Gouda <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" beforeOpen={this._updateItem(this)} onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li value='5'>Confiture <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" beforeOpen={this._updateItem(this)} onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li value='6'>Lait <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" beforeOpen={this._updateItem(this)} onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li value='7'>Jambon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" beforeOpen={this._updateItem(this)} onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li value='8'>Bacon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" beforeOpen={this._updateItem(this)} onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li value='9'>Margarine <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" beforeOpen={this._updateItem(this)} onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li value='10'>Oeufs <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" beforeOpen={this._updateItem(this)} onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
 				<SkyLight hideOnOverlayClicked dialogStyles={removeItemPopupStyle} ref="popupRemoveItem" id="empty-list-popup" className="popup">
 					<h1>Retirer de la liste ?</h1>
 					<div id="confirm-buttons">
