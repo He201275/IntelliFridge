@@ -110,7 +110,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                                 e.printStackTrace();
                             }
                         }else {
-                            Toast.makeText(getApplicationContext(),R.string.fridge_content_list_error,Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(),R.string.fridge_empty,Toast.LENGTH_LONG).show();
                         }
                     }
                 },

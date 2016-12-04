@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,11 +24,12 @@ public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.Fridge
     public static class FridgeViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
         TextView fridgeName,nbItemsFridge; // TODO: 03-12-16
-        ImageView overflow;
+        ImageView overflow, imageView;
 
         public FridgeViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView)itemView.findViewById(R.id.fridge_card_view);
+            imageView = (ImageView)itemView.findViewById(R.id.thumbnail);
             fridgeName = (TextView)itemView.findViewById(R.id.fridge_name_card);
             overflow = (ImageView) itemView.findViewById(R.id.overflow);
         }
@@ -53,11 +53,25 @@ public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.Fridge
         fridgeViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(),"Opening fridge...",Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(),R.string.open_fridge,Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(view.getContext(),FridgeContentActivity.class);
                 intent.putExtra(FRIDGE_NAME_EXTRA,fridges[fridgeViewHolder.getAdapterPosition()].getFridgeName());
-                Log.wtf("FRIDGE",fridgeViewHolder.fridgeName.toString());
                 view.getContext().startActivity(intent);
+            }
+        });
+        fridgeViewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(),R.string.open_fridge,Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(view.getContext(),FridgeContentActivity.class);
+                intent.putExtra(FRIDGE_NAME_EXTRA,fridges[fridgeViewHolder.getAdapterPosition()].getFridgeName());
+                view.getContext().startActivity(intent);
+            }
+        });
+        fridgeViewHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return Boolean.parseBoolean(null);
             }
         });
     }
@@ -82,7 +96,6 @@ public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.Fridge
     }
 
     class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
-
         public MyMenuItemClickListener() {
         }
 
