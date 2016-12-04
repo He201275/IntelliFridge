@@ -36,26 +36,93 @@ class TopPages extends Component {
 }
 
 class Left extends Component {
+	constructor(props){
+		super(props);
+	}
+
 	render() {
+
+		var itemsInOutPopupStyle = {
+			backgroundColor: '#d6d6d6',
+			borderRadius: '20px',
+			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
+			height: '270px',
+			width: '380px',
+			margin: '0',
+		    top: '160px',
+    		left: '322px',
+    		padding: '0'
+		}
+
 		return (
 			<div id="left-part" className="side-part main-part">
 				<h2>Ajouter/retirer<br/>des aliments</h2>
 				<div id="left-block" className="side-block">
 					<div className="separator"></div>
-					<a href="#">
+					<a href="#" onClick={() => this.refs.popupAddItems.show()}>
 						<img id="fridge-add" className="left-button" src="./assets/images/add-to-fridge.svg"/>
 					</a>
-					<a href="#">
+					<a href="#" onClick={() => this.refs.popupRemoveItems.show()}>
 						<img id="fridge-remove" className="left-button" src="./assets/images/remove-from-fridge.svg"/>
 					</a>
 				</div>
+				<SkyLight hideOnOverlayClick dialogStyles={itemsInOutPopupStyle} ref="popupAddItems" id="add-items-popup" className="popup items-in-out">
+					<h1>Comment ?</h1>
+					<div className="methods-buttons">
+						<a href="#" className="method">
+							<span>
+								<img src="./assets/images/barcode.svg"/>
+								<h3>Scanner</h3>
+							</span>
+						</a>
+						<a href="#" className="method">
+							<span>
+								<img src="./assets/images/hand.svg"/>
+								<h3>Ajouter manuellement</h3>
+							</span>
+						</a>
+					</div>
+				</SkyLight>
+				<SkyLight hideOnOverlayClick dialogStyles={itemsInOutPopupStyle} ref="popupRemoveItems" id="add-items-popup" className="popup items-in-out">
+					<h1>Comment ?</h1>
+					<div className="methods-buttons">
+						<a href="#" className="method">
+							<span>
+								<img src="./assets/images/barcode.svg"/>
+								<h3>Scanner</h3>
+							</span>
+						</a>
+						<a href="#" className="method">
+							<span>
+								<img src="./assets/images/hand.svg"/>
+								<h3>Ajouter manuellement</h3>
+							</span>
+						</a>
+					</div>
+				</SkyLight>
 			</div>  
 		);
 	}
 }
 
 class RightHome extends Component {
+	constructor(props){
+		super(props);
+	}
+
 	render() {
+
+		var sendPopupStyle = {
+			backgroundColor: '#d6d6d6',
+			borderRadius: '20px',
+			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
+			height: '200px',
+			width: '250px',
+			margin: '0',
+		    top: '200px',
+    		left: '387px'
+		}
+
 		return (
 			<div id="right-part" className="side-part main-part">
 				<h2>Ma liste de<br/>courses</h2>
@@ -68,7 +135,7 @@ class RightHome extends Component {
 						    <h3>Voir</h3>
 						</div>
 					</a>
-					<a href="#">
+					<a href="#" onClick={() => this.refs.popupSend.show()}>
 						<div id="send-list" className="right-button">
 						    <i className="fa fa-mobile fa-5x" aria-hidden="true"></i>
 						    <h3>Envoyer</h3>
@@ -79,6 +146,17 @@ class RightHome extends Component {
 						<h3>Imprimer</h3>
 					</div>
 				</div>
+				<SkyLight hideOnOverlayClicked dialogStyles={sendPopupStyle} ref="popupSend" id="send-method-popup" className="popup">
+					<h1>Comment ?</h1>
+					<div className="send-fields">
+						<div>
+							<input type="tel" name="tel-number" placeholder="sms"/> <img src="./assets/images/dark-red/go-button.svg"/>
+						</div>
+						<div>
+							<input type="email" name="email-address" placeholder="email"/> <img src="./assets/images/dark-red/go-button.svg"/>
+						</div>
+					</div>
+				</SkyLight>
 			</div>
 		);
 	}
@@ -92,17 +170,25 @@ class RightList extends Component {
 	render() {
 
 		var emptyPopupStyle = {
-			position: 'absolute',
 			backgroundColor: '#d6d6d6',
-			borderRadius: '1.5em',
+			borderRadius: '20px',
 			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
-			opacity: '0',
-			visibility: 'hidden',
-			transition: 'opacity 0.2s linear',
-			top: '37.5%',
-			left: '41%',
-			width: '18%',
-			height: '25%'
+			height: '200px',
+			width: '300px',
+			margin: '0',
+		    top: '200px',
+    		left: '362px'
+		}
+
+		var sendPopupStyle = {
+			backgroundColor: '#d6d6d6',
+			borderRadius: '20px',
+			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
+			height: '200px',
+			width: '250px',
+			margin: '0',
+		    top: '200px',
+    		left: '387px'
 		}
 
 		return (
@@ -117,7 +203,7 @@ class RightList extends Component {
 						    <h3>Vider</h3>
 						</div>
 					</a>
-					<a href="#">
+					<a href="#" onClick={() => this.refs.popupSend.show()}>
 						<div id="send-list" className="right-button">
 							<i className="fa fa-mobile fa-5x" aria-hidden="true"></i>
 							<h3>Envoyer</h3>
@@ -130,17 +216,57 @@ class RightList extends Component {
 						</div>
 					</a>
 				</div>
-				<SkyLight hideOnOnverlayClicked="true" ref="popupEmpty" id="empty-list-popup" className="popup">
+				<SkyLight hideOnOverlayClicked dialogStyles={emptyPopupStyle} ref="popupEmpty" id="empty-list-popup" className="popup">
 					<h1>Vider la liste ?</h1>
 					<div id="confirm-buttons">
 						<a href="#">
-						<img src="./assets/images/dark-red/confirm-button.svg"/>
-						</a>
-						<a href="#">
-							<img src="./assets/images/dark-red/X-button.svg" className="popup-x"/>
+							<img src="./assets/images/dark-red/confirm-button.svg"/>
 						</a>
 					</div>
 				</SkyLight>
+				<SkyLight hideOnOverlayClicked dialogStyles={sendPopupStyle} ref="popupSend" id="send-method-popup" className="popup">
+					<h1>Comment ?</h1>
+					<div className="send-fields">
+						<div>
+							<input type="tel" name="tel-number" placeholder="sms"/> <img src="./assets/images/dark-red/go-button.svg"/>
+						</div>
+						<div>
+							<input type="email" name="email-address" placeholder="email"/> <img src="./assets/images/dark-red/go-button.svg"/>
+						</div>
+					</div>
+				</SkyLight>
+			</div>
+		);
+	}
+}
+
+class FridgeList extends Component {
+/*
+	TO-DO :
+		* GET Frigos
+			-> Chaque frigo dans une
+				<div className="fridge">
+					<a href="/fridge/**NOM**">
+						<img src="./assets/images/fridge.svg"/>
+						<h3>**NOM DU FRIGO**</h3>
+					</a>
+				</div>
+*/
+	render() {
+		return (
+			<div id="fridges">
+				<div className="fridge">
+					<a href="#">
+						<img src="./assets/images/fridge.svg"/>
+						<h3>Cuisine</h3>
+					</a>
+				</div>
+				<div className="fridge">
+					<a href="#">
+						<img src="./assets/images/fridge.svg"/>
+						<h3>Cave</h3>
+					</a>
+				</div>
 			</div>
 		);
 	}
@@ -151,16 +277,7 @@ class MiddleHome extends Component {
 		return (
 			<div id="middle-block" className="main-part">
 				<h1>Mes frigos</h1>
-				<div id="fridges">
-					<div className="fridge">
-						<img src="./assets/images/fridge.svg"/>
-						<h3>Cuisine</h3>
-					</div>
-					<div className="fridge">
-						<img src="./assets/images/fridge.svg"/>
-						<h3>Cave</h3>
-					</div>
-				</div>
+				<FridgeList />
 				<div id="buttons">
 					<img src="./assets/images/dark-red/plus-button.svg"/>
 					<img src="./assets/images/dark-red/gear-button.svg"/>
@@ -170,24 +287,38 @@ class MiddleHome extends Component {
 	}
 }
 
+class ShoppingList extends Component {
+/*
+	TO-DO :
+		* GET Liste de courses
+			-> Chaque Item dans
+				<li>**ITEM** <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>	
+*/
+	render() {
+		return (
+			<ul id="list">
+				<li></li>
+				<li>Tomates <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+				<li>Jus de pomme <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+				<li>Crème fraîche <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+				<li>Gouda <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+				<li>Confiture <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+				<li>Lait <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+				<li>Jambon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+				<li>Bacon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+				<li>Margarine <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+				<li>Oeufs <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+			</ul>
+		);
+	}
+}
+
 class MiddleList extends Component {
 	render() {
 		return (
 			<div id="middle-block" className="main-part list-block">
 				<h1>Ma liste</h1>
-				<ul id="list">
-					<li></li>
-					<li>Tomates <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-					<li>Jus de pomme <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-					<li>Crème fraîche <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-					<li>Gouda <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-					<li>Confiture <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-					<li>Lait <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-					<li>Jambon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-					<li>Bacon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-					<li>Margarine <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-					<li>Oeufs <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-				</ul>
+				<ShoppingList />
 				<div id="add-item">
 					<div id="mask"></div>
 					<img src="./assets/images/dark-red/plus-button.svg"/>
