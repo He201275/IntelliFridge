@@ -12,7 +12,8 @@ $ npm install jwt-decode
 $ npm install jsonwebtoken
 ~~~
 
-After That edit the two webpack.config files in the directory node_modules/react-scripts/config
+After That edit the two webpack.config files in the directory node_modules/react-scripts/config 
+and in the directory node_modules\webpack-dev-server\client
 Edit these lines : 
 ~~~js
 node:{
