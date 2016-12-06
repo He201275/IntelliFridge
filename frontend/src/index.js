@@ -1,11 +1,16 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, Link, browserHistory } from 'react-router';
 import SkyLight from 'react-skylight'; 
 import logo from './logo.svg';
-
-
-
+import $ from "jquery";
+import jwtDecode from "jwt-decode";
+import jwt from "jsonwebtoken";
+import CryptoJS from "crypto-js";
+/**
+ * Bouton déconnexion
+ */
 class TopHome extends Component {
 	render() {
 		return (
@@ -241,32 +246,24 @@ class RightList extends Component {
 }
 
 class FridgeList extends Component {
-/*
-	TO-DO :
-		* GET Frigos
-			-> Chaque frigo dans une
-				<div className="fridge">
-					<a href="/fridge/**NOM**">
-						<img src="./assets/images/fridge.svg"/>
-						<h3>**NOM DU FRIGO**</h3>
-					</a>
-				</div>
-*/
 	render() {
 		return (
 			<div id="fridges">
-				<div className="fridge">
-					<a href="#">
-						<img src="./assets/images/fridge.svg"/>
-						<h3>Cuisine</h3>
-					</a>
-				</div>
-				<div className="fridge">
-					<a href="#">
-						<img src="./assets/images/fridge.svg"/>
-						<h3>Cave</h3>
-					</a>
-				</div>
+				{fridgesList.map((dynamicComponent, i) => <Fridge
+					key = {i} componentData = {dynamicComponent}/>)}
+			</div>
+		);
+	}
+}
+
+class Fridge extends Component {
+	render() {
+		return (
+			<div className="fridge">
+				<a href="#">
+					<img src="./assets/images/fridge.svg"/>
+					<h3>{this.props.componentData.FrigoNom}</h3>
+				</a>
 			</div>
 		);
 	}
@@ -503,4 +500,97 @@ var routes = (
 	</Router>
 );
 
-ReactDOM.render(routes, document.querySelector('#root'));
+/**************************************************************************
+ ***********************Functions and JavaScript***************************
+ *************************************************************************/
+var apiBase;
+var fridgesList=-1;
+/**
+ * Permet d'aller chercher les variables de session nécessaires
+ * TODO remettre les vraies variables de session
+ */
+request("GET", "http://app.intellifridge.ovh/app/getSession.php", "", storeApiDatas, apiError);
+/**
+ * Va chercher la liste des frigos
+ */
+apiRequest("GET", "fridges/list", null, function(an){
+	console.log(JSON.stringify(an));
+	setFridgeList(an);
+}, function (an) {
+	console.log("Erreur : \n"+JSON.stringify(an));
+});
+/**
+ * lance le rendu de l'application
+ */
+render();
+function render(){
+	ReactDOM.render(routes, document.querySelector('#root'));
+}
+/**
+ * Permet de faire une requète vers une page renvoyant du JSON
+ * @param type type de requète. Ex : GET, POST etc
+ * @param url URL de la page pour la requète
+ * @param data Données envoyées pour la requète
+ * @param fs Fonction lancée si la requète réussi
+ * @param fe Fonction lancée si la requète ne réussit pas
+ */
+function request(type, url, data, fs, fe){
+	$.ajax({
+		async : false,
+		type: type,
+		url: url,
+		data : data,
+		dataType: 'text',
+		crossDomain: true,
+		xhrFields: {
+			withCredentials: false
+		},
+		success: fs,
+		error: fe
+	});
+}
+/**
+ * Change l'objet apiBase pour contenir UserId et ApiKey
+ * @param an String JSON des données
+ */
+function storeApiDatas(an){
+	apiBase = JSON.parse(an);
+}
+/**
+ * Fonction de debug qui envoie en console le résultat
+ * @param an Objet renvoyé par une requète
+ */
+function apiError(an){
+	console.log(JSON.stringify(an));
+}
+/**
+ * Permet de faire une requète vers l'API d'IntelliFridge
+ * @param type type de requète. Ex : GET, POST etc
+ * @param url Fin de l'URL http://api.intellifridge.ovh/v1/ pour avoir accès aux informations souhaitées
+ * @param data Données envoyées pour la requète (viendra s'ajouter ApiKey et UserId automatiquement)
+ * @param fs Fonction lancée si la requète réussi
+ * @param fe Fonction lancée si la requète ne réussit pas
+ */
+function apiRequest(type, url, data, fs, fe){
+	var apiAn = -1;
+	if(data!=null){
+		var sData = JSON.stringify(Array.prototype.push.apply(apiBase, data));
+	}else{
+		var sData = JSON.stringify(apiBase);
+	}
+	var sJWT = {jwt:jwt.sign(sData, "wAMxBauED07a4GurMpuD", {header:{alg: 'HS256', typ: 'JWT'}})};
+	console.log(JSON.stringify(sJWT));
+	request(type, "http://api.intellifridge.ovh/v1/"+url, sJWT, function(an){
+		var decoded = jwt.decode(an, {complete: true});
+		if(decoded.payload.status==200){
+			fs(decoded.payload.data);
+		}else{
+			fe(decoded.payload);
+		}
+	}, function(an){
+		alert("Erreur d'API : \n\n"+an);
+	});
+}
+function setFridgeList(data){
+	fridgesList = data;
+}
