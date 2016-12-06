@@ -7,7 +7,6 @@ import logo from './logo.svg';
 import $ from "jquery";
 import jwtDecode from "jwt-decode";
 import jwt from "jsonwebtoken";
-import CryptoJS from "crypto-js";
 /**
  * Bouton déconnexion
  */
@@ -260,7 +259,7 @@ class Fridge extends Component {
 	render() {
 		return (
 			<div className="fridge">
-				<a href="#">
+				<a href={"/fridgeContent/"+this.props.componentData.FrigoId}>
 					<img src="./assets/images/fridge.svg"/>
 					<h3>{this.props.componentData.FrigoNom}</h3>
 				</a>
@@ -284,7 +283,7 @@ class MiddleHome extends Component {
 	}
 }
 
-class ShoppingList extends Component {
+class FridgeContent extends Component {
 /*
 	TO-DO :
 		* GET Liste de courses
@@ -306,6 +305,48 @@ class ShoppingList extends Component {
 			margin: '0',
 		    top: '190px',
     		left: '362px'
+		}
+
+		return (
+			<ul id="list">
+				<li></li>
+				<li>Tomates</li>
+				<li>Jus de pomme</li>
+				<li>Crème fraîche</li>
+				<li>Gouda</li>
+				<li>Confiture</li>
+				<li>Lait</li>
+				<li>Jambon</li>
+				<li>Bacon</li>
+				<li>Margarine</li>
+				<li>Oeufs</li>
+			</ul>
+		);
+	}
+}
+
+class ShoppingList extends Component {
+	/*
+	 TO-DO :
+	 * GET Liste de courses
+	 -> Chaque Item dans
+	 <li>**ITEM** <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
+	 */
+	constructor(props){
+		super(props);
+	}
+
+	render() {
+
+		var removeItemPopupStyle = {
+			backgroundColor: '#d6d6d6',
+			borderRadius: '20px',
+			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
+			height: '220px',
+			width: '300px',
+			margin: '0',
+			top: '190px',
+			left: '362px'
 		}
 
 		return (
@@ -497,6 +538,7 @@ var routes = (
 	<Router history={browserHistory}>
 		<Route path='/' component={Home} />
 		<Route path='/list' component={List} />
+		<Route path='/fridgeContent/:FridgeId' component={FridgeContent} />
 	</Router>
 );
 
