@@ -7,13 +7,10 @@ import logo from './logo.svg';
 import $ from "jquery";
 import jwtDecode from "jwt-decode";
 import jwt from "jsonwebtoken";
-
-var itemNumber = 0;
-
-function updateItem(item){
-	console.log(item);
-}
-
+import CryptoJS from "crypto-js";
+/**
+ * Bouton déconnexion
+ */
 class TopHome extends Component {
 	render() {
 		return (
@@ -57,9 +54,9 @@ class Left extends Component {
 			height: '270px',
 			width: '380px',
 			margin: '0',
-			top: '160px',
-			left: '322px',
-			padding: '0'
+		    top: '160px',
+    		left: '322px',
+    		padding: '0'
 		}
 
 		return (
@@ -108,7 +105,7 @@ class Left extends Component {
 						</a>
 					</div>
 				</SkyLight>
-			</div>
+			</div>  
 		);
 	}
 }
@@ -127,8 +124,8 @@ class RightHome extends Component {
 			height: '200px',
 			width: '250px',
 			margin: '0',
-			top: '200px',
-			left: '387px'
+		    top: '200px',
+    		left: '387px'
 		}
 
 		return (
@@ -139,14 +136,14 @@ class RightHome extends Component {
 					<div className="separator"></div>
 					<a href="/list">
 						<div id="view-list" className="right-button">
-							<i className="fa fa-search fa-4x" aria-hidden="true"></i>
-							<h3>Voir</h3>
+						    <i className="fa fa-search fa-4x" aria-hidden="true"></i>
+						    <h3>Voir</h3>
 						</div>
 					</a>
 					<a href="#" onClick={() => this.refs.popupSend.show()}>
 						<div id="send-list" className="right-button">
-							<i className="fa fa-mobile fa-5x" aria-hidden="true"></i>
-							<h3>Envoyer</h3>
+						    <i className="fa fa-mobile fa-5x" aria-hidden="true"></i>
+						    <h3>Envoyer</h3>
 						</div>
 					</a>
 					<div id="print-list" className="right-button">
@@ -184,8 +181,8 @@ class RightList extends Component {
 			height: '200px',
 			width: '300px',
 			margin: '0',
-			top: '200px',
-			left: '362px'
+		    top: '200px',
+    		left: '362px'
 		}
 
 		var sendPopupStyle = {
@@ -195,8 +192,8 @@ class RightList extends Component {
 			height: '200px',
 			width: '250px',
 			margin: '0',
-			top: '200px',
-			left: '387px'
+		    top: '200px',
+    		left: '387px'
 		}
 
 		return (
@@ -207,8 +204,8 @@ class RightList extends Component {
 					<div className="separator"></div>
 					<a href="#" onClick={() => this.refs.popupEmpty.show()}>
 						<div id="empty-list" className="right-button">
-							<i className="fa fa-trash fa-4x" aria-hidden="true"></i>
-							<h3>Vider</h3>
+						    <i className="fa fa-trash fa-4x" aria-hidden="true"></i>
+						    <h3>Vider</h3>
 						</div>
 					</a>
 					<a href="#" onClick={() => this.refs.popupSend.show()}>
@@ -287,68 +284,19 @@ class MiddleHome extends Component {
 	}
 }
 
-
-class FridgeContent extends Component {
-	/*
-	 TO-DO :
-	 * GET Contenu d'un frigo
-	 -> Chaque Item dans
-	 <li>**ITEM** <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-	 */
-	constructor(props){
-		super(props);
-	}
-
-	render() {
-		var removeItemPopupStyle = {
-			backgroundColor: '#d6d6d6',
-			borderRadius: '20px',
-			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
-			height: '220px',
-			width: '300px',
-			margin: '0',
-			top: '190px',
-			left: '362px'
-		}
-
-		return (
-			<ol id="fridge-content">
-				<li value='0'></li>
-				<li value='1'>Tomates <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='2'>Jus de pomme <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='3'>Crème fraîche <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='4'>Gouda <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='5'>Confiture <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='6'>Lait <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='7'>Jambon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='8'>Bacon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='9'>Margarine <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='10'>Oeufs <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<SkyLight hideOnOverlayClicked dialogStyles={removeItemPopupStyle} ref="popupRemoveItem" beforeOpen={updateItem()} id="remove-from-fridge-popup" className="popup">
-					<h1>Retirer du frigo ?</h1>
-					<div id="confirm-buttons">
-						<a href="#">
-							<img src="./assets/images/dark-red/confirm-button.svg"/>
-						</a>
-					</div>
-				</SkyLight>
-			</ol>
-		);
-	}
-}
-
 class ShoppingList extends Component {
-	/*
-	 TO-DO :
-	 * GET Liste de courses
-	 -> Chaque Item dans
-	 <li>**ITEM** <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-	 */
+/*
+	TO-DO :
+		* GET Liste de courses
+			-> Chaque Item dans
+				<li>**ITEM** <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>	
+*/
 	constructor(props){
 		super(props);
 	}
 
 	render() {
+
 		var removeItemPopupStyle = {
 			backgroundColor: '#d6d6d6',
 			borderRadius: '20px',
@@ -356,24 +304,24 @@ class ShoppingList extends Component {
 			height: '220px',
 			width: '300px',
 			margin: '0',
-			top: '190px',
-			left: '362px'
+		    top: '190px',
+    		left: '362px'
 		}
 
 		return (
-			<ol id="list">
-				<li value='0'></li>
-				<li value='1'>Tomates <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='2'>Jus de pomme <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='3'>Crème fraîche <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='4'>Gouda <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='5'>Confiture <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='6'>Lait <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='7'>Jambon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='8'>Bacon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='9'>Margarine <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li value='10'>Oeufs <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<SkyLight hideOnOverlayClicked dialogStyles={removeItemPopupStyle} ref="popupRemoveItem" beforeOpen={updateItem()} id="remove-from-list-popup" className="popup">
+			<ul id="list">
+				<li></li>
+				<li>Tomates <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Jus de pomme <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Crème fraîche <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Gouda <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Confiture <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Lait <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Jambon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Bacon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Margarine <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<li>Oeufs <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				<SkyLight hideOnOverlayClicked dialogStyles={removeItemPopupStyle} ref="popupRemoveItem" id="empty-list-popup" className="popup">
 					<h1>Retirer de la liste ?</h1>
 					<div id="confirm-buttons">
 						<a href="#">
@@ -381,7 +329,7 @@ class ShoppingList extends Component {
 						</a>
 					</div>
 				</SkyLight>
-			</ol>
+			</ul>
 		);
 	}
 }
@@ -410,14 +358,14 @@ class PopupEmpty extends Component {
 				<h1>Vider la liste ?</h1>
 				<div id="confirm-buttons">
 					<a href="#">
-						<img src="./assets/images/dark-red/confirm-button.svg"/>
+					<img src="./assets/images/dark-red/confirm-button.svg"/>
 					</a>
 					<a href="#">
 						<img src="./assets/images/dark-red/X-button.svg" className="popup-x"/>
 					</a>
 				</div>
 			</div>
-		);
+		);  
 	}
 }
 
@@ -489,7 +437,7 @@ class PopupRemoveFromList extends Component {
 					</a>
 				</div>
 			</div>
-		);
+		);  
 	}
 }
 
@@ -551,7 +499,6 @@ var routes = (
 		<Route path='/list' component={List} />
 	</Router>
 );
-
 
 /**************************************************************************
  ***********************Functions and JavaScript***************************
