@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String fridge_name = "";
     private JSONObject server_response;
     private String server_status="";
-    private FridgeFragment ff;
+    public FridgeFragment ff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         setSupportActionBar(toolbar);
         if (getAllergyModStatus() && !getFridgeModStatus()){
             toolbar.setBackgroundColor(getResources().getColor((R.color.colorPrimaryAllerance)));
@@ -369,7 +370,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void addFridge() {
-        // TODO: 03-12-16
         StringRequest stringRequest = new StringRequest(Request.Method.POST, FRIDGE_ADD_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -449,6 +449,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // TODO: 29-10-16
         }else if (id == R.id.nav_multiple_input){
             // TODO: 03-12-16  
+        }else if (id == R.id.nav_grocery_list){
+            startGroceryListActivity();
         }else if (id == R.id.nav_manage) {
             startSettingsActivity();
         } else if (id == R.id.nav_shop) {
@@ -464,6 +466,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void startGroceryListActivity() {
+        Intent intent = new Intent(MainActivity.this,GroceryListActivity.class);
+        startActivity(intent);
     }
 
     private void startAboutActivity() {

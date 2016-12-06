@@ -20,6 +20,7 @@ public class ContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
+        setTitle(R.string.title_activity_contact);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         WebView webView = (WebView)findViewById(R.id.contact_webview);

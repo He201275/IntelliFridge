@@ -10,9 +10,10 @@ public class Config {
     public static final String SHOP_URL = "http://www.intellifridge.ovh/shop.php";
     public static final String PRODUCT_DB_LOCATION_CHECK_URL = "http://api.intellifridge.ovh/v1/products/isInDB";
     public static final String GET_PRODUCT_INFO_LOCAL_URL = "";
-    public static final String ADD_PRODUCT_LOCAL_DB = "http://api.intellifridge.ovh/v1/products/add";
+    public static final String ADD_PRODUCT_URL= "http://api.intellifridge.ovh/v1/products/add";
     public static final String FRIDGE_CONTENT_URL = "http://api.intellifridge.ovh/v1/fridges/getFridgeContent";
     public static final String FRIDGE_REMOVE_URL = "http://api.intellifridge.ovh/v1/fridges/remove";
+    public static final String GROCERY_LIST_GET_URL = "http://api.intellifridge.ovh/v1/list/get";
 
     public static final String JWT_KEY = "wAMxBauED07a4GurMpuD";
 
@@ -23,6 +24,7 @@ public class Config {
     //Server response messages
     public static final String SERVER_SUCCESS = "200";
     public static final String SERVER_FRIDGE_EMPTY = "201";
+    public static final String SERVER_PROD_NOTINDB = "201";
     public static final String SERVER_FRIDGE_EXISTS= "202";
     public static final String SERVER_DB_ERROR = "500";
 
@@ -36,7 +38,7 @@ public class Config {
     public static final String KEY_USERID = "UserId";
     public static final String KEY_API_KEY = "ApiKey";
     public static final String KEY_FRIDGE_NAME = "FrigoNom";
-    public static final String KEY_BARCODE = "ProductSId";
+    public static final String KEY_PRODUCT_S_ID = "ProduitSId";
     public static final String KEY_PRODUCT_NAME = "ProduitSNom";
     public static final String KEY_PRODUCT_BRAND = "ProduitSMarque";
     public static final String KEY_PRODUCT_QUANTITY = "Contenance";
@@ -54,6 +56,7 @@ public class Config {
     public static final String USER_LANG_PREFS = "user_language";
     public static final String USER_API_KEY = "user_apiKey";
     public static final String FRIDGE_LIST_PREFS = "user_fridge_list";
+    public static final String FRIDGE_LIST_SIZE_PREFS = "user_fridge_list_size";
 
     //Table column names
     public static final String USER_ID_DB = "UserId";
@@ -65,10 +68,13 @@ public class Config {
     public static final String USER_LANG_DB = "LangueCode";
     public static final String USER_API_KEY_DB = "ApiKey";
     public static final String FRIDGE_NAME_DB = "FrigoNom";
-    public static final String PRODUCT_S_ID = "ProduitSId";
+    public static final String FRIDGE_ID_DB = "FrigoId";
+    public static final String PRODUCT_S_ID_DB = "ProduitSId";
     public static final String PRODUCT_NAME_DB = "ProduitNom";
-    public static final String PRODUCT_ID_DB = "ProduitId";
+    public static final String PRODUCT_ID_NS_DB = "ProduitNSId";
     public static final String PRODUCT_QUANTITY_DB = "Quantite";
+    public static final String LIST_NOTE_DB = "ListeNote";
+
 
     public static final String LOGIN_REGISTER_EXTRA= "new_user_email";
     public static final String SCAN_TYPE_EXTRA = "scan_type";
@@ -91,6 +97,7 @@ public class Config {
     public static final String ADD_PRODUCT_LOCAL_DB_REQUEST_TAG = "ovh.intellifridge.addproductlocaldb";
     public static final String FRIDGE_CONTENT_REQUEST_TAG = "ovh.intellifridge.fridgecontent";
     public static final String ADD_FRIDGE_REQUEST_TAG = "ovh.intellifridge.addfridge";
+    public static final String GET_GROCERY_LIST_TAG = "ovh.intellifridge.getgrocerylist";
 
     public static final int TAB_RECENT_DEFAULT = 0;
     public static final int TAB_FRIDGE_DEFAULT = 1;
@@ -112,5 +119,8 @@ public class Config {
     public static final String OFF_IMAGE_URL = "image_url";
     public static final String OFF_BRANDS = "brands";
 
+    public static final String VOLLEY_ERROR_TAG = "VOLLEY ERROR";
+
     public static final String SHARED_PREF_NAME_ALLERGY = "spAllergy"; // TODO: 04-12-16
+    
 }

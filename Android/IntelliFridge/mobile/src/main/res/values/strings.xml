@@ -146,4 +146,13 @@
     <string name="fridge_empty">The fridge is empty!</string>
     <string name="add_fridge_error_exists">Name already exists! Please choose another one</string>
     <string name="remove_fridge_success">The fridge has been deleted!</string>
+    <string name="product_add_notInDb">The scanned product is not yet in the IntelliFridge database</string>
+    <string name="fridge_deleted">The fridge has been deleted! Please refresh.</string>
+    <string name="delete_fridge_confirm_title">Are you sure you want to delete this fridge?</string>
+    <string name="delete_fridge_posBtn">Delete</string>
+    <string name="delete_fridge_negBtn">Cancel</string>
+    <string name="nav_list">Grocery list</string>
+    <string name="grocery_list_title">Grocery List</string>
+    <string name="title_activity_profile">My profile</string>
+    <string name="title_activity_contact">Contact</string>
 </resources>

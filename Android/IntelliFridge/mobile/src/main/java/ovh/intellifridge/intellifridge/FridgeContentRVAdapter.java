@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by franc on 03-12-16.
@@ -45,6 +46,17 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
         productViewHolderHolder.product_name.setText(fridgeContent[position].getProductName());
         //productViewHolderHolder.product_image.setImageDrawable(Drawable.createFromPath(fridgeContent[position].getUrlImage())); // TODO: 04-12-16
         productViewHolderHolder.product_quantity.setText(Integer.toString(fridgeContent[position].getProductQuantity()));
+        productViewHolderHolder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(),"Card pressed",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void remove(int position) {
+        //fridgeContent.remove(position);
+        notifyItemRemoved(position);
     }
 
     @Override

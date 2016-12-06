@@ -5,8 +5,8 @@ package ovh.intellifridge.intellifridge;
  */
 
 public class Fridge {
+    private int fridgeId;
     private String fridgeName;
-    private int nbProducts; // TODO: 03-12-16
 
     public Fridge(){
         super();
@@ -16,19 +16,24 @@ public class Fridge {
         this.fridgeName = frName;
     }
 
+    @Override
+    public String toString() {
+        return this.fridgeName;
+    }
+
     public String getFridgeName() {
         return fridgeName;
+    }
+
+    public int getFridgeId() {
+        return fridgeId;
     }
 
     public void setFridgeName(String fridgeName) {
         this.fridgeName = fridgeName;
     }
 
-    public int getNbProducts() {
-        return nbProducts;
-    }
-
-    public void setNbProducts(int nbProducts) {
-        this.nbProducts = nbProducts;
+    public void setFridgeId(int fridgeId) {
+        this.fridgeId = fridgeId;
     }
 }
