@@ -295,12 +295,20 @@ class MiddleHome extends Component {
 class FridgeContent extends Component {
 	constructor(props){
 		super(props);
-		console.log(props.fridge);
-		apiRequest("POST", "fridges/getFridgeContent", {FrigoNom : "Office"}, function(an){
+		apiRequest("POST", "fridges/getFridgeContent", {FrigoNom : props.fridgeName}, function(an){
 			console.log(an);
 			list = an;
 			this.render();
-		}, apiError);
+		}, function(an){
+			console.log(an);
+			if(an.status==201){
+				list = "Frigo Vide.";
+				this.render();
+			}else{
+				list = "Erreur d'API";
+				this.render();
+			}
+		});
 	}
 
 	render() {
@@ -314,23 +322,37 @@ class FridgeContent extends Component {
 			margin: '0',
 		    top: '190px',
     		left: '362px'
+		};
+		if(list == undefined){
+			console.log("ok");
+			console.log(list);
+			return(<ul id="list">
+				<li></li>
+				<li>Erreur Interne</li>
+			</ul>);
 		}
-
-		return (
-			<ul id="list">
+		if(typeof list == 'string'){
+			return(<ul id="list">
+				<li></li>
+				<li>{list}</li>
+				</ul>);
+		}else{
+				return (
+				<ul id="list">
 				<li></li>
 				{list.map((dynamicComponent, i) => <ListElem
 					key = {i} componentData = {dynamicComponent}/>)}
 				<SkyLight hideOnOverlayClicked dialogStyles={removeItemPopupStyle} ref="popupRemoveItem" id="empty-list-popup" className="popup">
-					<h1>Retirer de la liste ?</h1>
-					<div id="confirm-buttons">
-						<a href="#">
-							<img src="./assets/images/dark-red/confirm-button.svg"/>
-						</a>
-					</div>
+				<h1>Retirer de la liste ?</h1>
+				<div id="confirm-buttons">
+				<a href="#">
+				<img src="./assets/images/dark-red/confirm-button.svg"/>
+				</a>
+				</div>
 				</SkyLight>
-			</ul>
-		);
+				</ul>
+				);
+		}
 	}
 }
 
@@ -382,16 +404,19 @@ class ListElem extends Component {
 }
 
 class MiddleList extends Component {
-	constructor(){
-		super();
-
+	constructor(props){
+		super(props);
+		apiRequest("GET", "fridges/getName", {FrigoId:props.fridge}, function(an){
+			fridgeName = an.FridgeNom;
+			this.render();
+		}, apiError);
 	}
 	render() {
 		if(this.props.fridge){
 			return (
 				<div id="middle-block" className="main-part list-block">
-					<h1>Name of the fridge</h1>
-					<FridgeContent fridge={this.props.fridge} />
+					<h1>{fridgeName}</h1>
+					<FridgeContent fridgeName={fridgeName} fridge={this.props.fridge} />
 					<div id="add-item">
 						<div id="mask"></div>
 						<img src="./assets/images/dark-red/plus-button.svg"/>
@@ -550,7 +575,7 @@ class List extends Component {
 				<TopPages />
 				<div id="wrapper">
 					<MiddleList fridge={this.props.params.FridgeId} />
-					<RightList />
+					<RightList title={this.props.FridgeId} />
 				</div>
 			</div>
 		);
@@ -569,7 +594,7 @@ var routes = (
  ***********************Functions and JavaScript***************************
  *************************************************************************/
 var apiBase;
-var fridgesList, list=-1;
+var fridgesList, list, fridgeName=-1;
 /**
  * Permet d'aller chercher les variables de session nécessaires
  * TODO remettre les vraies variables de session
