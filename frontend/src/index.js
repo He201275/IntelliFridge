@@ -8,19 +8,6 @@ import $ from "jquery";
 import jwtDecode from "jwt-decode";
 import jwt from "jsonwebtoken";
 import CryptoJS from "crypto-js";
-var apiBase;
-/**
- * Permet d'aller chercher les variables de session nécessaires
- * TODO remettre les vraies variables de session
- */
-request("GET", "http://app.intellifridge.ovh/app/getSession.php", "", storeApiDatas, apiError);
-var fridgesList=-1;
-apiRequest("GET", "fridges/list", null, function(an){
-	console.log(JSON.stringify(an));
-	setFridgeList(an);
-}, function (an) {
-	console.log("Erreur : \n"+JSON.stringify(an));
-});
 /**
  * Bouton déconnexion
  */
@@ -512,11 +499,41 @@ var routes = (
 		<Route path='/list' component={List} />
 	</Router>
 );
+
+/**************************************************************************
+ ***********************Functions and JavaScript***************************
+ *************************************************************************/
+var apiBase;
+var fridgesList=-1;
+/**
+ * Permet d'aller chercher les variables de session nécessaires
+ * TODO remettre les vraies variables de session
+ */
+request("GET", "http://app.intellifridge.ovh/app/getSession.php", "", storeApiDatas, apiError);
+/**
+ * Va chercher la liste des frigos
+ */
+apiRequest("GET", "fridges/list", null, function(an){
+	console.log(JSON.stringify(an));
+	setFridgeList(an);
+}, function (an) {
+	console.log("Erreur : \n"+JSON.stringify(an));
+});
+/**
+ * lance le rendu de l'application
+ */
 render();
 function render(){
 	ReactDOM.render(routes, document.querySelector('#root'));
-};
-
+}
+/**
+ * Permet de faire une requète vers une page renvoyant du JSON
+ * @param type type de requète. Ex : GET, POST etc
+ * @param url URL de la page pour la requète
+ * @param data Données envoyées pour la requète
+ * @param fs Fonction lancée si la requète réussi
+ * @param fe Fonction lancée si la requète ne réussit pas
+ */
 function request(type, url, data, fs, fe){
 	$.ajax({
 		async : false,
@@ -532,12 +549,28 @@ function request(type, url, data, fs, fe){
 		error: fe
 	});
 }
+/**
+ * Change l'objet apiBase pour contenir UserId et ApiKey
+ * @param an String JSON des données
+ */
 function storeApiDatas(an){
 	apiBase = JSON.parse(an);
 }
+/**
+ * Fonction de debug qui envoie en console le résultat
+ * @param an Objet renvoyé par une requète
+ */
 function apiError(an){
-	console.log(an);
+	console.log(JSON.stringify(an));
 }
+/**
+ * Permet de faire une requète vers l'API d'IntelliFridge
+ * @param type type de requète. Ex : GET, POST etc
+ * @param url Fin de l'URL http://api.intellifridge.ovh/v1/ pour avoir accès aux informations souhaitées
+ * @param data Données envoyées pour la requète (viendra s'ajouter ApiKey et UserId automatiquement)
+ * @param fs Fonction lancée si la requète réussi
+ * @param fe Fonction lancée si la requète ne réussit pas
+ */
 function apiRequest(type, url, data, fs, fe){
 	var apiAn = -1;
 	if(data!=null){
