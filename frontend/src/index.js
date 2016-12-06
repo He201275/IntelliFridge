@@ -5,7 +5,6 @@ import { Router, Route, Link, browserHistory } from 'react-router';
 import SkyLight from 'react-skylight'; 
 import logo from './logo.svg';
 import $ from "jquery";
-import jwtDecode from "jwt-decode";
 import jwt from "jsonwebtoken";
 /**
  * Bouton déconnexion

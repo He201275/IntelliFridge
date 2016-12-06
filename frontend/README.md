@@ -8,7 +8,6 @@ Frontend de la webapp intelliFridge créé à partir de [create-react-app](https
 $ npm install react-router
 $ npm install react-skylight
 $ npm install jquery
-$ npm install jwt-decode
 $ npm install jsonwebtoken
 ~~~
 
