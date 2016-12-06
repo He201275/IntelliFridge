@@ -245,6 +245,15 @@ class RightList extends Component {
 }
 
 class FridgeList extends Component {
+	constructor(){
+		super();
+		apiRequest("GET", "fridges/list", null, function(an){
+			setFridgeList(an);
+			this.render();
+		}, function (an) {
+			console.log("Erreur : \n"+JSON.stringify(an));
+		});
+	}
 	render() {
 		return (
 			<div id="fridges">
@@ -284,14 +293,14 @@ class MiddleHome extends Component {
 }
 
 class FridgeContent extends Component {
-/*
-	TO-DO :
-		* GET Liste de courses
-			-> Chaque Item dans
-				<li>**ITEM** <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>	
-*/
 	constructor(props){
 		super(props);
+		console.log(props.fridge);
+		apiRequest("POST", "fridges/getFridgeContent", {FrigoNom : "Office"}, function(an){
+			console.log(an);
+			list = an;
+			this.render();
+		}, apiError);
 	}
 
 	render() {
@@ -310,58 +319,8 @@ class FridgeContent extends Component {
 		return (
 			<ul id="list">
 				<li></li>
-				<li>Tomates</li>
-				<li>Jus de pomme</li>
-				<li>Crème fraîche</li>
-				<li>Gouda</li>
-				<li>Confiture</li>
-				<li>Lait</li>
-				<li>Jambon</li>
-				<li>Bacon</li>
-				<li>Margarine</li>
-				<li>Oeufs</li>
-			</ul>
-		);
-	}
-}
-
-class ShoppingList extends Component {
-	/*
-	 TO-DO :
-	 * GET Liste de courses
-	 -> Chaque Item dans
-	 <li>**ITEM** <a href="#"><i className="fa fa-times remove-item" aria-hidden="true"></i></a></li>
-	 */
-	constructor(props){
-		super(props);
-	}
-
-	render() {
-
-		var removeItemPopupStyle = {
-			backgroundColor: '#d6d6d6',
-			borderRadius: '20px',
-			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
-			height: '220px',
-			width: '300px',
-			margin: '0',
-			top: '190px',
-			left: '362px'
-		}
-
-		return (
-			<ul id="list">
-				<li></li>
-				<li>Tomates <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li>Jus de pomme <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li>Crème fraîche <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li>Gouda <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li>Confiture <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li>Lait <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li>Jambon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li>Bacon <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li>Margarine <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
-				<li>Oeufs <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+				{list.map((dynamicComponent, i) => <ListElem
+					key = {i} componentData = {dynamicComponent}/>)}
 				<SkyLight hideOnOverlayClicked dialogStyles={removeItemPopupStyle} ref="popupRemoveItem" id="empty-list-popup" className="popup">
 					<h1>Retirer de la liste ?</h1>
 					<div id="confirm-buttons">
@@ -375,18 +334,82 @@ class ShoppingList extends Component {
 	}
 }
 
-class MiddleList extends Component {
+class ShoppingList extends Component {
+	constructor(props){
+		super(props);
+		apiRequest("GET", "list/get", null, function(an){
+			console.log(an);
+			list = an;
+			this.render();
+		}, apiError);
+	}
+	render() {
+
+		var removeItemPopupStyle = {
+			backgroundColor: '#d6d6d6',
+			borderRadius: '20px',
+			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
+			height: '220px',
+			width: '300px',
+			margin: '0',
+			top: '190px',
+			left: '362px'
+		}
+		return (
+			<ul id="list">
+				<li></li>
+				{list.map((dynamicComponent, i) => <ListElem
+					key = {i} componentData = {dynamicComponent}/>)}
+				<SkyLight hideOnOverlayClicked dialogStyles={removeItemPopupStyle} ref="popupRemoveItem" id="empty-list-popup" className="popup">
+					<h1>Retirer de la liste ?</h1>
+					<div id="confirm-buttons">
+						<a href="#">
+							<img src="./assets/images/dark-red/confirm-button.svg"/>
+						</a>
+					</div>
+				</SkyLight>
+			</ul>
+		);
+	}
+}
+
+class ListElem extends Component {
 	render() {
 		return (
-			<div id="middle-block" className="main-part list-block">
-				<h1>Ma liste</h1>
-				<ShoppingList />
-				<div id="add-item">
-					<div id="mask"></div>
-					<img src="./assets/images/dark-red/plus-button.svg"/>
-				</div>
-			</div>
+			<li id="this.props.componentData.ProduitId">{this.props.componentData.ProduitNom+" - "+this.props.componentData.Quantite+" - "+this.props.componentData.DateAjout} <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
 		);
+	}
+}
+
+class MiddleList extends Component {
+	constructor(){
+		super();
+
+	}
+	render() {
+		if(this.props.fridge){
+			return (
+				<div id="middle-block" className="main-part list-block">
+					<h1>Name of the fridge</h1>
+					<FridgeContent fridge={this.props.fridge} />
+					<div id="add-item">
+						<div id="mask"></div>
+						<img src="./assets/images/dark-red/plus-button.svg"/>
+					</div>
+				</div>
+			);
+		}else{
+			return (
+				<div id="middle-block" className="main-part list-block">
+					<h1>Ma liste</h1>
+					<ShoppingList />
+					<div id="add-item">
+						<div id="mask"></div>
+						<img src="./assets/images/dark-red/plus-button.svg"/>
+					</div>
+				</div>
+			);
+		}
 	}
 }
 
@@ -526,7 +549,7 @@ class List extends Component {
 			<div className="List">
 				<TopPages />
 				<div id="wrapper">
-					<MiddleList />
+					<MiddleList fridge={this.props.params.FridgeId} />
 					<RightList />
 				</div>
 			</div>
@@ -538,7 +561,7 @@ var routes = (
 	<Router history={browserHistory}>
 		<Route path='/' component={Home} />
 		<Route path='/list' component={List} />
-		<Route path='/fridgeContent/:FridgeId' component={FridgeContent} />
+		<Route path='/fridgeContent/:FridgeId' component={List} />
 	</Router>
 );
 
@@ -546,21 +569,12 @@ var routes = (
  ***********************Functions and JavaScript***************************
  *************************************************************************/
 var apiBase;
-var fridgesList=-1;
+var fridgesList, list=-1;
 /**
  * Permet d'aller chercher les variables de session nécessaires
  * TODO remettre les vraies variables de session
  */
 request("GET", "http://app.intellifridge.ovh/app/getSession.php", "", storeApiDatas, apiError);
-/**
- * Va chercher la liste des frigos
- */
-apiRequest("GET", "fridges/list", null, function(an){
-	console.log(JSON.stringify(an));
-	setFridgeList(an);
-}, function (an) {
-	console.log("Erreur : \n"+JSON.stringify(an));
-});
 /**
  * lance le rendu de l'application
  */
@@ -603,7 +617,10 @@ function storeApiDatas(an){
  * @param an Objet renvoyé par une requète
  */
 function apiError(an){
-	console.log(JSON.stringify(an));
+	console.log("Erreur : \n"+JSON.stringify(an));
+}
+function apiSuccess(an){
+	console.log("Ok : \n"+JSON.stringify(an));
 }
 /**
  * Permet de faire une requète vers l'API d'IntelliFridge
@@ -614,16 +631,23 @@ function apiError(an){
  * @param fe Fonction lancée si la requète ne réussit pas
  */
 function apiRequest(type, url, data, fs, fe){
-	var apiAn = -1;
 	if(data!=null){
-		var sData = JSON.stringify(Array.prototype.push.apply(apiBase, data));
+		var result={};
+		$.extend(result, data, apiBase);
+		var sData = JSON.stringify(result);
 	}else{
 		var sData = JSON.stringify(apiBase);
 	}
+	console.log(sData);
 	var sJWT = {jwt:jwt.sign(sData, "wAMxBauED07a4GurMpuD", {header:{alg: 'HS256', typ: 'JWT'}})};
-	console.log(JSON.stringify(sJWT));
+	//console.log(sJWT);
 	request(type, "http://api.intellifridge.ovh/v1/"+url, sJWT, function(an){
 		var decoded = jwt.decode(an, {complete: true});
+		console.log("Réponse : \n"+an+"\nDécodée : \n"+JSON.stringify(decoded));
+		if(decoded==null){
+			alert("Erreur API");
+			return -1;
+		}
 		if(decoded.payload.status==200){
 			fs(decoded.payload.data);
 		}else{
