@@ -66,6 +66,7 @@ import static ovh.intellifridge.intellifridge.Config.SCAN_ALLERGY;
 import static ovh.intellifridge.intellifridge.Config.SCAN_FRIDGE;
 import static ovh.intellifridge.intellifridge.Config.SCAN_INFO;
 import static ovh.intellifridge.intellifridge.Config.SCAN_TYPE_EXTRA;
+import static ovh.intellifridge.intellifridge.Config.SERVER_FRIDGE_EXISTS;
 import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
 import static ovh.intellifridge.intellifridge.Config.SERVER_SUCCESS;
 import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String fridge_name = "";
     private JSONObject server_response;
     private String server_status="";
+    private FridgeFragment ff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -386,7 +388,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
 
                         if (server_status.equals(SERVER_SUCCESS)){
-                            Toast.makeText(getApplicationContext(),R.string.add_fridge_success,Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(),R.string.add_fridge_success,Toast.LENGTH_SHORT).show();
+                            ff.onRefresh();
+                        }else if(server_status.equals(SERVER_FRIDGE_EXISTS)){
+                            Toast.makeText(getApplicationContext(),R.string.add_fridge_error_exists,Toast.LENGTH_SHORT).show();
                         }else {
                             Toast.makeText(getApplicationContext(),R.string.add_fridge_error,Toast.LENGTH_LONG).show();
                         }
@@ -549,7 +554,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case TAB_RECENT_FRIDGE:
                         return new RecentFragment();
                     case TAB_FRIDGE_FRIDGE:
-                        return new FridgeFragment();
+                        ff = new FridgeFragment();
+                        return ff;
                     default:
                         return null;
                 }
@@ -567,7 +573,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case TAB_RECENT_DEFAULT:
                         return new RecentFragment();
                     case TAB_FRIDGE_DEFAULT:
-                        return new FridgeFragment();
+                        ff = new FridgeFragment();
+                        return ff;
                     case TAB_ALLERGY_DEFAULT:
                         return new AllergyFragment();
                     case TAB_MAPS_DEFAULT:

@@ -144,4 +144,6 @@
     <string name="fridge_content_card_quantity_lbl">Quantity</string>
     <string name="open_fridge">Opening fridge...</string>
     <string name="fridge_empty">The fridge is empty!</string>
+    <string name="add_fridge_error_exists">Name already exists! Please choose another one</string>
+    <string name="remove_fridge_success">The fridge has been deleted!</string>
 </resources>
