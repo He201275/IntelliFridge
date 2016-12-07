@@ -27,10 +27,10 @@ class TopPages extends Component {
 		return (
 			<div className="top">
 				<a href="deconnect.php" className="logout"><i className="fa fa-sign-out" aria-hidden="true"></i></a>
-				<div id="logo"><img src="./assets/images/dark-red/logo.svg"/></div>
+				<div id="logo"><img src="/assets/images/dark-red/logo.svg"/></div>
 				<div id="home">
 					<Link to="/">
-						<img src="./assets/images/dark-red/home.svg"/>
+						<img src="/assets/images/dark-red/home.svg"/>
 					</Link>
 				</div>
 			</div>
@@ -63,10 +63,10 @@ class Left extends Component {
 				<div id="left-block" className="side-block">
 					<div className="separator"></div>
 					<a href="#" onClick={() => this.refs.popupAddItems.show()}>
-						<img id="fridge-add" className="left-button" src="./assets/images/add-to-fridge.svg"/>
+						<img id="fridge-add" className="left-button" src="/assets/images/add-to-fridge.svg"/>
 					</a>
 					<a href="#" onClick={() => this.refs.popupRemoveItems.show()}>
-						<img id="fridge-remove" className="left-button" src="./assets/images/remove-from-fridge.svg"/>
+						<img id="fridge-remove" className="left-button" src="/assets/images/remove-from-fridge.svg"/>
 					</a>
 				</div>
 				<SkyLight hideOnOverlayClicked dialogStyles={itemsInOutPopupStyle} ref="popupAddItems" id="add-items-popup" className="popup items-in-out">
@@ -74,13 +74,13 @@ class Left extends Component {
 					<div className="methods-buttons">
 						<a href="#" className="method">
 							<span>
-								<img src="./assets/images/barcode.svg"/>
+								<img src="/assets/images/barcode.svg"/>
 								<h3>Scanner</h3>
 							</span>
 						</a>
 						<a href="#" className="method">
 							<span>
-								<img src="./assets/images/hand.svg"/>
+								<img src="/assets/images/hand.svg"/>
 								<h3>Ajouter manuellement</h3>
 							</span>
 						</a>
@@ -91,13 +91,13 @@ class Left extends Component {
 					<div className="methods-buttons">
 						<a href="#" className="method">
 							<span>
-								<img src="./assets/images/barcode.svg"/>
+								<img src="/assets/images/barcode.svg"/>
 								<h3>Scanner</h3>
 							</span>
 						</a>
 						<a href="#" className="method">
 							<span>
-								<img src="./assets/images/hand.svg"/>
+								<img src="/assets/images/hand.svg"/>
 								<h3>Retirer manuellement</h3>
 							</span>
 						</a>
@@ -153,10 +153,10 @@ class RightHome extends Component {
 					<h1>Comment ?</h1>
 					<div className="send-fields">
 						<div>
-							<input type="tel" name="tel-number" placeholder="sms"/> <img src="./assets/images/dark-red/go-button.svg"/>
+							<input type="tel" name="tel-number" placeholder="sms"/> <img src="/assets/images/dark-red/go-button.svg"/>
 						</div>
 						<div>
-							<input type="email" name="email-address" placeholder="email"/> <img src="./assets/images/dark-red/go-button.svg"/>
+							<input type="email" name="email-address" placeholder="email"/> <img src="/assets/images/dark-red/go-button.svg"/>
 						</div>
 					</div>
 				</SkyLight>
@@ -223,7 +223,7 @@ class RightList extends Component {
 					<h1>Vider la liste ?</h1>
 					<div id="confirm-buttons">
 						<a href="#">
-							<img src="./assets/images/dark-red/confirm-button.svg"/>
+							<img src="/assets/images/dark-red/confirm-button.svg"/>
 						</a>
 					</div>
 				</SkyLight>
@@ -231,10 +231,10 @@ class RightList extends Component {
 					<h1>Comment ?</h1>
 					<div className="send-fields">
 						<div>
-							<input type="tel" name="tel-number" placeholder="sms"/> <img src="./assets/images/dark-red/go-button.svg"/>
+							<input type="tel" name="tel-number" placeholder="sms"/> <img src="/assets/images/dark-red/go-button.svg"/>
 						</div>
 						<div>
-							<input type="email" name="email-address" placeholder="email"/> <img src="./assets/images/dark-red/go-button.svg"/>
+							<input type="email" name="email-address" placeholder="email"/> <img src="/assets/images/dark-red/go-button.svg"/>
 						</div>
 					</div>
 				</SkyLight>
@@ -268,7 +268,7 @@ class Fridge extends Component {
 		return (
 			<div className="fridge">
 				<Link to={"/fridgeContent/"+this.props.componentData.FrigoId}>
-					<img src="./assets/images/fridge.svg"/>
+					<img src="/assets/images/fridge.svg"/>
 					<h3>{this.props.componentData.FrigoNom}</h3>
 				</Link>
 			</div>
@@ -283,8 +283,8 @@ class MiddleHome extends Component {
 				<h1>Mes frigos</h1>
 				<FridgeList />
 				<div id="buttons">
-					<img src="./assets/images/dark-red/plus-button.svg"/>
-					<img src="./assets/images/dark-red/gear-button.svg"/>
+					<img src="/assets/images/dark-red/plus-button.svg"/>
+					<img src="/assets/images/dark-red/gear-button.svg"/>
 				</div>
 			</div>
 		);
@@ -345,7 +345,7 @@ class FridgeContent extends Component {
 				<h1>Retirer de la liste ?</h1>
 				<div id="confirm-buttons">
 				<a href="#">
-				<img src="./assets/images/dark-red/confirm-button.svg"/>
+				<img src="/assets/images/dark-red/confirm-button.svg"/>
 				</a>
 				</div>
 				</SkyLight>
@@ -385,7 +385,7 @@ class ShoppingList extends Component {
 					<h1>Retirer de la liste ?</h1>
 					<div id="confirm-buttons">
 						<a href="#">
-							<img src="./assets/images/dark-red/confirm-button.svg"/>
+							<img src="/assets/images/dark-red/confirm-button.svg"/>
 						</a>
 					</div>
 				</SkyLight>
@@ -418,7 +418,7 @@ class MiddleList extends Component {
 					<FridgeContent fridgeName={fridgeName} fridge={this.props.fridge} />
 					<div id="add-item">
 						<div id="mask"></div>
-						<img src="./assets/images/dark-red/plus-button.svg"/>
+						<img src="/assets/images/dark-red/plus-button.svg"/>
 					</div>
 				</div>
 			);
@@ -429,7 +429,7 @@ class MiddleList extends Component {
 					<ShoppingList />
 					<div id="add-item">
 						<div id="mask"></div>
-						<img src="./assets/images/dark-red/plus-button.svg"/>
+						<img src="/assets/images/dark-red/plus-button.svg"/>
 					</div>
 				</div>
 			);
@@ -446,10 +446,10 @@ class PopupEmpty extends Component {
 				<h1>Vider la liste ?</h1>
 				<div id="confirm-buttons">
 					<a href="#">
-					<img src="./assets/images/dark-red/confirm-button.svg"/>
+					<img src="/assets/images/dark-red/confirm-button.svg"/>
 					</a>
 					<a href="#">
-						<img src="./assets/images/dark-red/X-button.svg" className="popup-x"/>
+						<img src="/assets/images/dark-red/X-button.svg" className="popup-x"/>
 					</a>
 				</div>
 			</div>
@@ -462,19 +462,19 @@ class PopupAddItems extends Component {
 		return (
 			<div id="add-items-popup" className="popup items-in-out">
 				<a href="#">
-					<img src="./assets/images/dark-red/X-button.svg" className="close-popup popup-x"/>
+					<img src="/assets/images/dark-red/X-button.svg" className="close-popup popup-x"/>
 				</a>
 				<h1>Comment ?</h1>
 				<div className="methods-buttons">
 					<a href="#">
 						<span className="method">
-							<img src="./assets/images/barcode.svg"/>
+							<img src="/assets/images/barcode.svg"/>
 							<h3>Scanner</h3>
 						</span>
 					</a>
 					<a href="#">
 						<span className="method">
-							<img src="./assets/images/hand.svg"/>
+							<img src="/assets/images/hand.svg"/>
 							<h3>Ajouter manuellement</h3>
 						</span>
 					</a>
@@ -489,19 +489,19 @@ class PopupRemoveItems extends Component {
 		return (
 			<div id="remove-items-popup" className="popup items-in-out">
 				<a href="#">
-					<img src="./assets/images/dark-red/X-button.svg" className="close-popup popup-x"/>
+					<img src="/assets/images/dark-red/X-button.svg" className="close-popup popup-x"/>
 				</a>
 				<h1>Comment ?</h1>
 				<div className="methods-buttons">
 					<a href="#">
 						<span className="method">
-							<img src="./assets/images/barcode.svg"/>
+							<img src="/assets/images/barcode.svg"/>
 							<h3>Scanner</h3>
 						</span>
 					</a>
 					<a href="#">
 						<span className="method">
-							<img src="./assets/images/hand.svg"/>
+							<img src="/assets/images/hand.svg"/>
 							<h3>Retirer manuellement</h3>
 						</span>
 					</a>
@@ -518,10 +518,10 @@ class PopupRemoveFromList extends Component {
 				<h1>Retirer de la liste ?</h1>
 				<div id="confirm-buttons">
 					<a href="#">
-						<img src="./assets/images/dark-red/confirm-button.svg"/>
+						<img src="/assets/images/dark-red/confirm-button.svg"/>
 					</a>
 					<a href="#">
-						<img src="./assets/images/dark-red/X-button.svg" className="popup-x"/>
+						<img src="/assets/images/dark-red/X-button.svg" className="popup-x"/>
 					</a>
 				</div>
 			</div>
@@ -534,15 +534,15 @@ class PopupSendList extends Component {
 		return (
 			<div id="send-method-popup" className="popup">
 				<a href="#" className="close-popup popup-x">
-					<img src="./assets/images/dark-red/X-button.svg" className="close-popup" id="close-send"/>
+					<img src="/assets/images/dark-red/X-button.svg" className="close-popup" id="close-send"/>
 				</a>
 				<h1>Comment ?</h1>
 				<div className="send-fields">
 					<div>
-						<input type="tel" name="tel-number" placeholder="sms"/> <img src="./assets/images/dark-red/go-button.svg"/>
+						<input type="tel" name="tel-number" placeholder="sms"/> <img src="/assets/images/dark-red/go-button.svg"/>
 					</div>
 					<div>
-						<input type="email" name="email-address" placeholder="email"/> <img src="./assets/images/dark-red/go-button.svg"/>
+						<input type="email" name="email-address" placeholder="email"/> <img src="/assets/images/dark-red/go-button.svg"/>
 					</div>
 				</div>
 			</div>
@@ -572,7 +572,7 @@ class List extends Component {
 		console.log(this.props.FridgeId)
 		if(this.props.FridgeId== undefined){
 			return (
-				<div className="List">
+				<div className="FridgeContent">
 					<TopPages />
 					<div id="wrapper">
 						<MiddleList fridge={this.props.params.FridgeId} />
