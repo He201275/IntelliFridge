@@ -122,11 +122,11 @@ class Left extends Component {
 					</div>
 				</SkyLight>
 				<SkyLight hideOnOverlayClicked dialogStyles={scanPopupStyle} ref="popupManual" id="send-method-popup" className="popup">
-					<div className="send-fields">
-						<div>
-							<input type="text" name="new-fridge-name" placeholder="Scannez le code barre"/> <img src="./assets/images/dark-red/go-button.svg"/>
-						</div>
-					</div>
+					<form action="">
+						Tomates <input type="number" id="xx" value="0" min="0" max="25"/><br/>
+						Pommes <input type="number" id="xx" value="0" min="0" max="25"/><br/>
+						Oeufs <input type="number" id="xx" value="0" min="0" max="25"/>
+					</form>
 				</SkyLight>
 			</div>  
 		);
@@ -320,7 +320,52 @@ class MiddleHome extends Component {
 				<h1>Mes frigos</h1>
 				<FridgeList />
 				<div id="buttons">
-					<img src="./assets/images/dark-red/plus-button.svg"/>
+					<a href="#"><img src="./assets/images/dark-red/plus-button.svg" onClick={() => this.refs.popupAddFridge.show()}/></a>
+					<a href="/settings"><img src="./assets/images/dark-red/gear-button.svg"/></a>
+				</div>
+				<SkyLight hideOnOverlayClicked dialogStyles={addFridgePopupStyle} ref="popupAddFridge" id="send-method-popup" className="popup">
+					<div className="send-fields">
+						<div>
+							<input type="text" name="new-fridge-name" placeholder="nom du frigo"/> <img src="./assets/images/dark-red/go-button.svg"/>
+						</div>
+					</div>
+				</SkyLight>
+			</div>
+		);
+	}
+}
+
+class Settings extends Component {
+	render() {
+
+		var addFridgePopupStyle = {
+			backgroundColor: '#d6d6d6',
+			borderRadius: '20px',
+			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
+			height: '200px',
+			width: '250px',
+			margin: '0',
+		    top: '200px',
+    		left: '387px'
+		}
+
+		return (
+			<div id="middle-block" className="main-part">
+				<h1>Paramètres</h1>
+				<form id="settings">
+					<label for="name">Nom :</label><input type="text" name="name" placeholder="nom"/><br/>
+					<label for="surname">Prénom :</label><input type="text" name="surname" placeholder="prénom"/><br/>
+					<label for="mail">Addresse e-mail :</label><input type="email" name="mail" placeholder="email"/><br/>
+					<label for="language">Langue :</label><input type="text" name="language" placeholder="français" disabled/><br/>
+					<label for="gender">Sexe :</label>
+					<select>
+					    <option value="h"><i class="fa fa-mars" aria-hidden="true"></i></option>
+					    <option value="f"><i class="fa fa-venus" aria-hidden="true"></i></option>
+				    </select><br/>
+				    <label for="town">Ville :</label><input type="text" name="town" placeholder="ville"/>
+				</form>
+				<div id="buttons">
+					<img src="./assets/images/dark-red/confirm-button.svg"/>
 					<a href="#"><img src="./assets/images/dark-red/gear-button.svg" onClick={() => this.refs.popupAddFridge.show()}/></a>
 				</div>
 				<SkyLight hideOnOverlayClicked dialogStyles={addFridgePopupStyle} ref="popupAddFridge" id="send-method-popup" className="popup">
@@ -508,6 +553,7 @@ var routes = (
 		<Route path='/' component={Home} />
 		<Route path='/list' component={List} />
 		<Route path='/fridgeContent/:FridgeId' component={List} />
+		<Route path='/settings' component={Settings} />
 	</Router>
 );
 
@@ -606,3 +652,45 @@ function apiRequest(type, url, data, fs, fe){
 function setFridgeList(data){
 	fridgesList = data;
 }
+
+(function() {
+ 
+  window.inputNumber = function(el) {
+
+    var min = el.attr('min') || false;
+    var max = el.attr('max') || false;
+
+    var els = {};
+
+    els.dec = el.prev();
+    els.inc = el.next();
+
+    el.each(function() {
+      init($(this));
+    });
+
+    function init(el) {
+
+      els.dec.on('click', decrement);
+      els.inc.on('click', increment);
+
+      function decrement() {
+        var value = el[0].value;
+        value--;
+        if(!min || value >= min) {
+          el[0].value = value;
+        }
+      }
+
+      function increment() {
+        var value = el[0].value;
+        value++;
+        if(!max || value <= max) {
+          el[0].value = value++;
+        }
+      }
+    }
+  }
+})();
+
+inputNumber($('.input-number'));
