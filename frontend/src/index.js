@@ -486,6 +486,32 @@ class MiddleList extends Component {
 	}
 }
 
+class Settings extends Component {
+ 	render() {
+ 
+ 		return (
+ 			<div id="middle-block" className="main-part">
+ 				<h1>Paramètres</h1>
+ 				<form id="settings">
+ 					<label for="name">Nom :</label><input type="text" name="name" placeholder="nom"/><br/>
+ 					<label for="surname">Prénom :</label><input type="text" name="surname" placeholder="prénom"/><br/>
+ 					<label for="mail">Addresse e-mail :</label><input type="email" name="mail" placeholder="email"/><br/>
+ 					<label for="language">Langue :</label><input type="text" name="language" placeholder="français" disabled/><br/>
+ 					<label for="gender">Sexe :</label>
+ 					<select>
+ 					    <option value="h"><i class="fa fa-mars" aria-hidden="true"></i></option>
+ 					    <option value="f"><i class="fa fa-venus" aria-hidden="true"></i></option>
+ 				    </select><br/>
+ 				    <label for="town">Ville :</label><input type="text" name="town" placeholder="ville"/>
+ 				</form>
+ 				<div id="buttons">
+ 					<img src="/assets/images/dark-red/confirm-button.svg"/>
+  					<a href="#"><img src="/assets/images/dark-red/X-button.svg" onClick={() => this.refs.popupAddFridge.show()}/></a>
+  				</div>
+		);
+ 	}
+ }
+
 class Home extends Component {
 	render() {
 		return (
