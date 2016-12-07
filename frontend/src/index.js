@@ -328,8 +328,8 @@ class FridgeContent extends Component {
 			height: '220px',
 			width: '300px',
 			margin: '0',
-		    	top: '190px',
-    			left: '362px'
+		    top: '190px',
+    		left: '362px'
 		};
 		
 		var addFridgePopupStyle = {			backgroundColor: '#d6d6d6',
