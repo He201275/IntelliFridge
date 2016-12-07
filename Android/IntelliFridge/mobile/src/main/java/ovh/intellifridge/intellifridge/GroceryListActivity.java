@@ -1,7 +1,6 @@
 package ovh.intellifridge.intellifridge;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -38,18 +36,15 @@ import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.DATA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_CONTENT_REQUEST_TAG;
-import static ovh.intellifridge.intellifridge.Config.FRIDGE_CONTENT_URL;
-import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_EXTRA;
+import static ovh.intellifridge.intellifridge.Config.GROCERY_LIST_GET_URL;
 import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
-import static ovh.intellifridge.intellifridge.Config.JWT_POST;
 import static ovh.intellifridge.intellifridge.Config.KEY_API_KEY;
-import static ovh.intellifridge.intellifridge.Config.KEY_FRIDGE_NAME;
 import static ovh.intellifridge.intellifridge.Config.KEY_USERID;
+import static ovh.intellifridge.intellifridge.Config.LIST_NOTE_DB;
+import static ovh.intellifridge.intellifridge.Config.PRODUCT_ID_NS_DB;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_NAME_DB;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_QUANTITY_DB;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_S_ID_DB;
-import static ovh.intellifridge.intellifridge.Config.SCAN_FRIDGE;
-import static ovh.intellifridge.intellifridge.Config.SCAN_TYPE_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.SERVER_FRIDGE_EMPTY;
 import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
 import static ovh.intellifridge.intellifridge.Config.SERVER_SUCCESS;
@@ -57,9 +52,8 @@ import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
 import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 
-public class FridgeContentActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class GroceryListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     SwipeRefreshLayout swipeLayout;
-    String fridge;
     private String server_status;
     private JSONObject server_response;
     private JSONArray jsonArray;
@@ -67,13 +61,8 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fridge_content);
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            fridge = extras.getString(FRIDGE_NAME_EXTRA);
-            setTitle(fridge);
-        }
+        setTitle(R.string.grocery_list_title);
+        setContentView(R.layout.activity_grocery_list);
 
         ImageView icon = new ImageView(this);
         icon.setImageDrawable(getDrawable(R.drawable.ic_add_black));
@@ -88,14 +77,14 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                 // TODO: 04-12-16 : Add to current fridge 
             }
         });
-        
+
         ImageView scan = new ImageView(this);
         scan.setImageDrawable(getDrawable(R.drawable.ic_camera_black));
         SubActionButton scanButton = itemBuilder.setContentView(scan).build();
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startBarcodeReader(SCAN_FRIDGE);
+                // TODO: 06-12-16  
             }
         });
         ImageView nscan = new ImageView(this);
@@ -114,27 +103,24 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                 .attachTo(actionButton)
                 .build();
 
-        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_fridge_content);
+        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_grocery_list);
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeColors(getResources().getColor(android.R.color.holo_red_dark));
 
-        getFridgeContentData();
+        getGroceryListData();
     }
 
-    private void startBarcodeReader(String extra) {
-        Intent intent = new Intent(FridgeContentActivity.this,BarcodeReaderActivity.class);
-        intent.putExtra(SCAN_TYPE_EXTRA,extra);
-        intent.putExtra(FRIDGE_NAME_EXTRA,fridge);
-        startActivity(intent);
+    @Override
+    public void onRefresh() {
+        getGroceryListData();
+        swipeLayout.setRefreshing(false);
     }
 
-    private String getApiKey() {
-        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return preferences.getString(USER_API_KEY,"");
-    }
-
-    private void getFridgeContentData() {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, FRIDGE_CONTENT_URL,
+    private void getGroceryListData() {
+        String apiKey = getApiKey();
+        int user_id = getUserId();
+        String jwt = signParamsGroceryList(apiKey,user_id);
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, GROCERY_LIST_GET_URL+"?jwt="+jwt,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -145,7 +131,6 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                             server_response = new JSONObject(claims);
                             server_status = server_response.getString(SERVER_STATUS);
                         } catch (JWTVerifyException e) {
-                            // Invalid Token
                             Log.e("JWT ERROR",e.toString());
                         } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
                             e.printStackTrace();
@@ -154,7 +139,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                         if (server_status.equals(SERVER_SUCCESS)){
                             try {
                                 jsonArray = server_response.getJSONArray(DATA);
-                                getFridgeContentList(jsonArray);
+                                getGroceryList(jsonArray);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -168,69 +153,57 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                     public void onErrorResponse(VolleyError error) {
                         Log.e("VOLLEY ERROR",error.toString());
                     }
-                }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                String apiKey = getApiKey();
-                int user_id = getUserId();
-                String jwt = signParamsFridgeContent(fridge,apiKey,user_id);
-                Map<String,String> params = new HashMap<>();
-                //Adding parameters to POST request
-                params.put(JWT_POST,jwt);
-                return params;
-            }
-        };
-
+                });
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, FRIDGE_CONTENT_REQUEST_TAG);
     }
 
-    private void getFridgeContentList(JSONArray jsonArray) {
-        Product[] fridgeContent = getFridgeContentArray(jsonArray);
+    private void getGroceryList(JSONArray jsonArray) {
+        GroceryListItem[] groceryList = getGroceryListArray(jsonArray);
 
-        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.fridge_content_recyclerview);
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.grocery_list_recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        FridgeContentRVAdapter adapter = new FridgeContentRVAdapter(fridgeContent);
+        GroceryListRVAdapter adapter = new GroceryListRVAdapter(groceryList);
         recyclerView.setAdapter(adapter);
     }
 
-    private Product[] getFridgeContentArray(JSONArray jsonArray){
+    private GroceryListItem[] getGroceryListArray(JSONArray jsonArray) {
         int length = jsonArray.length();
-        Product[] fridgeContent = new Product[length];
+        GroceryListItem[] groceryList = new GroceryListItem[length];
 
         for(int i=0;i<length;i++){
             try {
-                fridgeContent[i]= new Product("",0,0);
-                fridgeContent[i].productName = jsonArray.optJSONObject(i).optString(PRODUCT_NAME_DB);
-                fridgeContent[i].productSId = jsonArray.optJSONObject(i).optInt(PRODUCT_S_ID_DB);
-                fridgeContent[i].productQuantity = jsonArray.getJSONObject(i).optInt(PRODUCT_QUANTITY_DB);
+                groceryList[i]= new GroceryListItem("",0,0,0,"");
+                groceryList[i].productName = jsonArray.optJSONObject(i).optString(PRODUCT_NAME_DB);
+                groceryList[i].productSId = jsonArray.optJSONObject(i).optInt(PRODUCT_S_ID_DB);
+                groceryList[i].productNSId = jsonArray.optJSONObject(i).optInt(PRODUCT_ID_NS_DB);
+                groceryList[i].productQuantity = jsonArray.getJSONObject(i).optInt(PRODUCT_QUANTITY_DB);
+                groceryList[i].listNote = jsonArray.getJSONObject(i).optString(LIST_NOTE_DB);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        return fridgeContent;
+        return groceryList;
     }
 
-    private String signParamsFridgeContent(String fridge,String apiKey,int userId) {
+    private String signParamsGroceryList(String apiKey, int user_id) {
         final String secret = JWT_KEY;
         String jwt = "";
 
         final JWTSigner signer = new JWTSigner(secret);
         final HashMap<String, Object> claims = new HashMap<String, Object>();
-        claims.put(KEY_FRIDGE_NAME,fridge);
-        claims.put(KEY_USERID,userId);
+        claims.put(KEY_USERID,user_id);
         claims.put(KEY_API_KEY,apiKey);
         return jwt = signer.sign(claims);
+    }
+
+    private String getApiKey() {
+        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getString(USER_API_KEY,"");
     }
 
     private int getUserId() {
         SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return preferences.getInt(USER_ID_PREFS,0);
-    }
-
-    @Override
-    public void onRefresh() {
-        getFridgeContentData();
-        swipeLayout.setRefreshing(false);
     }
 }

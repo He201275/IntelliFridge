@@ -47,7 +47,6 @@
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".FridgeContentActivity" />
-        <activity android:name=".ProductScanActivity" />
         <activity android:name=".AllergyScanActivity" />
         <activity android:name=".NSProductActivity" />
 
@@ -55,7 +54,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCtiENayh9ynzf6ar4XxPQS2O0W7pFgbv0" />
 
-        <activity android:name=".ShopActivity"></activity>
+        <activity android:name=".ShopActivity" />
+        <activity android:name=".ProductAddActivity" />
+        <activity android:name=".GroceryListActivity"></activity>
     </application>
 
 </manifest>

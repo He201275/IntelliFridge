@@ -20,6 +20,7 @@ public class ShopActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
+        setTitle(R.string.title_activity_shop);
 
         WebView webView = (WebView)findViewById(R.id.shop_webview);
         webView.setWebViewClient(new MyWebViewClient());

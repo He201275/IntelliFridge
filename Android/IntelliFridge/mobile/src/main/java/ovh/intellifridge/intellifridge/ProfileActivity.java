@@ -22,6 +22,7 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.title_activity_profile);
         if (getAllergyModStatus() && !getFridgeModStatus()){
             setContentView(R.layout.activity_profile_allerance);
         }else {

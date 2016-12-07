@@ -8,8 +8,25 @@ Frontend de la webapp intelliFridge créé à partir de [create-react-app](https
 $ npm install react-router
 $ npm install react-skylight
 $ npm install jquery
-$ npm install jwt-decode
 $ npm install jsonwebtoken
+~~~
+
+After That edit the two `webpack.config files` in the directory `node_modules/react-scripts/config`
+and in the directory `node_modules\webpack-dev-server\client`
+Edit these lines : 
+~~~js
+node:{
+  fs : 'empty'
+}
+~~~
+with the folowing lines :  
+~~~js 
+node: {
+  fs: 'empty',
+  dns: 'mock',
+  net: 'mock',
+  tls: 'empty'
+}
 ~~~
 
 Then you can launch the `browser-watch` on `localhost`

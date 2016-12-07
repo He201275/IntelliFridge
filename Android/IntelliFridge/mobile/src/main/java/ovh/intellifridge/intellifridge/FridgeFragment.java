@@ -36,7 +36,10 @@ import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.DATA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_GET_LIST_URL;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_ID_DB;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_PREFS;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_REQUEST_TAG;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_SIZE_PREFS;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_DB;
 import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
 import static ovh.intellifridge.intellifridge.Config.KEY_API_KEY;
@@ -56,6 +59,7 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private JSONArray jsonArray;
     SwipeRefreshLayout swipeLayout;
     private View rootView;
+    public Fridge[] fridgeList;
 
     public FridgeFragment() {
         // Required empty public constructor
@@ -103,6 +107,7 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         }
 
                         if (server_status.equals(SERVER_SUCCESS)){
+                            saveFridgeList(jsonArray);
                             getFridgeCardList(jsonArray);
                         }else{
                             Toast.makeText(getActivity().getApplicationContext(), R.string.fridge_list_empty, Toast.LENGTH_LONG).show();
@@ -118,8 +123,19 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
         MySingleton.getInstance(getActivity().getApplicationContext()).addToRequestQueue(stringRequest, FRIDGE_LIST_REQUEST_TAG);
     }
 
-    private void getFridgeCardList(JSONArray jsonArray) {
+    private void saveFridgeList(JSONArray jsonArray) { // TODO: 06-12-16
         Fridge[] fridgeList = getFridgeArray(jsonArray);
+        SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(FRIDGE_LIST_SIZE_PREFS,fridgeList.length);
+        for (int i=0;i<fridgeList.length;i++){
+            editor.putString(FRIDGE_LIST_PREFS+"_"+i,fridgeList[i].getFridgeName());
+        }
+        editor.apply();
+    }
+
+    private void getFridgeCardList(JSONArray jsonArray) {
+        fridgeList = getFridgeArray(jsonArray);
 
         RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.fridge_list_recyclerview);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),2);
@@ -136,6 +152,7 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
         for(int i=0;i<length;i++){
             fridgeList[i]= new Fridge("");
             fridgeList[i].setFridgeName(jsonArray.optJSONObject(i).optString(FRIDGE_NAME_DB));
+            fridgeList[i].setFridgeId(jsonArray.optJSONObject(i).optInt(FRIDGE_ID_DB));
         }
         return fridgeList;
     }

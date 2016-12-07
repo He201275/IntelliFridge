@@ -6,7 +6,7 @@ package ovh.intellifridge.intellifridge;
 
 public class Product {
     String productName;
-    int productId;
+    int productSId,productNSId;
     int productQuantity;
 
     public Product(){
@@ -15,12 +15,16 @@ public class Product {
 
     public Product(String pName, int pId, int pQuantity){
         this.productName = pName;
-        this.productId = pId;
+        this.productSId = pId;
         this.productQuantity = pQuantity;
     }
 
-    public int getProductId() {
-        return productId;
+    public void setProductSId(int productSId) {
+        this.productSId = productSId;
+    }
+
+    public int getProductSId() {
+        return productSId;
     }
 
     public int getProductQuantity() {
@@ -29,10 +33,6 @@ public class Product {
 
     public String getProductName() {
         return productName;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
     }
 
     public void setProductName(String productName) {

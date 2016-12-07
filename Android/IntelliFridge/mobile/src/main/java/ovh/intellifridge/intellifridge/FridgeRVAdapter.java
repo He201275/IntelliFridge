@@ -3,13 +3,11 @@ package ovh.intellifridge.intellifridge;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +19,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
@@ -39,7 +36,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.DATA;
-import static ovh.intellifridge.intellifridge.Config.FRIDGE_GET_LIST_URL;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_REMOVE_URL;
@@ -103,6 +99,7 @@ public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.Fridge
         fridgeViewHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                // TODO: 06-12-16  
                 return Boolean.parseBoolean(null);
             }
         });
@@ -120,22 +117,22 @@ public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.Fridge
                         switch (id){
                             case R.id.action_delete:
                                 deleteFridge(fridges[position].getFridgeName());
+                                Toast.makeText(view.getContext(),R.string.fridge_deleted,Toast.LENGTH_SHORT).show();
                                 break;
                             case R.id.action_edit:
                                 editFridge(fridges[position].getFridgeName());
                                 break;
                         }
-                        Toast.makeText(view.getContext(),"You Clicked : " + item.getTitle(),Toast.LENGTH_SHORT).show();
                         return true;
                     }
                 });
-
                 popup.show();//showing popup menu
             }
         });
     }
 
     private void editFridge(String fridgeName) {
+        // TODO: 06-12-16
     }
 
     private void deleteFridge(final String fridgeName) {
@@ -159,7 +156,7 @@ public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.Fridge
 
                         if (server_status.equals(SERVER_SUCCESS)){
                             Toast.makeText(context,R.string.remove_fridge_success,Toast.LENGTH_SHORT).show();
-                            // TODO: 04-12-16 : Auto refresh
+
                         }else{
                             // TODO: 04-12-16
                         }
