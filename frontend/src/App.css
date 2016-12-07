@@ -154,18 +154,7 @@ h2 {
   background-color: #0d0d0d;
   position: absolute;
   left: 0;
-}
-
-#left-block .separator {
   top: 50%;
-}
-
-#right-block .separator:nth-child(1) {
-  top: 33%;
-}
-
-#right-block .separator:nth-child(2) {
-  top: 66%;
 }
 
 .left-button {
@@ -461,7 +450,7 @@ a {
   margin-right: .5em;
 }
 
-#list .fa {
+#list .fa.remove-item {
   color: #ff3131;
   font-size: 1em;
   float: right;
@@ -502,4 +491,51 @@ a {
   width: 3.4em;
   background-color: #d6d6d6;
   border-bottom: 3px solid #0d0d0d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.input-number {
+  width: 80px;
+  padding: 0 12px;
+  vertical-align: top;
+  text-align: center;
+  outline: none;
+}
+
+.input-number,
+.input-number-decrement,
+.input-number-increment {
+  border: 1px solid #ccc;
+  height: 40px;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.input-number-decrement,
+.input-number-increment {
+  display: inline-block;
+  width: 30px;
+  line-height: 38px;
+  background: #f1f1f1;
+  color: #444;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+.input-number-decrement:active,
+.input-number-increment:active {
+  background: #ddd;
+}
+
+.input-number-decrement {
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.input-number-increment {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
 }
