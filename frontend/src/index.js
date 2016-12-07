@@ -242,7 +242,7 @@ class RightList extends Component {
 					<h1>Envoyer la liste par email ?</h1>
 					<div className="send-fields">
 						<div>
-							<img src="./assets/images/dark-red/go-button.svg"/>
+							<a href="#"><img src="./assets/images/dark-red/go-button.svg" onCLick={() => this.refs.popupListSent.show()}/></a>
 						</div>
 					</div>
 				</SkyLight>
@@ -374,6 +374,13 @@ class FridgeContent extends Component {
 		}, apiError);
 	}
 
+	_showDeleteModal(item) {
+		//set item in context, ex:
+		itemInContext = item;
+		//then, open modal
+		this.refs.popupRemoveItem.show();
+	}
+
 	render() {
 
 		var removeItemPopupStyle = {
@@ -414,6 +421,14 @@ class ShoppingList extends Component {
 			this.render();
 		}, apiError);
 	}
+
+	_showDeleteModal(item) {
+		//set item in context, ex:
+		itemInContext = item;
+		//then, open modal
+		this.refs.popupRemoveItem.show();
+	}
+
 	render() {
 
 		var quantityPopupStyle = {
@@ -465,7 +480,12 @@ class ShoppingList extends Component {
 class ListElem extends Component {
 	render() {
 		return (
-			<li id="this.props.componentData.ProduitId"><a href="#" onClick={() => this.refs.popupQuantity.show()}>{this.props.componentData.ProduitNom+" - "+this.props.componentData.Quantite+" - "+this.props.componentData.DateAjout}</a> <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+			<li id="$(this.props.componentData.ProduitId)">
+				<a href="#" onClick={() => this.refs.popupQuantity.show()}>{this.props.componentData.ProduitNom+" - "+this.props.componentData.Quantite+" - "+this.props.componentData.DateAjout}</a>
+				<a href="#"><i class="fa fa-minus" aria-hidden="true"></i></a>
+				<a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a>
+				<a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this._showPopupDelete}></i></a>
+			</li>
 		);
 	}
 }

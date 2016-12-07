@@ -450,7 +450,7 @@ a {
   margin-right: .5em;
 }
 
-#list .fa {
+#list .fa.remove-item {
   color: #ff3131;
   font-size: 1em;
   float: right;
