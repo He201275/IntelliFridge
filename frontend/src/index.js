@@ -29,9 +29,9 @@ class TopPages extends Component {
 				<a href="deconnect.php" className="logout"><i className="fa fa-sign-out" aria-hidden="true"></i></a>
 				<div id="logo"><img src="./assets/images/dark-red/logo.svg"/></div>
 				<div id="home">
-					<a href="/">
+					<Link to="/">
 						<img src="./assets/images/dark-red/home.svg"/>
-					</a>
+					</Link>
 				</div>
 			</div>
 		);
@@ -132,12 +132,12 @@ class RightHome extends Component {
 				<div id="right-block" className="side-block">
 					<div className="separator"></div>
 					<div className="separator"></div>
-					<a href="/list">
+					<Link to="/list">
 						<div id="view-list" className="right-button">
 						    <i className="fa fa-search fa-4x" aria-hidden="true"></i>
 						    <h3>Voir</h3>
 						</div>
-					</a>
+					</Link>
 					<a href="#" onClick={() => this.refs.popupSend.show()}>
 						<div id="send-list" className="right-button">
 						    <i className="fa fa-mobile fa-5x" aria-hidden="true"></i>
@@ -267,10 +267,10 @@ class Fridge extends Component {
 	render() {
 		return (
 			<div className="fridge">
-				<a href={"/fridgeContent/"+this.props.componentData.FrigoId}>
+				<Link to={"/fridgeContent/"+this.props.componentData.FrigoId}>
 					<img src="./assets/images/fridge.svg"/>
 					<h3>{this.props.componentData.FrigoNom}</h3>
-				</a>
+				</Link>
 			</div>
 		);
 	}
