@@ -169,19 +169,12 @@ class RightHome extends Component {
 						    <h3>Envoyer</h3>
 						</div>
 					</a>
-					<div id="print-list" className="right-button">
-						<i className="fa fa-print fa-5x" aria-hidden="true"></i>
-						<h3>Imprimer</h3>
-					</div>
 				</div>
 				<SkyLight hideOnOverlayClicked dialogStyles={sendPopupStyle} ref="popupSend" id="send-method-popup" className="popup">
-					<h1>Comment ?</h1>
+					<h1>Envoyer la liste par email ?</h1>
 					<div className="send-fields">
 						<div>
-							<input type="tel" name="tel-number" placeholder="sms"/> <img src="./assets/images/dark-red/go-button.svg"/>
-						</div>
-						<div>
-							<input type="email" name="email-address" placeholder="email"/> <img src="./assets/images/dark-red/go-button.svg"/>
+							<img src="./assets/images/dark-red/go-button.svg"/>
 						</div>
 					</div>
 				</SkyLight>
@@ -224,7 +217,6 @@ class RightList extends Component {
 				<h2>Ma liste de<br/>courses</h2>
 				<div id="right-block" className="side-block">
 					<div className="separator"></div>
-					<div className="separator"></div>
 					<a href="#" onClick={() => this.refs.popupEmpty.show()}>
 						<div id="empty-list" className="right-button">
 						    <i className="fa fa-trash fa-4x" aria-hidden="true"></i>
@@ -237,12 +229,6 @@ class RightList extends Component {
 							<h3>Envoyer</h3>
 						</div>
 					</a>
-					<a href="#">
-						<div id="print-list" className="right-button">
-							<i className="fa fa-print fa-5x" aria-hidden="true"></i>
-							<h3>Imprimer</h3>
-						</div>
-					</a>
 				</div>
 				<SkyLight hideOnOverlayClicked dialogStyles={emptyPopupStyle} ref="popupEmpty" id="empty-list-popup" className="popup">
 					<h1>Vider la liste ?</h1>
@@ -253,13 +239,10 @@ class RightList extends Component {
 					</div>
 				</SkyLight>
 				<SkyLight hideOnOverlayClicked dialogStyles={sendPopupStyle} ref="popupSend" id="send-method-popup" className="popup">
-					<h1>Comment ?</h1>
+					<h1>Envoyer la liste par email ?</h1>
 					<div className="send-fields">
 						<div>
-							<input type="tel" name="tel-number" placeholder="sms"/> <img src="./assets/images/dark-red/go-button.svg"/>
-						</div>
-						<div>
-							<input type="email" name="email-address" placeholder="email"/> <img src="./assets/images/dark-red/go-button.svg"/>
+							<img src="./assets/images/dark-red/go-button.svg"/>
 						</div>
 					</div>
 				</SkyLight>
