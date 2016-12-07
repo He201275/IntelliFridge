@@ -29,9 +29,6 @@ node: {
 }
 ~~~
 
-Go edit the file node_modules\react-scripts\config\paths.js : 
-edit all the index.html to index.php
-
 Then you can launch the `browser-watch` on `localhost`
 ~~~bash
 $ npm start
