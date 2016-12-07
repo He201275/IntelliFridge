@@ -569,15 +569,28 @@ class Home extends Component {
 
 class List extends Component {
 	render() {
-		return (
-			<div className="List">
-				<TopPages />
-				<div id="wrapper">
-					<MiddleList fridge={this.props.params.FridgeId} />
-					<RightList title={this.props.FridgeId} />
+		console.log(this.props.FridgeId)
+		if(this.props.FridgeId== undefined){
+			return (
+				<div className="List">
+					<TopPages />
+					<div id="wrapper">
+						<MiddleList fridge={this.props.params.FridgeId} />
+					</div>
 				</div>
-			</div>
-		);
+			);
+		}else{
+			return (
+				<div className="List">
+					<TopPages />
+					<div id="wrapper">
+						<MiddleList />
+						<RightList />
+					</div>
+				</div>
+			);
+		}
+
 	}
 }
 
