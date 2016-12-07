@@ -84,13 +84,13 @@ class Left extends Component {
 				<SkyLight hideOnOverlayClicked dialogStyles={itemsInOutPopupStyle} ref="popupAddItems" id="add-items-popup" className="popup items-in-out">
 					<h1>Comment ?</h1>
 					<div className="methods-buttons">
-						<a href="#" className="method">
+						<a href="#" className="method" onClick={() => this.refs.popupScan.show()}>
 							<span>
 								<img src="/assets/images/barcode.svg"/>
 								<h3>Scanner</h3>
 							</span>
 						</a>
-						<a href="#" className="method">
+						<a href="#" className="method" onClick={() => this.refs.popupManual.show()}>
 							<span>
 								<img src="/assets/images/hand.svg"/>
 								<h3>Ajouter manuellement</h3>
@@ -101,13 +101,13 @@ class Left extends Component {
 				<SkyLight hideOnOverlayClicked dialogStyles={itemsInOutPopupStyle} ref="popupRemoveItems" id="remove-items-popup" className="popup items-in-out">
 					<h1>Comment ?</h1>
 					<div className="methods-buttons">
-						<a href="#" className="method">
+						<a href="#" className="method" onClick={() => this.refs.popupScan.show()}>
 							<span>
 								<img src="/assets/images/barcode.svg"/>
 								<h3>Scanner</h3>
 							</span>
 						</a>
-						<a href="#" className="method">
+						<a href="#" className="method" onClick={() => this.refs.popupManual.show()}>
 							<span>
 								<img src="/assets/images/hand.svg"/>
 								<h3>Retirer manuellement</h3>
@@ -436,10 +436,6 @@ class MiddleList extends Component {
 				<div id="middle-block" className="main-part list-block">
 					<h1>{fridgeName}</h1>
 					<FridgeContent fridgeName={fridgeName} fridge={this.props.fridge} />
-					<div id="add-item">
-						<div id="mask"></div>
-						<img src="/assets/images/dark-red/plus-button.svg"/>
-					</div>
 				</div>
 			);
 		}else{
@@ -449,128 +445,46 @@ class MiddleList extends Component {
 					<ShoppingList />
 					<div id="add-item">
 						<div id="mask"></div>
-						<img src="/assets/images/dark-red/plus-button.svg"/>
+						<a href="#">
+							<img src="/assets/images/dark-red/plus-button.svg" onClick={() => this.refs.popupAddItem.show()}/>
+						</a>
 					</div>
+					<SkyLight hideOnOverlayClicked dialogStyles={itemsInOutPopupStyle} ref="popupAddItem" id="remove-items-popup" className="popup items-in-out">
+						<h1>Comment ?</h1>
+						<div className="methods-buttons">
+						<a href="#" className="method" onClick={() => this.refs.popupScan.show()}>
+							<span>
+								<img src="/assets/images/barcode.svg"/>
+								<h3>Scanner</h3>
+							</span>
+						</a>
+						<a href="#" className="method" onClick={() => this.refs.popupManual.show()}>
+								<span>
+									<img src="/assets/images/hand.svg"/>
+									<h3>Ajouter manuellement</h3>
+								</span>
+							</a>
+						</div>
+					</SkyLight>
+					<SkyLight hideOnOverlayClicked dialogStyles={scanPopupStyle} ref="popupScan" id="send-method-popup" className="popup">
+						<div className="send-fields">
+							<div>
+								<input type="text" name="new-fridge-name" placeholder="Scannez le code barre"/> <img src="./assets/images/dark-red/go-button.svg"/>
+							</div>
+						</div>
+					</SkyLight>
+					<SkyLight hideOnOverlayClicked dialogStyles={scanPopupStyle} ref="popupManual" id="send-method-popup" className="popup">
+						<form action="">
+							Tomates <input type="number" id="xx" value="0" min="0" max="25"/><br/>
+							Pommes <input type="number" id="xx" value="0" min="0" max="25"/><br/>
+							Oeufs <input type="number" id="xx" value="0" min="0" max="25"/>
+						</form>
+					</SkyLight>
 				</div>
 			);
 		}
 	}
 }
-
-//START OF THE POPUPS
-
-class PopupEmpty extends Component {
-	render(){
-		return (
-			<div id="empty-list-popup" className="popup">
-				<h1>Vider la liste ?</h1>
-				<div id="confirm-buttons">
-					<a href="#">
-					<img src="/assets/images/dark-red/confirm-button.svg"/>
-					</a>
-					<a href="#">
-						<img src="/assets/images/dark-red/X-button.svg" className="popup-x"/>
-					</a>
-				</div>
-			</div>
-		);  
-	}
-}
-
-class PopupAddItems extends Component {
-	render(){
-		return (
-			<div id="add-items-popup" className="popup items-in-out">
-				<a href="#">
-					<img src="/assets/images/dark-red/X-button.svg" className="close-popup popup-x"/>
-				</a>
-				<h1>Comment ?</h1>
-				<div className="methods-buttons">
-					<a href="#">
-						<span className="method">
-							<img src="/assets/images/barcode.svg"/>
-							<h3>Scanner</h3>
-						</span>
-					</a>
-					<a href="#">
-						<span className="method">
-							<img src="/assets/images/hand.svg"/>
-							<h3>Ajouter manuellement</h3>
-						</span>
-					</a>
-				</div>
-			</div>
-		);
-	}
-}
-
-class PopupRemoveItems extends Component {
-	render(){
-		return (
-			<div id="remove-items-popup" className="popup items-in-out">
-				<a href="#">
-					<img src="/assets/images/dark-red/X-button.svg" className="close-popup popup-x"/>
-				</a>
-				<h1>Comment ?</h1>
-				<div className="methods-buttons">
-					<a href="#">
-						<span className="method">
-							<img src="/assets/images/barcode.svg"/>
-							<h3>Scanner</h3>
-						</span>
-					</a>
-					<a href="#">
-						<span className="method">
-							<img src="/assets/images/hand.svg"/>
-							<h3>Retirer manuellement</h3>
-						</span>
-					</a>
-				</div>
-			</div>
-		);
-	}
-}
-
-class PopupRemoveFromList extends Component {
-	render(){
-		return (
-			<div id="remove-from-list-popup" className="popup">
-				<h1>Retirer de la liste ?</h1>
-				<div id="confirm-buttons">
-					<a href="#">
-						<img src="/assets/images/dark-red/confirm-button.svg"/>
-					</a>
-					<a href="#">
-						<img src="/assets/images/dark-red/X-button.svg" className="popup-x"/>
-					</a>
-				</div>
-			</div>
-		);  
-	}
-}
-
-class PopupSendList extends Component {
-	render(){
-		return (
-			<div id="send-method-popup" className="popup">
-				<a href="#" className="close-popup popup-x">
-					<img src="/assets/images/dark-red/X-button.svg" className="close-popup" id="close-send"/>
-				</a>
-				<h1>Comment ?</h1>
-				<div className="send-fields">
-					<div>
-						<input type="tel" name="tel-number" placeholder="sms"/> <img src="/assets/images/dark-red/go-button.svg"/>
-					</div>
-					<div>
-						<input type="email" name="email-address" placeholder="email"/> <img src="/assets/images/dark-red/go-button.svg"/>
-					</div>
-				</div>
-			</div>
-		);
-	}
-}
-
-//END OF THE POPUPS
 
 class Home extends Component {
 	render() {
@@ -595,6 +509,7 @@ class List extends Component {
 				<div className="FridgeContent">
 					<TopPages />
 					<div id="wrapper">
+						<Left />
 						<MiddleList fridge={this.props.params.FridgeId} />
 					</div>
 				</div>
