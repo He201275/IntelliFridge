@@ -12,6 +12,7 @@ public class Config {
     public static final String GET_PRODUCT_INFO_LOCAL_URL = "";
     public static final String ADD_PRODUCT_LOCAL_DB = "http://api.intellifridge.ovh/v1/products/add";
     public static final String FRIDGE_CONTENT_URL = "http://api.intellifridge.ovh/v1/fridges/getFridgeContent";
+    public static final String FRIDGE_REMOVE_URL = "http://api.intellifridge.ovh/v1/fridges/remove";
 
     public static final String JWT_KEY = "wAMxBauED07a4GurMpuD";
 
@@ -21,6 +22,9 @@ public class Config {
 
     //Server response messages
     public static final String SERVER_SUCCESS = "200";
+    public static final String SERVER_FRIDGE_EMPTY = "201";
+    public static final String SERVER_FRIDGE_EXISTS= "202";
+    public static final String SERVER_DB_ERROR = "500";
 
     //Keys for email and password as defined in our $_POST['key']
     public static final String KEY_EMAIL = "UserAdresseMail";

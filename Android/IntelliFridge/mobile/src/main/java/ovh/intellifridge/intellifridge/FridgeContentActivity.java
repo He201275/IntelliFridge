@@ -46,6 +46,7 @@ import static ovh.intellifridge.intellifridge.Config.KEY_USERID;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_ID_DB;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_NAME_DB;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_QUANTITY_DB;
+import static ovh.intellifridge.intellifridge.Config.SERVER_FRIDGE_EMPTY;
 import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
 import static ovh.intellifridge.intellifridge.Config.SERVER_SUCCESS;
 import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
@@ -89,6 +90,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.wtf("RESPONSE",response);
                         final String secret = JWT_KEY;
                         try {
                             final JWTVerifier verifier = new JWTVerifier(secret);
@@ -109,7 +111,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                        }else {
+                        }else if (server_status.equals(SERVER_FRIDGE_EMPTY)){
                             Toast.makeText(getApplicationContext(),R.string.fridge_empty,Toast.LENGTH_LONG).show();
                         }
                     }
@@ -182,7 +184,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
     @Override
     public void onRefresh() {
         getFridgeContentData();
-        getFridgeContentList(jsonArray);
+        //getFridgeContentList(jsonArray);
         swipeLayout.setRefreshing(false);
     }
 }

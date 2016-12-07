@@ -5,6 +5,10 @@ import { Router, Route, Link, browserHistory } from 'react-router';
 import SkyLight from 'react-skylight'; 
 import logo from './logo.svg';
 import $ from "jquery";
+<<<<<<< HEAD
+=======
+import jwtDecode from "jwt-decode";
+>>>>>>> master
 import jwt from "jsonwebtoken";
 /**
  * Bouton déconnexion
@@ -318,6 +322,7 @@ class MiddleHome extends Component {
 	}
 }
 
+<<<<<<< HEAD
 class Settings extends Component {
 	render() {
 
@@ -363,6 +368,8 @@ class Settings extends Component {
 	}
 }
 
+=======
+>>>>>>> master
 class FridgeContent extends Component {
 	constructor(props){
 		super(props);
@@ -374,6 +381,7 @@ class FridgeContent extends Component {
 		}, apiError);
 	}
 
+<<<<<<< HEAD
 	_showDeleteModal(item) {
 		//set item in context, ex:
 		itemInContext = item;
@@ -381,6 +389,8 @@ class FridgeContent extends Component {
 		this.refs.popupRemoveItem.show();
 	}
 
+=======
+>>>>>>> master
 	render() {
 
 		var removeItemPopupStyle = {
@@ -420,13 +430,104 @@ class ShoppingList extends Component {
 			list = an;
 			this.render();
 		}, apiError);
+<<<<<<< HEAD
+=======
+	}
+	render() {
+
+		var removeItemPopupStyle = {
+			backgroundColor: '#d6d6d6',
+			borderRadius: '20px',
+			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
+			height: '220px',
+			width: '300px',
+			margin: '0',
+			top: '190px',
+			left: '362px'
+		}
+		return (
+			<ul id="list">
+				<li></li>
+				{list.map((dynamicComponent, i) => <ListElem
+					key = {i} componentData = {dynamicComponent}/>)}
+				<SkyLight hideOnOverlayClicked dialogStyles={removeItemPopupStyle} ref="popupRemoveItem" id="empty-list-popup" className="popup">
+					<h1>Retirer de la liste ?</h1>
+					<div id="confirm-buttons">
+						<a href="#">
+							<img src="./assets/images/dark-red/confirm-button.svg"/>
+						</a>
+					</div>
+				</SkyLight>
+			</ul>
+		);
+	}
+}
+
+class ListElem extends Component {
+	render() {
+		return (
+			<li id="this.props.componentData.ProduitId">{this.props.componentData.ProduitNom+" - "+this.props.componentData.Quantite+" - "+this.props.componentData.DateAjout} <a href="#"><i className="fa fa-times remove-item" aria-hidden="true" onClick={() => this.refs.popupRemoveItem.show()}></i></a></li>
+		);
+>>>>>>> master
 	}
 
+<<<<<<< HEAD
 	_showDeleteModal(item) {
 		//set item in context, ex:
 		itemInContext = item;
 		//then, open modal
 		this.refs.popupRemoveItem.show();
+=======
+class MiddleList extends Component {
+	constructor(){
+		super();
+
+	}
+	render() {
+		if(this.props.fridge){
+			return (
+				<div id="middle-block" className="main-part list-block">
+					<h1>Name of the fridge</h1>
+					<FridgeContent fridge={this.props.fridge} />
+					<div id="add-item">
+						<div id="mask"></div>
+						<img src="./assets/images/dark-red/plus-button.svg"/>
+					</div>
+				</div>
+			);
+		}else{
+			return (
+				<div id="middle-block" className="main-part list-block">
+					<h1>Ma liste</h1>
+					<ShoppingList />
+					<div id="add-item">
+						<div id="mask"></div>
+						<img src="./assets/images/dark-red/plus-button.svg"/>
+					</div>
+				</div>
+			);
+		}
+	}
+}
+
+//START OF THE POPUPS
+
+class PopupEmpty extends Component {
+	render(){
+		return (
+			<div id="empty-list-popup" className="popup">
+				<h1>Vider la liste ?</h1>
+				<div id="confirm-buttons">
+					<a href="#">
+					<img src="./assets/images/dark-red/confirm-button.svg"/>
+					</a>
+					<a href="#">
+						<img src="./assets/images/dark-red/X-button.svg" className="popup-x"/>
+					</a>
+				</div>
+			</div>
+		);  
+>>>>>>> master
 	}
 
 	render() {
@@ -556,7 +657,10 @@ var routes = (
 		<Route path='/' component={Home} />
 		<Route path='/list' component={List} />
 		<Route path='/fridgeContent/:FridgeId' component={List} />
+<<<<<<< HEAD
 		<Route path='/settings' component={Settings} />
+=======
+>>>>>>> master
 	</Router>
 );
 
@@ -654,6 +758,7 @@ function apiRequest(type, url, data, fs, fe){
 }
 function setFridgeList(data){
 	fridgesList = data;
+<<<<<<< HEAD
 }
 
 (function() {
@@ -697,3 +802,6 @@ function setFridgeList(data){
 })();
 
 inputNumber($('.input-number'));
+=======
+}
+>>>>>>> master
