@@ -157,4 +157,7 @@
     <string name="add_fridgeContent_removeBtn">Remove</string>
     <string name="fridge_content_dialog_title">Add/Remove product</string>
     <string name="title_activity_fridge_content">Fridge :</string>
+    <string name="add_product_fridge_btn">Add to fridge</string>
+    <string name="cancel_product_fridge_btn">Cancel</string>
+    <string name="fridgeNameTitle">Fridge</string>
 </resources>

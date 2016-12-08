@@ -55,7 +55,6 @@
             android:value="AIzaSyCtiENayh9ynzf6ar4XxPQS2O0W7pFgbv0" />
 
         <activity android:name=".ShopActivity" />
-        <activity android:name=".ProductAddActivity" />
         <activity android:name=".GroceryListActivity"></activity>
     </application>
 
