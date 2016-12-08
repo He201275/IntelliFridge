@@ -1,13 +1,14 @@
 package ovh.intellifridge.intellifridge;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -122,13 +123,6 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
         initiateScan();
     }
 
-    private void loadSpinner() {
-        /*Spinner spinner = (Spinner)dialog.findViewById(R.id.fridge_spinner);
-        ArrayAdapter spinnerArrayAdapter= new ArrayAdapter(this,android.R.layout.simple_spinner_item,fridges);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerArrayAdapter);*/
-    }
-
     public Fridge[] loadFridgeList(){
         SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_FRIDGES_NAME, Context.MODE_PRIVATE);
         int size = preferences.getInt(USER_NB_FRIDGES_PREFS,0);
@@ -234,10 +228,24 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
 
     private void displayProductInfoOFF(JSONObject response) throws JSONException {
         off_status = response.getString(OFF_STATUS_VERBOSE);
-        final Dialog dialog = new Dialog(BarcodeReaderActivity.this);
-        dialog.setContentView(R.layout.add_product_s_card);
-        //loadSpinner();
-        Spinner spinner = (Spinner)dialog.findViewById(R.id.fridge_spinner);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(BarcodeReaderActivity.this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View addProductCard = inflater.inflate(R.layout.add_product_s_card,null);
+        builder.setView(addProductCard);
+        builder.setTitle(R.string.add_product_title);
+        builder.setPositiveButton(R.string.add_fridge_addBtn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                addProductSFridge();
+            }
+        });
+        builder.setNegativeButton(R.string.add_fridge_cancelBtn, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // TODO: 09-12-16  
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        final Spinner spinner = (Spinner)addProductCard.findViewById(R.id.fridge_spinner);
         ArrayAdapter spinnerArrayAdapter= new ArrayAdapter(this,android.R.layout.simple_spinner_item,fridges);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerArrayAdapter);
@@ -246,7 +254,7 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
             product = response.getJSONObject(OFF_PRODUCT);
             if (product.has(OFF_IMAGE_URL)) {
                 imageUrl = product.getString(OFF_IMAGE_URL);
-                ImageView productImage = (ImageView) dialog.findViewById(R.id.product_image);
+                ImageView productImage = (ImageView) addProductCard.findViewById(R.id.product_image);
                 Picasso.with(getBaseContext()).load(imageUrl)
                         .fit().centerInside()
                         .into(productImage);
@@ -258,22 +266,16 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
             }else if (product.has(OFF_PRODUCTNAME_FR)){
                 productName = product.getString(OFF_PRODUCTNAME_FR);
             }
-            txtProduct = (TextView)dialog.findViewById(R.id.productName);
+            txtProduct = (TextView)addProductCard.findViewById(R.id.productName);
             txtProduct.setText(productName);
             quantity = product.getString(OFF_QUANTITY);
-            txtQuantity = (TextView)dialog.findViewById(R.id.quantityName);
+            txtQuantity = (TextView)addProductCard.findViewById(R.id.quantityName);
             txtQuantity.setText(quantity);
         }else {
             // TODO: 26-11-16
         }
-
-        dialog.show();
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                startMainActivity();
-            }
-        });
+        alertDialog.show();
+        alertDialog.setCanceledOnTouchOutside(false);
     }
 
     private void startMainActivity() {
@@ -373,17 +375,9 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
         if (scanningResult != null){
             barcode = scanningResult.getContents();
             if (scan_type.equals(SCAN_FRIDGE)){
-                /*Intent intent1 = new Intent(BarcodeReaderActivity.this,ProductAddActivity.class);
-                intent1.putExtra(BARCODE_EXTRA,scanContent);
-                if (fridge != null){
-                    intent1.putExtra(FRIDGE_NAME_EXTRA,fridge);
-                }
-                startActivity(intent1);*/
                 getProductInfoOFF();
             }else if (scan_type.equals(SCAN_ALLERGY)){
-                /*Intent intent1 = new Intent(BarcodeReaderActivity.this,AllergyScanActivity.class);
-                intent1.putExtra(BARCODE_EXTRA,scanContent);
-                startActivity(intent1);*/
+                // TODO: 09-12-16
             }
         }else {
             Toast.makeText(getApplicationContext(), R.string.scan_error, Toast.LENGTH_SHORT).show();
