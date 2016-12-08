@@ -63,9 +63,7 @@ public class BarcodeReaderActivity extends AppCompatActivity {
                 Intent intent1 = new Intent(BarcodeReaderActivity.this,AllergyScanActivity.class);
                 intent1.putExtra(BARCODE_EXTRA,scanContent);
                 startActivity(intent1);
-            }else {
-                // TODO: 26-11-16
-            }  
+            }
         }else {
             Toast.makeText(getApplicationContext(), R.string.scan_error, Toast.LENGTH_SHORT).show();
         }

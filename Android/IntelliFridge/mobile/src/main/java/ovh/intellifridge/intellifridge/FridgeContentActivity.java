@@ -39,6 +39,7 @@ import java.util.Map;
 import static ovh.intellifridge.intellifridge.Config.DATA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_CONTENT_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_CONTENT_URL;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_ID_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
 import static ovh.intellifridge.intellifridge.Config.JWT_POST;
@@ -60,6 +61,7 @@ import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 public class FridgeContentActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     SwipeRefreshLayout swipeLayout;
     String fridge;
+    int fridgeId;
     private String server_status;
     private JSONObject server_response;
     private JSONArray jsonArray;
@@ -72,7 +74,8 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             fridge = extras.getString(FRIDGE_NAME_EXTRA);
-            setTitle(fridge);
+            fridgeId = extras.getInt(FRIDGE_ID_EXTRA);
+            setTitle(getString(R.string.title_activity_fridge_content)+" "+fridge);
         }
 
         ImageView icon = new ImageView(this);
@@ -98,9 +101,9 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                 startBarcodeReader(SCAN_FRIDGE);
             }
         });
-        ImageView nscan = new ImageView(this);
-        nscan.setImageDrawable(getDrawable(R.drawable.ic_local_pizza_black_24px));
-        SubActionButton nscanButton = itemBuilder.setContentView(nscan).build();
+        ImageView nsIcon = new ImageView(this);
+        nsIcon.setImageDrawable(getDrawable(R.drawable.ic_local_pizza_black_24px));
+        SubActionButton nscanButton = itemBuilder.setContentView(nsIcon).build();
         nscanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,6 +128,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
         Intent intent = new Intent(FridgeContentActivity.this,BarcodeReaderActivity.class);
         intent.putExtra(SCAN_TYPE_EXTRA,extra);
         intent.putExtra(FRIDGE_NAME_EXTRA,fridge);
+        intent.putExtra(FRIDGE_ID_EXTRA,fridgeId);
         startActivity(intent);
     }
 

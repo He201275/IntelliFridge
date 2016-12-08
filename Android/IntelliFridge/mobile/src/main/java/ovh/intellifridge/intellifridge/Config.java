@@ -14,6 +14,7 @@ public class Config {
     public static final String FRIDGE_CONTENT_URL = "http://api.intellifridge.ovh/v1/fridges/getFridgeContent";
     public static final String FRIDGE_REMOVE_URL = "http://api.intellifridge.ovh/v1/fridges/remove";
     public static final String GROCERY_LIST_GET_URL = "http://api.intellifridge.ovh/v1/list/get";
+    public static final String REMOVE_ONE_PRODUCT_URL = "http://api.intellifridge.ovh/v1/products/removeOneFromFridge";
 
     public static final String JWT_KEY = "wAMxBauED07a4GurMpuD";
 
@@ -45,7 +46,6 @@ public class Config {
     public static final String KEY_PRODUCT_IMAGEURL = "ProduitImageUrl";
 
     //Keys for Sharedpreferences
-    public static final String SHARED_PREF_NAME = "intellifridge";
     public static final String LOGGEDIN_SHARED_PREF = "loggedin";
     public static final String USER_ID_PREFS = "user_id";
     public static final String USER_EMAIL_PREFS = "user_email";
@@ -55,8 +55,8 @@ public class Config {
     public static final String USER_GENRE_PREFS = "user_genre";
     public static final String USER_LANG_PREFS = "user_language";
     public static final String USER_API_KEY = "user_apiKey";
-    public static final String FRIDGE_LIST_PREFS = "user_fridge_list";
-    public static final String FRIDGE_LIST_SIZE_PREFS = "user_fridge_list_size";
+    public static final String USER_NB_FRIDGES_PREFS = "user_nbFridges";
+    public static final String USER_FRIDGE_PREFS = "user_fridge";
 
     //Table column names
     public static final String USER_ID_DB = "UserId";
@@ -83,6 +83,7 @@ public class Config {
     public static final String SCAN_INFO = "scan_info";
     public static final String BARCODE_EXTRA = "scan_result";
     public static final String FRIDGE_NAME_EXTRA = "fridge_name";
+    public static final String FRIDGE_ID_EXTRA = "fridge_id";
 
     public static final String MOD_FRIDGE_KEY = "module_fridge";
     public static final String MOD_ALLERGY_KEY = "module_allergy";
@@ -122,5 +123,6 @@ public class Config {
     public static final String VOLLEY_ERROR_TAG = "VOLLEY ERROR";
 
     public static final String SHARED_PREF_NAME_ALLERGY = "spAllergy"; // TODO: 04-12-16
-    
+    public static final String SHARED_PREF_NAME = "intellifridge";
+    public static final String SHARED_PREF_FRIDGES_NAME = "intellifridge_fridges";
 }

@@ -8,6 +8,7 @@ public class Product {
     String productName;
     int productSId,productNSId;
     int productQuantity;
+    int frigoId;
 
     public Product(){
         super();
@@ -17,6 +18,14 @@ public class Product {
         this.productName = pName;
         this.productSId = pId;
         this.productQuantity = pQuantity;
+    }
+
+    public void setFrigoId(int frigoId) {
+        this.frigoId = frigoId;
+    }
+
+    public int getFrigoId() {
+        return frigoId;
     }
 
     public void setProductSId(int productSId) {

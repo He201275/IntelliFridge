@@ -82,4 +82,15 @@
     <string name="mod_fridge_disabled">Le module frigo est désactivé! Activez-le dans les paramètres</string>
     <string name="nav_input_ns">Produit sans code-barres</string>
     <string name="fridge_content_card_quantity_lbl">Quantité</string>
+    <string name="title_activity_contact">Contact</string>
+    <string name="title_activity_profile">Mon profil</string>
+    <string name="title_activity_register">Créer un nouveau compte</string>
+    <string name="product_add_notInDb"></string>
+    <string name="add_fridge_error_exists">Le nom existe déjà! Veuillez chosir un autre nom</string>
+    <string name="fridge_deleted">Le frigo a été supprimé</string>
+    <string name="fridge_empty">Le frigo est vide</string>
+    <string name="grocery_list_title">Liste de courses</string>
+    <string name="mod_allergy_disabled">Le module allergie est désactivé! Activez-le d\'abord dans les paramètres</string>
+    <string name="nav_list">Liste de courses</string>
+    <string name="remove_fridge_success">Le frigo est supprimé!</string>
 </resources>

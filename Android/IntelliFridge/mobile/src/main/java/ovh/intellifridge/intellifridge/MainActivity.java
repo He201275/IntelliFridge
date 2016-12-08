@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // repeat many times:
         if (getFridgeModStatus() && !getAllergyModStatus()){
             ImageView icon = new ImageView(this);
-            icon.setImageDrawable(getDrawable(R.drawable.ic_camera_black));
+            icon.setImageDrawable(getDrawable(R.drawable.ic_fridge_black));
             FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
                     .setBackgroundDrawable(R.drawable.fab_background)
                     .setContentView(icon)
@@ -164,65 +164,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
 
-            ImageView fridgeIcon = new ImageView(this);
-            fridgeIcon.setImageDrawable(getDrawable(R.drawable.ic_fridge_black));
-            SubActionButton fridge = itemBuilder.setContentView(fridgeIcon).build();
-            fridge.setOnClickListener(new View.OnClickListener() {
+            ImageView sIcon = new ImageView(this);
+            sIcon.setImageDrawable(getDrawable(R.drawable.ic_camera_black));
+            SubActionButton sAdd = itemBuilder.setContentView(sIcon).build();
+            sAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     startBarcodeReader(SCAN_FRIDGE);
                 }
             });
 
-            ImageView infoIcon = new ImageView(this);
-            infoIcon.setImageDrawable(getDrawable(R.drawable.ic_info_black_24px));
-            SubActionButton info = itemBuilder.setContentView(infoIcon).build();
-            info.setOnClickListener(new View.OnClickListener() {
+            ImageView nsIcon = new ImageView(this);
+            nsIcon.setImageDrawable(getDrawable(R.drawable.ic_local_pizza_black_24px));
+            SubActionButton nsAdd = itemBuilder.setContentView(nsIcon).build();
+            nsAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    startBarcodeReader(SCAN_INFO);
+                    // TODO: 08-12-16
                 }
             });
 
             FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
-                    .addSubActionView(fridge)
-                    .addSubActionView(info)
+                    .addSubActionView(nsAdd)
+                    .addSubActionView(sAdd)
                     .attachTo(actionButton)
                     .build();
         }else if (!getFridgeModStatus() && getAllergyModStatus()){
             ImageView icon = new ImageView(this);
-            icon.setImageDrawable(getDrawable(R.drawable.ic_photo_camera_white_24px));
+            icon.setImageDrawable(getDrawable(R.drawable.ic_allergy));
             FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
                     .setBackgroundDrawable(R.drawable.fab_background_allerance)
                     .setContentView(icon)
-                    .build();
-
-            SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
-
-            ImageView allergyIcon = new ImageView(this);
-            allergyIcon.setImageDrawable(getDrawable(R.drawable.ic_allergy));
-            SubActionButton allergy = itemBuilder.setContentView(allergyIcon).build();
-            allergy.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startBarcodeReader(SCAN_ALLERGY);
-                }
-            });
-
-            ImageView infoIcon = new ImageView(this);
-            infoIcon.setImageDrawable(getDrawable(R.drawable.ic_info_black_24px));
-            SubActionButton info = itemBuilder.setContentView(infoIcon).build();
-            info.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startBarcodeReader(SCAN_INFO);
-                }
-            });
-
-            FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
-                    .addSubActionView(allergy)
-                    .addSubActionView(info)
-                    .attachTo(actionButton)
                     .build();
         }else{
             ImageView icon = new ImageView(this);
@@ -243,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     startBarcodeReader(SCAN_FRIDGE);
                 }
             });
-
             ImageView allergyIcon = new ImageView(this);
             allergyIcon.setImageDrawable(getDrawable(R.drawable.ic_allergy));
             SubActionButton allergy = itemBuilder.setContentView(allergyIcon).build();
@@ -253,21 +224,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     startBarcodeReader(SCAN_ALLERGY);
                 }
             });
-
-            ImageView infoIcon = new ImageView(this);
-            infoIcon.setImageDrawable(getDrawable(R.drawable.ic_info_black_24px));
-            SubActionButton info = itemBuilder.setContentView(infoIcon).build();
-            info.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startBarcodeReader(SCAN_INFO);
-                }
-            });
-
             FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
                     .addSubActionView(fridge)
                     .addSubActionView(allergy)
-                    .addSubActionView(info)
                     .attachTo(actionButton)
                     .build();
         }
@@ -339,12 +298,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }else if (id == R.id.action_add_fridge){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.add_fridge_title);
-            // Set up the input
             final EditText input = new EditText(this);
-            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             builder.setView(input);
-            // Set up the buttons
+            builder.setMessage(R.string.add_fridge_message);
             builder.setPositiveButton(R.string.add_fridge_addBtn, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -375,11 +332,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onResponse(String response) {
                         String secret = JWT_KEY;
-                            try {
-                                final JWTVerifier verifier = new JWTVerifier(secret);
-                                final Map<String, Object> claims= verifier.verify(response);
-                                server_response = new JSONObject(claims);
-                                server_status = server_response.getString(SERVER_STATUS);
+                        try {
+                            final JWTVerifier verifier = new JWTVerifier(secret);
+                            final Map<String, Object> claims= verifier.verify(response);
+                            server_response = new JSONObject(claims);
+                            server_status = server_response.getString(SERVER_STATUS);
                         } catch (JWTVerifyException e) {
                             // Invalid Token
                             Log.e("JWT ERROR",e.toString());

@@ -1,20 +1,40 @@
 package ovh.intellifridge.intellifridge;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_URL;
+import static ovh.intellifridge.intellifridge.Config.JWT_POST;
+import static ovh.intellifridge.intellifridge.Config.PRODUCT_ADD_REQUEST_TAG;
+import static ovh.intellifridge.intellifridge.Config.VOLLEY_ERROR_TAG;
 
 /**
  * Created by franc on 03-12-16.
  */
 
-public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRVAdapter.ProductViewHolder> {
+public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRVAdapter.ProductViewHolder>{
     Product[] fridgeContent;
+    private JSONObject server_response;
+    int productId, fridgeId;
 
     FridgeContentRVAdapter(Product[] content_fridge){
         this.fridgeContent = content_fridge;
@@ -42,16 +62,62 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
     }
 
     @Override
-    public void onBindViewHolder(ProductViewHolder productViewHolderHolder, int position) {
+    public void onBindViewHolder(final ProductViewHolder productViewHolderHolder, int position) {
+        productId = fridgeContent[position].getProductSId();
+
         productViewHolderHolder.product_name.setText(fridgeContent[position].getProductName());
-        //productViewHolderHolder.product_image.setImageDrawable(Drawable.createFromPath(fridgeContent[position].getUrlImage())); // TODO: 04-12-16
         productViewHolderHolder.product_quantity.setText(Integer.toString(fridgeContent[position].getProductQuantity()));
-        productViewHolderHolder.cardView.setOnClickListener(new View.OnClickListener() {
+        productViewHolderHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
-                Toast.makeText(view.getContext(),"Card pressed",Toast.LENGTH_SHORT).show();
+            public boolean onLongClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(productViewHolderHolder.cardView.getContext());
+                builder.setTitle(R.string.fridge_content_dialog_title);
+                builder.setMessage(productViewHolderHolder.product_name.getText());
+                builder.setPositiveButton(R.string.add_fridgeContent_addBtn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO: 07-12-16  
+                    }
+                });
+                builder.setNegativeButton(R.string.add_fridgeContent_removeBtn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        removeOneProduct();
+                    }
+                });
+                builder.show();
+                return false;
             }
         });
+    }
+
+    private void removeOneProduct() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ADD_PRODUCT_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.wtf("RES",response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(VOLLEY_ERROR_TAG,error.toString());
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                /*String apiKey = getApiKey();
+                int userId = getUserId();
+                String jwt = signParamsAddProductS(apiKey,userId,barcode,productName,brands,fridge_selected,imageUrl,quantity);*/
+                Map<String,String> params = new HashMap<>();
+                //Adding parameters to POST request
+                //params.put(JWT_POST, jwt);
+                return params;
+            }
+        };
+        //MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, PRODUCT_ADD_REQUEST_TAG);
     }
 
     public void remove(int position) {

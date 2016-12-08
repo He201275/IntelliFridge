@@ -22,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,18 +38,19 @@ import java.util.Map;
 import static ovh.intellifridge.intellifridge.Config.DATA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_GET_LIST_URL;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_ID_DB;
-import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_PREFS;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_REQUEST_TAG;
-import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_SIZE_PREFS;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_DB;
 import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
 import static ovh.intellifridge.intellifridge.Config.KEY_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.KEY_USERID;
 import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
 import static ovh.intellifridge.intellifridge.Config.SERVER_SUCCESS;
+import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_FRIDGES_NAME;
 import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
 import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
+import static ovh.intellifridge.intellifridge.Config.USER_FRIDGE_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
+import static ovh.intellifridge.intellifridge.Config.USER_NB_FRIDGES_PREFS;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -123,13 +125,17 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
         MySingleton.getInstance(getActivity().getApplicationContext()).addToRequestQueue(stringRequest, FRIDGE_LIST_REQUEST_TAG);
     }
 
-    private void saveFridgeList(JSONArray jsonArray) { // TODO: 06-12-16
+    private void saveFridgeList(JSONArray jsonArray) {
         Fridge[] fridgeList = getFridgeArray(jsonArray);
-        SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        int length = fridgeList.length;
+        SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREF_FRIDGES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(FRIDGE_LIST_SIZE_PREFS,fridgeList.length);
-        for (int i=0;i<fridgeList.length;i++){
-            editor.putString(FRIDGE_LIST_PREFS+"_"+i,fridgeList[i].getFridgeName());
+        editor.putInt(USER_NB_FRIDGES_PREFS,length);
+
+        for (int i=0;i<length;i++){
+            Gson gson = new Gson();
+            String json = gson.toJson(fridgeList[i]);
+            editor.putString(USER_FRIDGE_PREFS+i,json);
         }
         editor.apply();
     }

@@ -12,7 +12,8 @@
         android:id="@+id/grocery_list_cardview"
         card_view:cardCornerRadius="4dp"
         android:clickable="true"
-        android:elevation="3dp">
+        android:elevation="3dp"
+        card_view:cardBackgroundColor="@color/list_color">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -9,7 +9,9 @@ import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -38,8 +41,7 @@ import java.util.Map;
 import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_URL;
 import static ovh.intellifridge.intellifridge.Config.BARCODE_CHECK_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.BARCODE_EXTRA;
-import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_PREFS;
-import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_SIZE_PREFS;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_ID_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.GET_INFO_OFF_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
@@ -67,9 +69,12 @@ import static ovh.intellifridge.intellifridge.Config.PRODUCT_S_ID_DB;
 import static ovh.intellifridge.intellifridge.Config.SERVER_PROD_NOTINDB;
 import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
 import static ovh.intellifridge.intellifridge.Config.SERVER_SUCCESS;
+import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_FRIDGES_NAME;
 import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
 import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
+import static ovh.intellifridge.intellifridge.Config.USER_FRIDGE_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
+import static ovh.intellifridge.intellifridge.Config.USER_NB_FRIDGES_PREFS;
 import static ovh.intellifridge.intellifridge.Config.VOLLEY_ERROR_TAG;
 
 public class ProductAddActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,View.OnClickListener{
@@ -79,7 +84,8 @@ public class ProductAddActivity extends AppCompatActivity implements AdapterView
     AppCompatButton addProductFridge,cancelAddProduct;
     String secret = JWT_KEY;
     Boolean prodInDb = false;
-    JSONArray jsonArray;
+    int fridgeId;
+    Fridge[] fridges;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +98,10 @@ public class ProductAddActivity extends AppCompatActivity implements AdapterView
             if (extras.getString(FRIDGE_NAME_EXTRA) != null){
                 fridge_selected = extras.getString(FRIDGE_NAME_EXTRA);
             }
+
+            if (extras.getString(FRIDGE_ID_EXTRA) != null){
+                fridgeId = extras.getInt(FRIDGE_ID_EXTRA);
+            }
         }
 
         if (isInDb()){
@@ -101,32 +111,27 @@ public class ProductAddActivity extends AppCompatActivity implements AdapterView
             getProductInfoOFF();
         }
 
+        fridges = loadFridgeList();
+        loadSpinner();
+    }
 
-        /*Spinner spinner = (Spinner)findViewById(R.id.fridge_spinner);
-        ArrayAdapter spinnerArrayAdapter= new ArrayAdapter(this,android.R.layout.simple_spinner_item,fridgeList);
+    private void loadSpinner() {
+        Spinner spinner = (Spinner)findViewById(R.id.fridge_spinner);
+        ArrayAdapter spinnerArrayAdapter= new ArrayAdapter(this,android.R.layout.simple_spinner_item,fridges);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerArrayAdapter);*/
+        spinner.setAdapter(spinnerArrayAdapter);
     }
 
     public Fridge[] loadFridgeList(){
-        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        int size = preferences.getInt(FRIDGE_LIST_SIZE_PREFS,0);
+        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_FRIDGES_NAME, Context.MODE_PRIVATE);
+        int size = preferences.getInt(USER_NB_FRIDGES_PREFS,0);
         Fridge[] fridgeList = new Fridge[size];
         for (int i=0;i<size;i++){
-            fridgeList[i].setFridgeName(preferences.getString(FRIDGE_LIST_PREFS+"_"+i,""));
+            Gson gson = new Gson();
+            String json = preferences.getString(USER_FRIDGE_PREFS+i,"");
+            fridgeList[i] = gson.fromJson(json,Fridge.class);
         }
         return fridgeList;
-    }
-
-    private String signParamsFrdigeList(int user_id, String apiKey) {
-        final String secret = JWT_KEY;
-        String jwt = "";
-
-        final JWTSigner signer = new JWTSigner(secret);
-        final HashMap<String, Object> claims = new HashMap<String, Object>();
-        claims.put(KEY_USERID,user_id);
-        claims.put(KEY_API_KEY,apiKey);
-        return jwt = signer.sign(claims);
     }
 
     private int getUserId() {
@@ -278,7 +283,7 @@ public class ProductAddActivity extends AppCompatActivity implements AdapterView
         startActivity(intent);
     }
 
-    private void addProductSFridge() {
+    public void addProductSFridge() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ADD_PRODUCT_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -320,7 +325,7 @@ public class ProductAddActivity extends AppCompatActivity implements AdapterView
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, PRODUCT_ADD_REQUEST_TAG);
     }
 
-    private String signParamsAddProductS(String apiKey, int userId, String barcode, String productName, String brands, String fridge_selected, String imageUrl, String quantity) {
+    public String signParamsAddProductS(String apiKey, int userId, String barcode, String productName, String brands, String fridge_selected, String imageUrl, String quantity) {
         final String secret = JWT_KEY;
         String jwt = "";
 

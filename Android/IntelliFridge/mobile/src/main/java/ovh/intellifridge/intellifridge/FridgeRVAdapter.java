@@ -3,11 +3,14 @@ package ovh.intellifridge.intellifridge;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.DATA;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_ID_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_LIST_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_REMOVE_URL;
@@ -51,7 +55,7 @@ import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 
 
-public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.FridgeViewHolder> {
+public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.FridgeViewHolder>{
     Fridge[] fridges;
     Context context;
     private JSONObject server_response;
@@ -90,9 +94,9 @@ public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.Fridge
         fridgeViewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(),R.string.open_fridge,Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(view.getContext(),FridgeContentActivity.class);
                 intent.putExtra(FRIDGE_NAME_EXTRA,fridges[fridgeViewHolder.getAdapterPosition()].getFridgeName());
+                intent.putExtra(FRIDGE_ID_EXTRA,fridges[position].getFridgeId());
                 view.getContext().startActivity(intent);
             }
         });

@@ -62,6 +62,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.title_activity_register);
         if (getAllergyModStatus() && !getFridgeModStatus()){
             setContentView(R.layout.activity_register_allerance);
         }else {
