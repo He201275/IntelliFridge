@@ -43,20 +43,24 @@ import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_URL;
 import static ovh.intellifridge.intellifridge.Config.BARCODE_CHECK_REQUEST_TAG;
-import static ovh.intellifridge.intellifridge.Config.BARCODE_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_ID_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.GET_INFO_OFF_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
 import static ovh.intellifridge.intellifridge.Config.JWT_POST;
 import static ovh.intellifridge.intellifridge.Config.KEY_API_KEY;
+import static ovh.intellifridge.intellifridge.Config.KEY_FRIDGE_ID;
 import static ovh.intellifridge.intellifridge.Config.KEY_FRIDGE_NAME;
 import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_BRAND;
 import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_IMAGEURL;
 import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_NAME;
+import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_NS_ID;
+import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_PRESENT;
 import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_QUANTITY;
+import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_SCANNABLE;
 import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_S_ID;
 import static ovh.intellifridge.intellifridge.Config.KEY_USERID;
+import static ovh.intellifridge.intellifridge.Config.OFF_BRANDS;
 import static ovh.intellifridge.intellifridge.Config.OFF_IMAGE_URL;
 import static ovh.intellifridge.intellifridge.Config.OFF_PRODUCT;
 import static ovh.intellifridge.intellifridge.Config.OFF_PRODUCTNAME;
@@ -82,15 +86,16 @@ import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_NB_FRIDGES_PREFS;
 import static ovh.intellifridge.intellifridge.Config.VOLLEY_ERROR_TAG;
 
-public class BarcodeReaderActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
-    String scan_type,fridge;
-    String barcode,imageUrl,productName,quantity, off_status, fridge_selected,brands, server_status;
+public class BarcodeReaderActivity extends AppCompatActivity {
+    String scan_type, fridge_selected_name,fridge_selected_id;
+    String barcode,imageUrl,productName,quantity, off_status,brands, server_status;
     JSONObject product,server_response;
     String secret = JWT_KEY;
     Boolean prodInDb = false;
     int fridgeId;
     Fridge[] fridges;
     TextView txtProduct,txtQuantity;
+    View addProductCard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +105,7 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
         if (extras != null) {
             scan_type = extras.getString(SCAN_TYPE_EXTRA);
             if (extras.getString(FRIDGE_NAME_EXTRA) != null){
-                fridge = extras.getString(FRIDGE_NAME_EXTRA);
-            }
-            barcode = extras.getString(BARCODE_EXTRA);
-            if (extras.getString(FRIDGE_NAME_EXTRA) != null){
-                fridge_selected = extras.getString(FRIDGE_NAME_EXTRA);
+                fridge_selected_name = extras.getString(FRIDGE_NAME_EXTRA);
             }
 
             if (extras.getString(FRIDGE_ID_EXTRA) != null){
@@ -112,12 +113,12 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
             }
         }
 
-        /*if (isInDb()){
+        if (isInDb()){
             Log.wtf("INDB","Product in db");
         }else {
             Log.wtf("INDB","Product not in db");
             getProductInfoOFF();
-        }*/
+        }
 
         fridges = loadFridgeList();
         initiateScan();
@@ -230,26 +231,7 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
         off_status = response.getString(OFF_STATUS_VERBOSE);
         final AlertDialog.Builder builder = new AlertDialog.Builder(BarcodeReaderActivity.this);
         LayoutInflater inflater = this.getLayoutInflater();
-        View addProductCard = inflater.inflate(R.layout.add_product_s_card,null);
-        builder.setView(addProductCard);
-        builder.setTitle(R.string.add_product_title);
-        builder.setPositiveButton(R.string.add_fridge_addBtn, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                addProductSFridge();
-            }
-        });
-        builder.setNegativeButton(R.string.add_fridge_cancelBtn, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // TODO: 09-12-16  
-            }
-        });
-        final AlertDialog alertDialog = builder.create();
-        final Spinner spinner = (Spinner)addProductCard.findViewById(R.id.fridge_spinner);
-        ArrayAdapter spinnerArrayAdapter= new ArrayAdapter(this,android.R.layout.simple_spinner_item,fridges);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerArrayAdapter);
-
+        addProductCard = inflater.inflate(R.layout.add_product_s_card,null);
         if (off_status.equals(OFF_STATUS_FOUND)){
             product = response.getJSONObject(OFF_PRODUCT);
             if (product.has(OFF_IMAGE_URL)) {
@@ -266,6 +248,9 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
             }else if (product.has(OFF_PRODUCTNAME_FR)){
                 productName = product.getString(OFF_PRODUCTNAME_FR);
             }
+            if (product.has(OFF_BRANDS)){
+                brands = product.getString(OFF_BRANDS);
+            }
             txtProduct = (TextView)addProductCard.findViewById(R.id.productName);
             txtProduct.setText(productName);
             quantity = product.getString(OFF_QUANTITY);
@@ -274,6 +259,44 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
         }else {
             // TODO: 26-11-16
         }
+
+        builder.setView(addProductCard);
+        builder.setTitle(R.string.add_product_title);
+        builder.setPositiveButton(R.string.add_fridge_addBtn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                Log.wtf("ADD","PRESSED");
+                addProductSFridge();
+                startMainActivity();
+            }
+        });
+        builder.setNegativeButton(R.string.add_fridge_cancelBtn, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                startMainActivity();
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        final Spinner spinner = (Spinner)addProductCard.findViewById(R.id.fridge_spinner);
+        ArrayAdapter spinnerArrayAdapter= new ArrayAdapter(this,android.R.layout.simple_spinner_item,fridges);
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerArrayAdapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                fridge_selected_name = adapterView.getItemAtPosition(position).toString();
+                for (int i=0;i<fridges.length;i++){
+                    if (fridge_selected_name.equals(fridges[i].getFridgeName())){
+                        fridgeId = fridges[i].getFridgeId();
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         alertDialog.show();
         alertDialog.setCanceledOnTouchOutside(false);
     }
@@ -288,6 +311,7 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.wtf("RES",response);
                         try {
                             final JWTVerifier verifier = new JWTVerifier(secret);
                             final Map<String, Object> claims= verifier.verify(response);
@@ -300,7 +324,7 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
                         }
 
                         if (server_status.equals(SERVER_SUCCESS)){
-                            Toast.makeText(getApplicationContext(),getString(R.string.product_add_fridge_success)+" : "+fridge_selected,Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(),getString(R.string.product_add_fridge_success)+" : "+fridge_selected_name,Toast.LENGTH_LONG).show();
                             startMainActivity();
                         }
                     }
@@ -315,7 +339,12 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
             protected Map<String, String> getParams() throws AuthFailureError {
                 String apiKey = getApiKey();
                 int userId = getUserId();
-                String jwt = signParamsAddProductS(apiKey,userId,barcode,productName,brands,fridge_selected,imageUrl,quantity);
+                int produit_ns_id = 1;
+                int isScannable = 1;
+                int isPresent = 1;
+                fridge_selected_id = String.valueOf(fridgeId);
+                String jwt = signParamsAddProductS(apiKey,userId,fridge_selected_id,produit_ns_id,barcode,isPresent,isScannable,quantity,imageUrl,fridge_selected_name);
+                Log.wtf("req",jwt);
                 Map<String,String> params = new HashMap<>();
                 //Adding parameters to POST request
                 params.put(JWT_POST, jwt);
@@ -325,7 +354,7 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, PRODUCT_ADD_REQUEST_TAG);
     }
 
-    public String signParamsAddProductS(String apiKey, int userId, String barcode, String productName, String brands, String fridge_selected, String imageUrl, String quantity) {
+    public String signParamsAddProductS(String apiKey, int userId, String fridge_selected_id, int produit_ns_id, String barcode, int isPresent, int isScannable, String quantity, String imageUrl, String fridge_selected_name) {
         final String secret = JWT_KEY;
         String jwt = "";
 
@@ -333,23 +362,17 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
         final HashMap<String, Object> claims = new HashMap<String, Object>();
         claims.put(KEY_USERID,userId);
         claims.put(KEY_API_KEY,apiKey);
+        claims.put(KEY_PRODUCT_NS_ID,produit_ns_id);
         claims.put(KEY_PRODUCT_S_ID,barcode);
         claims.put(KEY_PRODUCT_NAME,productName);
         claims.put(KEY_PRODUCT_BRAND,brands);
-        claims.put(KEY_FRIDGE_NAME,fridge_selected);
+        claims.put(KEY_FRIDGE_ID,fridge_selected_id);
         claims.put(KEY_PRODUCT_IMAGEURL,imageUrl);
         claims.put(KEY_PRODUCT_QUANTITY,quantity);
+        claims.put(KEY_PRODUCT_SCANNABLE,isScannable);
+        claims.put(KEY_PRODUCT_PRESENT,isPresent);
+        claims.put(KEY_FRIDGE_NAME,fridge_selected_name);
         return jwt = signer.sign(claims);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-        fridge_selected = adapterView.getItemAtPosition(position).toString();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        // TODO: 26-11-16
     }
 
     public void initiateScan(){
@@ -363,8 +386,6 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
             intentIntegrator.setPrompt(getString(R.string.scanner_prompt_fridge));
         }else if (scan_type.equals(SCAN_ALLERGY)){
             intentIntegrator.setPrompt(getString(R.string.scanner_prompt_allergy));
-        }else {
-            intentIntegrator.setPrompt(getString(R.string.scanner_prompt_info));
         }
         intentIntegrator.setOrientationLocked(false);
         intentIntegrator.setBeepEnabled(true);
@@ -386,7 +407,6 @@ public class BarcodeReaderActivity extends AppCompatActivity implements AdapterV
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(BarcodeReaderActivity.this,MainActivity.class);
-        startActivity(intent);
+        startMainActivity();
     }
 }

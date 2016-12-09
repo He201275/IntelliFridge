@@ -38,12 +38,16 @@ public class Config {
     public static final String KEY_LANGUE = "LangueCode";
     public static final String KEY_USERID = "UserId";
     public static final String KEY_API_KEY = "ApiKey";
+    public static final String KEY_FRIDGE_ID = "FrigoId";
     public static final String KEY_FRIDGE_NAME = "FrigoNom";
     public static final String KEY_PRODUCT_S_ID = "ProduitSId";
+    public static final String KEY_PRODUCT_NS_ID = "ProduitNSId";
     public static final String KEY_PRODUCT_NAME = "ProduitSNom";
     public static final String KEY_PRODUCT_BRAND = "ProduitSMarque";
     public static final String KEY_PRODUCT_QUANTITY = "Contenance";
     public static final String KEY_PRODUCT_IMAGEURL = "ProduitImageUrl";
+    public static final String KEY_PRODUCT_SCANNABLE = "IsScannable";
+    public static final String KEY_PRODUCT_PRESENT = "IsPresent";
 
     //Keys for Sharedpreferences
     public static final String LOGGEDIN_SHARED_PREF = "loggedin";
