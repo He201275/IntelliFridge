@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 /**
- * Created by franc on 06-12-16.
+ * @author Francis O. Makokha
+ * {@link FridgeContentRVAdapter}
+ * Gère les éléments de la liste de courses
  */
 
 public class GroceryListRVAdapter extends RecyclerView.Adapter<GroceryListRVAdapter.GroceryListViewHolder> {

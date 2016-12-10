@@ -52,6 +52,11 @@ import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
 import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 
+/**
+ * Permet la gestion de la liste de courses
+ * @author Francis O. Makokha
+ * {@link FridgeContentActivity}
+ */
 public class GroceryListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     SwipeRefreshLayout swipeLayout;
     private String server_status;
@@ -144,7 +149,7 @@ public class GroceryListActivity extends AppCompatActivity implements SwipeRefre
                                 e.printStackTrace();
                             }
                         }else if (server_status.equals(SERVER_FRIDGE_EMPTY)){
-                            Toast.makeText(getApplicationContext(),R.string.fridge_empty,Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(),R.string.grocery_list,Toast.LENGTH_LONG).show();
                         }
                     }
                 },

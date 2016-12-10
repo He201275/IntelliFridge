@@ -31,6 +31,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,9 +44,10 @@ import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_URL;
 import static ovh.intellifridge.intellifridge.Config.BARCODE_CHECK_REQUEST_TAG;
-import static ovh.intellifridge.intellifridge.Config.FRIDGE_ID_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_EXTRA;
+import static ovh.intellifridge.intellifridge.Config.GET_INFO_LOCAL_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.GET_INFO_OFF_REQUEST_TAG;
+import static ovh.intellifridge.intellifridge.Config.GET_PRODUCT_INFO_LOCAL_URL;
 import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
 import static ovh.intellifridge.intellifridge.Config.JWT_POST;
 import static ovh.intellifridge.intellifridge.Config.KEY_API_KEY;
@@ -72,7 +74,6 @@ import static ovh.intellifridge.intellifridge.Config.OFF_STATUS_VERBOSE;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_ADD_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_DB_LOCATION_CHECK_URL;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_S_ID_DB;
-import static ovh.intellifridge.intellifridge.Config.SCAN_ALLERGY;
 import static ovh.intellifridge.intellifridge.Config.SCAN_FRIDGE;
 import static ovh.intellifridge.intellifridge.Config.SCAN_TYPE_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.SERVER_PROD_NOTINDB;
@@ -86,44 +87,85 @@ import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_NB_FRIDGES_PREFS;
 import static ovh.intellifridge.intellifridge.Config.VOLLEY_ERROR_TAG;
 
+/**
+ * @author Francis O. Makokha
+ * Classe qui gère la lecture du code-barres et récolte les informations, dans les différents cas
+ */
 public class BarcodeReaderActivity extends AppCompatActivity {
-    String scan_type, fridge_selected_name,fridge_selected_id;
-    String barcode,imageUrl,productName,quantity, off_status,brands, server_status;
-    JSONObject product,server_response;
+    Bundle extras;
+    String fridge_selected_name,scan_type;
+    private String scanned_barcode;
     String secret = JWT_KEY;
-    Boolean prodInDb = false;
-    int fridgeId;
+    private String server_status;
+    String imageUrl,productName,quantity, off_status,brands;
+    JSONObject product;
     Fridge[] fridges;
     TextView txtProduct,txtQuantity;
     View addProductCard;
+    private String fridge_selected_id;
+    private int fridgeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode_reader);
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            scan_type = extras.getString(SCAN_TYPE_EXTRA);
-            if (extras.getString(FRIDGE_NAME_EXTRA) != null){
-                fridge_selected_name = extras.getString(FRIDGE_NAME_EXTRA);
-            }
 
-            if (extras.getString(FRIDGE_ID_EXTRA) != null){
-                fridgeId = extras.getInt(FRIDGE_ID_EXTRA);
-            }
+        extras = getIntent().getExtras();
+        if (extras.getString(FRIDGE_NAME_EXTRA) != null) {
+            fridge_selected_name = extras.getString(FRIDGE_NAME_EXTRA);
         }
-
-        if (isInDb()){
-            Log.wtf("INDB","Product in db");
-        }else {
-            Log.wtf("INDB","Product not in db");
-            getProductInfoOFF();
+        if (extras.getString(SCAN_TYPE_EXTRA) != null){
+            scan_type = extras.getString(SCAN_TYPE_EXTRA);
         }
 
         fridges = loadFridgeList();
         initiateScan();
     }
 
+    /**
+     * Méthode pour initier le lecteur de code-barres zxing
+     */
+    private void initiateScan() {
+        IntentIntegrator scanIntegrator = new IntentIntegrator(this);
+        setScannerOptions(scanIntegrator);
+        scanIntegrator.initiateScan();
+    }
+
+    /**
+     * Méthode pour paramètrer le lecteur de code-barres
+     * @param scanIntegrator l'instance initié de IntentIntegrator par la méthode {@link #initiateScan()}
+     */
+    private void setScannerOptions(IntentIntegrator scanIntegrator) {
+        if (scan_type.equals(SCAN_FRIDGE)){
+            scanIntegrator.setPrompt(getString(R.string.scanner_prompt_fridge));
+        }else {
+            scanIntegrator.setPrompt(getString(R.string.scanner_prompt_allergy));
+        }
+        scanIntegrator.setBeepEnabled(false);
+        scanIntegrator.setOrientationLocked(false);
+    }
+
+    /**
+     * Méthode qui renvoie le résultat du scan de code-barres
+     * @param requestCode
+     * @param resultCode
+     * @param intent
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanningResult != null){
+            scanned_barcode = scanningResult.getContents(); //On récupère le code-barres scanné
+            isInDb();
+        }else {
+            Toast.makeText(getApplicationContext(), R.string.scan_error, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Méthode permettant de récupérer la liste de frigos sauvés par {@link ovh.intellifridge.intellifridge.FridgeFragment#saveFridgeList(JSONArray)}
+     * @return Array d'objets Fridge
+     */
     public Fridge[] loadFridgeList(){
         SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_FRIDGES_NAME, Context.MODE_PRIVATE);
         int size = preferences.getInt(USER_NB_FRIDGES_PREFS,0);
@@ -136,26 +178,18 @@ public class BarcodeReaderActivity extends AppCompatActivity {
         return fridgeList;
     }
 
-    private int getUserId() {
-        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return preferences.getInt(USER_ID_PREFS,0);
-    }
-
-    private String getApiKey(){
-        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        return preferences.getString(USER_API_KEY,"");
-    }
-
-    private Boolean isInDb() {
+    /**
+     * Méthode qui envoie une requête à l'API pour déterminer si le code-barres est déjà dans la db interne
+     */
+    private void isInDb() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, PRODUCT_DB_LOCATION_CHECK_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.wtf("RESISiNDB",response);
                         try {
                             final JWTVerifier verifier = new JWTVerifier(secret);
                             final Map<String, Object> claims= verifier.verify(response);
-                            server_response = new JSONObject(claims);
+                            JSONObject server_response = new JSONObject(claims);
                             server_status = server_response.getString(SERVER_STATUS);
                         } catch (JWTVerifyException e) {
                             // Invalid Token
@@ -165,9 +199,9 @@ public class BarcodeReaderActivity extends AppCompatActivity {
                         }
 
                         if (server_status.equals(SERVER_PROD_NOTINDB)){
-                            prodInDb = false;
+                            getProductInfoOFFDb();
                         }else if (server_status.equals(SERVER_SUCCESS)){
-                            prodInDb = true;
+                            getProductInfoIFDb();
                         }
                     }
                 },
@@ -179,7 +213,9 @@ public class BarcodeReaderActivity extends AppCompatActivity {
                 }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
-                String jwt = signParamsIsInDb(barcode);
+                String apiKey = getApiKey();
+                int userId = getUserId();
+                String jwt = signParamsIsInDb(scanned_barcode,apiKey,userId);
                 Map<String,String> params = new HashMap<>();
                 //Adding parameters to POST request
                 params.put(JWT_POST, jwt);
@@ -187,21 +223,76 @@ public class BarcodeReaderActivity extends AppCompatActivity {
             }
         };
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, BARCODE_CHECK_REQUEST_TAG);
-        return prodInDb;
     }
 
-    private String signParamsIsInDb(String barcode) {
-        String jwt = "";
-
+    /**
+     * Méthode qui permet de signer la requête pour {@link #isInDb()}
+     * @param barcode Code-barres récupéré par zxing au moment du scan
+     * @param api_key Clé api, unique à l'uilisateur
+     * @param user_id Id de l'utilisateur, dans la db
+     * @return String signé pour faire la requête
+     */
+    private String signParamsIsInDb(String barcode,String api_key,int user_id){
         final JWTSigner signer = new JWTSigner(secret);
         final HashMap<String, Object> claims = new HashMap<String, Object>();
         claims.put(PRODUCT_S_ID_DB,barcode);
-        return jwt = signer.sign(claims);
+        claims.put(KEY_API_KEY,api_key);
+        claims.put(KEY_USERID,user_id);
+        return signer.sign(claims);
     }
 
-    private void getProductInfoOFF() {
+    private void getProductInfoIFDb() {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, GET_PRODUCT_INFO_LOCAL_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.wtf("LOCAL",response);
+                        // TODO: 10-12-16 : decode and display info from local db 
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("VOLLEY ERROR",error.toString());
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                String apiKey = getApiKey();
+                int user_id = getUserId();
+                String jwt = signParamsGetProdInfoIF(scanned_barcode,apiKey,user_id);
+                Map<String,String> params = new HashMap<>();
+                //Adding parameters to POST request
+                params.put(JWT_POST,jwt);
+                return params;
+            }
+        };
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, GET_INFO_LOCAL_REQUEST_TAG);
+    }
+
+    /**
+     * Méthode pour signer la requête pour {@link #getProductInfoIFDb()}
+     * @param scanned_barcode
+     * @param apiKey
+     * @param user_id
+     * @return
+     */
+    private String signParamsGetProdInfoIF(String scanned_barcode, String apiKey, int user_id) {
+        final JWTSigner signer = new JWTSigner(secret);
+        final HashMap<String, Object> claims = new HashMap<String, Object>();
+        claims.put(KEY_PRODUCT_S_ID,scanned_barcode);
+        claims.put(KEY_USERID,user_id);
+        claims.put(KEY_API_KEY,apiKey);
+        return signer.sign(claims);
+    }
+
+    /**
+     * Méthode pour récupérer les informations produit, à partir de la db OpenFoodFacts @see <a href="http://fr.openfoodfacts.org">http://fr.openfoodfacts.org</a>
+     * Reçoit des données json en retour
+     */
+    private void getProductInfoOFFDb() {
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, "http://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json",new Response.Listener<JSONObject>() {
+                (Request.Method.GET, "http://fr.openfoodfacts.org/api/v0/product/" + scanned_barcode + ".json",new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -227,6 +318,11 @@ public class BarcodeReaderActivity extends AppCompatActivity {
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsObjRequest, GET_INFO_OFF_REQUEST_TAG);
     }
 
+    /**
+     * Permet d'afficher les infos produit récoltées de OpenFoodFacts par la méthode {@link #getProductInfoOFFDb()}
+     * @param response Un objet json contenant les infos du produit scanné
+     * @throws JSONException
+     */
     private void displayProductInfoOFF(JSONObject response) throws JSONException {
         off_status = response.getString(OFF_STATUS_VERBOSE);
         final AlertDialog.Builder builder = new AlertDialog.Builder(BarcodeReaderActivity.this);
@@ -265,7 +361,6 @@ public class BarcodeReaderActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.add_fridge_addBtn, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                Log.wtf("ADD","PRESSED");
                 addProductSFridge();
                 startMainActivity();
             }
@@ -276,46 +371,57 @@ public class BarcodeReaderActivity extends AppCompatActivity {
             }
         });
         final AlertDialog alertDialog = builder.create();
-        final Spinner spinner = (Spinner)addProductCard.findViewById(R.id.fridge_spinner);
-        ArrayAdapter spinnerArrayAdapter= new ArrayAdapter(this,android.R.layout.simple_spinner_item,fridges);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerArrayAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                fridge_selected_name = adapterView.getItemAtPosition(position).toString();
-                for (int i=0;i<fridges.length;i++){
-                    if (fridge_selected_name.equals(fridges[i].getFridgeName())){
-                        fridgeId = fridges[i].getFridgeId();
-                    }
+        Bundle extras = getIntent().getExtras();
+        if (extras.getString(FRIDGE_NAME_EXTRA) != null) {
+            fridge_selected_name = extras.getString(FRIDGE_NAME_EXTRA);
+            getFridgeIdFromName(fridge_selected_name);
+        }else {
+            final Spinner spinner = (Spinner)addProductCard.findViewById(R.id.fridge_spinner);
+            ArrayAdapter spinnerArrayAdapter= new ArrayAdapter(this,android.R.layout.simple_spinner_item,fridges);
+            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(spinnerArrayAdapter);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                    fridge_selected_name = adapterView.getItemAtPosition(position).toString();
+                    getFridgeIdFromName(fridge_selected_name);
                 }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
 
-            }
-        });
+                }
+            });
+        }
 
         alertDialog.show();
         alertDialog.setCanceledOnTouchOutside(false);
     }
 
-    private void startMainActivity() {
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
+    /**
+     * Permet de récupérer l'id d'un frigo, à partir de son nom
+     * @param fridge_selected_name
+     */
+    private void getFridgeIdFromName(String fridge_selected_name) {
+        for (int i=0;i<fridges.length;i++){
+            if (fridge_selected_name.equals(fridges[i].getFridgeName())){
+                fridgeId = fridges[i].getFridgeId();
+            }
+        }
     }
 
-    public void addProductSFridge() {
+    /**
+     * Permet d'ajouter un produit scanné ou non-scanné à un frigo
+     */
+    private void addProductSFridge() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ADD_PRODUCT_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.wtf("RES",response);
                         try {
                             final JWTVerifier verifier = new JWTVerifier(secret);
                             final Map<String, Object> claims= verifier.verify(response);
-                            server_response = new JSONObject(claims);
+                            JSONObject server_response = new JSONObject(claims);
                             server_status = server_response.getString(SERVER_STATUS);
                         } catch (JWTVerifyException e) {
                             Log.e("JWT ERROR",e.toString());
@@ -343,8 +449,7 @@ public class BarcodeReaderActivity extends AppCompatActivity {
                 int isScannable = 1;
                 int isPresent = 1;
                 fridge_selected_id = String.valueOf(fridgeId);
-                String jwt = signParamsAddProductS(apiKey,userId,fridge_selected_id,produit_ns_id,barcode,isPresent,isScannable,quantity,imageUrl,fridge_selected_name);
-                Log.wtf("req",jwt);
+                String jwt = signParamsAddProductS(apiKey,userId,fridge_selected_id,produit_ns_id,scanned_barcode,isPresent,isScannable,quantity,imageUrl,fridge_selected_name);
                 Map<String,String> params = new HashMap<>();
                 //Adding parameters to POST request
                 params.put(JWT_POST, jwt);
@@ -354,6 +459,20 @@ public class BarcodeReaderActivity extends AppCompatActivity {
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, PRODUCT_ADD_REQUEST_TAG);
     }
 
+    /**
+     * Permet de signer la requête pour la méthode {@link #addProductSFridge()}
+     * @param apiKey
+     * @param userId
+     * @param fridge_selected_id ID du frigo sélectionné par l'utilisateur
+     * @param produit_ns_id ID du produit non-scanné, est mis à 1 pour un produit scanné
+     * @param barcode ID du produit scanné, est mis à 1 pour un produit non-scanné
+     * @param isPresent
+     * @param isScannable
+     * @param quantity Contenance du produit
+     * @param imageUrl L'url de l'image du produit
+     * @param fridge_selected_name Le nom du produit sélectionné
+     * @return
+     */
     public String signParamsAddProductS(String apiKey, int userId, String fridge_selected_id, int produit_ns_id, String barcode, int isPresent, int isScannable, String quantity, String imageUrl, String fridge_selected_name) {
         final String secret = JWT_KEY;
         String jwt = "";
@@ -375,34 +494,30 @@ public class BarcodeReaderActivity extends AppCompatActivity {
         return jwt = signer.sign(claims);
     }
 
-    public void initiateScan(){
-        IntentIntegrator scanIntegrator = new IntentIntegrator(this);
-        setScannerOptions(scanIntegrator);
-        scanIntegrator.initiateScan();
+    /**
+     * Permet de récupérer l'id de l'utilisateur qui est sauvé à la connexion
+     * @return L'id de l'utilisateur
+     */
+    private int getUserId() {
+        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getInt(USER_ID_PREFS,0);
     }
 
-    public void setScannerOptions(IntentIntegrator intentIntegrator){
-        if (scan_type.equals(SCAN_FRIDGE)){
-            intentIntegrator.setPrompt(getString(R.string.scanner_prompt_fridge));
-        }else if (scan_type.equals(SCAN_ALLERGY)){
-            intentIntegrator.setPrompt(getString(R.string.scanner_prompt_allergy));
-        }
-        intentIntegrator.setOrientationLocked(false);
-        intentIntegrator.setBeepEnabled(true);
+    /**
+     * Permet de récupérer l'api key de l'utilisateur qui est sauvé à la connexion
+     * @return L'api key de l'utilisateur
+     */
+    private String getApiKey(){
+        SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        return preferences.getString(USER_API_KEY,"");
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent intent){
-        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanningResult != null){
-            barcode = scanningResult.getContents();
-            if (scan_type.equals(SCAN_FRIDGE)){
-                getProductInfoOFF();
-            }else if (scan_type.equals(SCAN_ALLERGY)){
-                // TODO: 09-12-16
-            }
-        }else {
-            Toast.makeText(getApplicationContext(), R.string.scan_error, Toast.LENGTH_SHORT).show();
-        }
+    /**
+     * Permet de lancer l'activité principale
+     */
+    private void startMainActivity() {
+        Intent intent = new Intent(this,MainActivity.class);
+        startActivity(intent);
     }
 
     @Override

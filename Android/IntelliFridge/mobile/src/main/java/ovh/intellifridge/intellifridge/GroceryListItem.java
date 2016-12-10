@@ -1,11 +1,12 @@
 package ovh.intellifridge.intellifridge;
 
 /**
- * Created by franc on 06-12-16.
+ * @author Francis O. Makokha
+ * Objet élément liste de course hérite de {@link Product}
  */
 
 public class GroceryListItem extends Product {
-    String listNote;
+    String listNote;// TODO: 10-12-16 : display note
     public GroceryListItem(){
         super();
     }

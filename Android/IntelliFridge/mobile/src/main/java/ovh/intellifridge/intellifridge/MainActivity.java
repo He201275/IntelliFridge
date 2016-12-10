@@ -64,7 +64,6 @@ import static ovh.intellifridge.intellifridge.Config.MOD_ALLERGY_KEY;
 import static ovh.intellifridge.intellifridge.Config.MOD_FRIDGE_KEY;
 import static ovh.intellifridge.intellifridge.Config.SCAN_ALLERGY;
 import static ovh.intellifridge.intellifridge.Config.SCAN_FRIDGE;
-import static ovh.intellifridge.intellifridge.Config.SCAN_INFO;
 import static ovh.intellifridge.intellifridge.Config.SCAN_TYPE_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.SERVER_FRIDGE_EXISTS;
 import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
@@ -78,13 +77,16 @@ import static ovh.intellifridge.intellifridge.Config.TAB_MAPS_ALLERGY;
 import static ovh.intellifridge.intellifridge.Config.TAB_MAPS_DEFAULT;
 import static ovh.intellifridge.intellifridge.Config.TAB_RECENT_DEFAULT;
 import static ovh.intellifridge.intellifridge.Config.TAB_RECENT_FRIDGE;
+import static ovh.intellifridge.intellifridge.Config.TITLE_ALLERANCE;
+import static ovh.intellifridge.intellifridge.Config.TITLE_IF;
 import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.USER_EMAIL_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 
 /**
+ * @author Francis O. Makokha
  * L'activité principale de l'application
- * Contient les onglets
+ *
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -113,8 +115,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         if (getAllergyModStatus() && !getFridgeModStatus()){
             setContentView(R.layout.activity_main_allerance);
+            setTitle(TITLE_ALLERANCE);
         }else {
             setContentView(R.layout.activity_main);
+            setTitle(TITLE_IF);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -152,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         addFloatingActionMenu();
     }
 
+    /**
+     * Gestion du floating action button avec menu en fonction des modules activés
+     */
     private void addFloatingActionMenu() {
         // repeat many times:
         if (getFridgeModStatus() && !getAllergyModStatus()){
@@ -232,12 +239,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /**
+     * Lance le lecteur de code-barres
+     * @param extra
+     */
     private void startBarcodeReader(String extra) {
         Intent intent = new Intent(MainActivity.this,BarcodeReaderActivity.class);
         intent.putExtra(SCAN_TYPE_EXTRA,extra);
         startActivity(intent);
     }
 
+    /**
+     * Affichage de l'email dans le navigation drawer
+     */
     private void setEmailNav() {
         View header = navigationView.getHeaderView(0);
         TextView email_nav = (TextView)header.findViewById(R.id.email_nav);
@@ -256,6 +270,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    /**
+     * Gestion du menu
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -283,6 +302,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Gestion du click au niveau du menu
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -321,11 +345,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * {@link BarcodeReaderActivity#getUserId()}
+     * @return
+     */
     private int getUserId() {
         SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return preferences.getInt(USER_ID_PREFS,0);
     }
 
+    /**
+     * Gère l'ajout un frigo
+     */
     private void addFridge() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, FRIDGE_ADD_URL,
                 new Response.Listener<String>() {
@@ -374,6 +405,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest,ADD_FRIDGE_REQUEST_TAG);
     }
 
+    /**
+     * {@link BarcodeReaderActivity#signParamsIsInDb(String, String, int)}
+     * @param fridge_name
+     * @param user_id
+     * @param apiKey
+     * @return
+     */
     private String signParamsAdd(String fridge_name, int user_id, String apiKey) {
         final String secret = JWT_KEY;
 
@@ -386,16 +424,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return signer.sign(claims);
     }
 
+    /**
+     * {@link BarcodeReaderActivity#getApiKey()}
+     * @return
+     */
     private String getApiKey() {
         SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return preferences.getString(USER_API_KEY,"");
     }
 
+    /**
+     * Permet de lancer l'activité des paramètres
+     */
     private void startSettingsActivity() {
         Intent intent = new Intent(MainActivity.this,SettingsActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Gestion du click du menu de type navigation drawer
+     * @param item
+     * @return
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -403,7 +453,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_input_ns) {
-            // TODO: 29-10-16
+            startProductNSActivity();
         }else if (id == R.id.nav_multiple_input){
             // TODO: 03-12-16  
         }else if (id == R.id.nav_grocery_list){
@@ -425,32 +475,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * Permet de lancer l'activité d'ajout de produits non-scannables
+     */
+    private void startProductNSActivity() {
+        Intent intent = new Intent(MainActivity.this,ProductNSActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Permet de lancer l'activité d'ajout de liste de courses
+     */
     private void startGroceryListActivity() {
         Intent intent = new Intent(MainActivity.this,GroceryListActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Permet de lancer l'activité "a propos"
+     */
     private void startAboutActivity() {
         Intent intent = new Intent(MainActivity.this,AboutActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Permet de lancer l'activité de contact
+     */
     private void startContactActivity() {
         Intent intent = new Intent(MainActivity.this,ContactActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Permet de lancer l'activité du shop
+     */
     private void startShopActivity() {
         Intent intent = new Intent(MainActivity.this,ShopActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Permet de lancer l'activité "mon profil"
+     */
     private void startProfileActivity() {
         Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
         startActivity(intent);
     }
 
-
+    /**
+     * Gestion du logout de l'utilisateur
+     */
     private void logout() {
         //Creating an alert dialog to confirm logout
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -486,10 +561,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         sendBroadcast(broadcastIntent);
     }
 
+    /**
+     * Permet de lancer l'activité de login
+     */
     private void startLoginActivty() {
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
     }
+
 
     public Boolean getFridgeModStatus() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

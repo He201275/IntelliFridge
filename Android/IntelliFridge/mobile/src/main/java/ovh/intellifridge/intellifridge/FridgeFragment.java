@@ -53,7 +53,9 @@ import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_NB_FRIDGES_PREFS;
 
 /**
+ * @author Francis O. Makokha
  * A simple {@link Fragment} subclass.
+ * La classe pour l'onglet frigo de l'activité principale
  */
 public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private String server_status;
@@ -86,6 +88,9 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
         swipeLayout.setRefreshing(false);
     }
 
+    /**
+     * Récupère la liste de frigos de l'API
+     */
     private void getFridgeData() {
         int user_id = getUserId();
         String apiKey = getApiKey();
@@ -125,6 +130,10 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
         MySingleton.getInstance(getActivity().getApplicationContext()).addToRequestQueue(stringRequest, FRIDGE_LIST_REQUEST_TAG);
     }
 
+    /**
+     * Sauvegarde la liste des frigos, pour l'utilisation dans certains layouts ({@link android.widget.Spinner})
+     * @param jsonArray Un array d'objets JSON, qui correspond à la liste des frigos
+     */
     private void saveFridgeList(JSONArray jsonArray) {
         Fridge[] fridgeList = getFridgeArray(jsonArray);
         int length = fridgeList.length;
@@ -140,6 +149,10 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
         editor.apply();
     }
 
+    /**
+     * Récupère la liste de frigos d'un utilisateur pour les afficher dans un {@link RecyclerView}
+     * @param jsonArray
+     */
     private void getFridgeCardList(JSONArray jsonArray) {
         fridgeList = getFridgeArray(jsonArray);
 
@@ -151,6 +164,11 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setAdapter(adapter);
     }
 
+    /**
+     * Convertit la liste de frigos d'un array de JSON à un array de {@link ovh.intellifridge.intellifridge.Fridge}
+     * @param jsonArray
+     * @return
+     */
     private Fridge[] getFridgeArray(JSONArray jsonArray) {
         int length = jsonArray.length();
         Fridge[] fridgeList = new Fridge[length];
@@ -163,6 +181,12 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
         return fridgeList;
     }
 
+    /**
+     * Permet de signer la requête pour récupérer la liste de frigos d'un utilisateur
+     * @param user_id
+     * @param apiKey
+     * @return
+     */
     private String signParams(int user_id, String apiKey) {
         final String secret = JWT_KEY;
         String jwt = "";
@@ -174,11 +198,19 @@ public class FridgeFragment extends Fragment implements SwipeRefreshLayout.OnRef
         return jwt = signer.sign(claims);
     }
 
+    /**
+     * {@link BarcodeReaderActivity#getUserId()}
+     * @return
+     */
     private int getUserId() {
         SharedPreferences preferences = this.getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return preferences.getInt(USER_ID_PREFS,0);
     }
 
+    /**
+     * {@link BarcodeReaderActivity#getApiKey()}
+     * @return
+     */
     private String getApiKey(){
         SharedPreferences preferences = this.getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return preferences.getString(USER_API_KEY,"");

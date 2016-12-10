@@ -1,9 +1,9 @@
 package ovh.intellifridge.intellifridge;
 
 /**
- * Created by franc on 03-12-16.
+ * @author Francis O. Makokha
+ * Objet frigo avec ses méthodes
  */
-
 public class Fridge {
     private int fridgeId;
     private String fridgeName;

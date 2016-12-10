@@ -1,6 +1,13 @@
 package ovh.intellifridge.intellifridge;
 
+/**
+ * @author Francis O. Makokha
+ * Contient toutes les constantes utilisées dans le projet java
+ */
 public class Config {
+    public static final String TITLE_ALLERANCE = "Allerance";
+    public static final String TITLE_IF = "IntelliFridge";
+
     public static final String DOMAIN_URL = "http://www.intellifridge.ovh";
     public static final String LOGIN_URL = "http://api.intellifridge.ovh/v1/user/login";
     public static final String REGISTER_URL = "http://api.intellifridge.ovh/v1/user/register";
@@ -9,12 +16,13 @@ public class Config {
     public static final String CONTACT_URL = "http://www.intellifridge.ovh/contact.php";
     public static final String SHOP_URL = "http://www.intellifridge.ovh/shop.php";
     public static final String PRODUCT_DB_LOCATION_CHECK_URL = "http://api.intellifridge.ovh/v1/products/isInDB";
-    public static final String GET_PRODUCT_INFO_LOCAL_URL = "";
+    public static final String GET_PRODUCT_INFO_LOCAL_URL = "http://api.intellifridge.ovh/v1/products/getProductSInfo";
     public static final String ADD_PRODUCT_URL= "http://api.intellifridge.ovh/v1/products/add";
     public static final String FRIDGE_CONTENT_URL = "http://api.intellifridge.ovh/v1/fridges/getFridgeContent";
     public static final String FRIDGE_REMOVE_URL = "http://api.intellifridge.ovh/v1/fridges/remove";
     public static final String GROCERY_LIST_GET_URL = "http://api.intellifridge.ovh/v1/list/get";
-    public static final String REMOVE_ONE_PRODUCT_URL = "http://api.intellifridge.ovh/v1/products/removeOneFromFridge";
+    public static final String REMOVE_ONE_PRODUCT_URL = "http://api.intellifridge.ovh/v1/fridges/minusOneProduct";
+    public static final String GET_PRODUCT_NS_URL= "http://api.intellifridge.ovh/v1/products/getProductNS";
 
     public static final String JWT_KEY = "wAMxBauED07a4GurMpuD";
 
@@ -48,6 +56,7 @@ public class Config {
     public static final String KEY_PRODUCT_IMAGEURL = "ProduitImageUrl";
     public static final String KEY_PRODUCT_SCANNABLE = "IsScannable";
     public static final String KEY_PRODUCT_PRESENT = "IsPresent";
+    public static final String KEY_OFFSET = "offset";
 
     //Keys for Sharedpreferences
     public static final String LOGGEDIN_SHARED_PREF = "loggedin";
@@ -103,6 +112,7 @@ public class Config {
     public static final String FRIDGE_CONTENT_REQUEST_TAG = "ovh.intellifridge.fridgecontent";
     public static final String ADD_FRIDGE_REQUEST_TAG = "ovh.intellifridge.addfridge";
     public static final String GET_GROCERY_LIST_TAG = "ovh.intellifridge.getgrocerylist";
+    public static final String PRODUCT_REMOVE_REQUEST_TAG = "ovh.intellifridge.removeoneprod";
 
     public static final int TAB_RECENT_DEFAULT = 0;
     public static final int TAB_FRIDGE_DEFAULT = 1;
@@ -129,4 +139,5 @@ public class Config {
     public static final String SHARED_PREF_NAME_ALLERGY = "spAllergy"; // TODO: 04-12-16
     public static final String SHARED_PREF_NAME = "intellifridge";
     public static final String SHARED_PREF_FRIDGES_NAME = "intellifridge_fridges";
+
 }

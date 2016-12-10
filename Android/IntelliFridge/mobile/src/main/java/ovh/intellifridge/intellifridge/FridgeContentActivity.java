@@ -58,6 +58,10 @@ import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
 import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 
+/**
+ * @author Francis O. Makokha
+ * Permet de gérer le contenu des frigos
+ */
 public class FridgeContentActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     SwipeRefreshLayout swipeLayout;
     String fridge;
@@ -98,7 +102,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startBarcodeReader(SCAN_FRIDGE);
+                startBarcodeReader();
             }
         });
         ImageView nsIcon = new ImageView(this);
@@ -124,19 +128,28 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
         getFridgeContentData();
     }
 
-    private void startBarcodeReader(String extra) {
+    /**
+     * Permet de démarrer l'activité de scan de code-barres {@link ovh.intellifridge.intellifridge.BarcodeReaderActivity}
+     */
+    private void startBarcodeReader() {
         Intent intent = new Intent(FridgeContentActivity.this,BarcodeReaderActivity.class);
-        intent.putExtra(SCAN_TYPE_EXTRA,extra);
         intent.putExtra(FRIDGE_NAME_EXTRA,fridge);
-        intent.putExtra(FRIDGE_ID_EXTRA,fridgeId);
+        intent.putExtra(SCAN_TYPE_EXTRA,SCAN_FRIDGE);
         startActivity(intent);
     }
 
+    /**
+     * {@link BarcodeReaderActivity#getApiKey()}
+     * @return
+     */
     private String getApiKey() {
         SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return preferences.getString(USER_API_KEY,"");
     }
 
+    /**
+     * Récupère le contenu d'un frigo, à partir de l'API
+     */
     private void getFridgeContentData() {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, FRIDGE_CONTENT_URL,
                 new Response.Listener<String>() {
@@ -184,10 +197,13 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                 return params;
             }
         };
-
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, FRIDGE_CONTENT_REQUEST_TAG);
     }
 
+    /**
+     * Récupère la liste de produits d'un frigo pour les afficher dans un {@link RecyclerView}
+     * @param jsonArray Json du contenu d'un frido, récupéré de la db, passant par l'API
+     */
     private void getFridgeContentList(JSONArray jsonArray) {
         Product[] fridgeContent = getFridgeContentArray(jsonArray);
 
@@ -198,6 +214,11 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
         recyclerView.setAdapter(adapter);
     }
 
+    /**
+     * Permet de convertir le contenu récupéré de la db de JSON à une array de {@link ovh.intellifridge.intellifridge.Product}
+     * @param jsonArray Contenu du frigo récupéré de la db et l'API, en JSON
+     * @return Array de {@link ovh.intellifridge.intellifridge.Product}
+     */
     private Product[] getFridgeContentArray(JSONArray jsonArray){
         int length = jsonArray.length();
         Product[] fridgeContent = new Product[length];
@@ -205,9 +226,10 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
         for(int i=0;i<length;i++){
             try {
                 fridgeContent[i]= new Product("",0,0);
-                fridgeContent[i].productName = jsonArray.optJSONObject(i).optString(PRODUCT_NAME_DB);
-                fridgeContent[i].productSId = jsonArray.optJSONObject(i).optInt(PRODUCT_S_ID_DB);
-                fridgeContent[i].productQuantity = jsonArray.getJSONObject(i).optInt(PRODUCT_QUANTITY_DB);
+                fridgeContent[i].setProductName(jsonArray.optJSONObject(i).optString(PRODUCT_NAME_DB));
+                fridgeContent[i].setProductSId(jsonArray.optJSONObject(i).optInt(PRODUCT_S_ID_DB));
+                fridgeContent[i].setProductQuantity(jsonArray.getJSONObject(i).optInt(PRODUCT_QUANTITY_DB));
+                fridgeContent[i].setFrigoId(fridgeId);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -215,6 +237,13 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
         return fridgeContent;
     }
 
+    /**
+     * Permet de signer la requête qui récupère le contenu dans un frigo
+     * @param fridge Le nom du frigo duquel on veut récupérer le contenu
+     * @param apiKey
+     * @param userId
+     * @return
+     */
     private String signParamsFridgeContent(String fridge,String apiKey,int userId) {
         final String secret = JWT_KEY;
         String jwt = "";
@@ -227,11 +256,18 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
         return jwt = signer.sign(claims);
     }
 
+    /**
+     * {@link BarcodeReaderActivity#getUserId()}
+     * @return
+     */
     private int getUserId() {
         SharedPreferences preferences = this.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return preferences.getInt(USER_ID_PREFS,0);
     }
 
+    /**
+     * Appele {@link #getFridgeContentData()} lorsqu'on raffraîchit la page, avec un swipe vers le bas
+     */
     @Override
     public void onRefresh() {
         getFridgeContentData();

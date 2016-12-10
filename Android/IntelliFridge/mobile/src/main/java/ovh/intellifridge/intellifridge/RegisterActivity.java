@@ -49,7 +49,8 @@ import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
 import static ovh.intellifridge.intellifridge.Config.SERVER_SUCCESS;
 
 /**
- * Created by franc on 22-11-16.
+ * @author Francis O. Makokha
+ * Permet de gérer l'inscription d'un utilisateur
  */
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener{
     EditText editTextFname,editTextLname,editTextEmail,editTextPassword;
@@ -140,8 +141,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 return params;
             }
         };
-
-        //Adding the string request to the queue
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, REGISTER_REQUEST_TAG);
     }
 

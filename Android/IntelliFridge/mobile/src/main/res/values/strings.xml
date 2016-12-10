@@ -161,4 +161,8 @@
     <string name="cancel_product_fridge_btn">Cancel</string>
     <string name="fridgeNameTitle">Fridge</string>
     <string name="add_product_title">Add to fridge</string>
+    <string name="login_activity_title">Log in</string>
+    <string name="grocery_list">The grocery list is empty!</string>
+
+    <string name="versionLbl">Version</string>
 </resources>

@@ -91,4 +91,16 @@
     <string name="mod_allergy_disabled">Le module allergie est désactivé! Activez-le d\'abord dans les paramètres</string>
     <string name="nav_list">Liste de courses</string>
     <string name="remove_fridge_success">Le frigo est supprimé!</string>
+    <string name="add_product_fridge_btn">Mettre dans frigo</string>
+    <string name="add_product_title">Mettre dans frigo</string>
+    <string name="add_fridgeContent_removeBtn">Retirer</string>
+    <string name="add_fridgeContent_addBtn">Ajouter</string>
+    <string name="cancel_product_fridge_btn">Annuler</string>
+    <string name="fridgeNameTitle">Frigo</string>
+    <string name="fridge_content_dialog_title">Ajouter/Retirer produit</string>
+    <string name="grocery_list">La lliste de courses est vide!</string>
+    <string name="login_activity_title">Se connecter</string>
+    <string name="product_add_notInDb">Le produit scanné, n\'est pas encore dans la base de données IntelliFridge</string>
+    <string name="title_activity_fridge_content">Frigo :</string>
+    <string name="versionLbl">Version</string>
 </resources>

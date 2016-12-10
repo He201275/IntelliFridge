@@ -11,6 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 /**
+ * @author Francis O. Makokha
+ * Permet d'afficher la liste des allergies
+ * L'utilisateur peut cocher les allergies qui sont d'application pour lui
  * A simple {@link Fragment} subclass.
  */
 public class AllergyFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
@@ -36,6 +39,9 @@ public class AllergyFragment extends Fragment implements SwipeRefreshLayout.OnRe
         return rootView;
     }
 
+    /**
+     * Affiche la liste des allergies
+     */
     private void displayAllergyList() {
         String[] list= {"Gluten","Crustacés","Oeufs","Poisson","Arachides","Soja","Lactose","Noix","Céleri","Moutarde","Sésame","Sulfites","Lupin","Mollusque"};
         ListView listView = (ListView) rootView.findViewById(R.id.allergy_list);
@@ -47,6 +53,9 @@ public class AllergyFragment extends Fragment implements SwipeRefreshLayout.OnRe
         listView.setAdapter(listViewAdapter);
     }
 
+    /**
+     * Permet de rafraîchir la liste des allergies
+     */
     @Override
     public void onRefresh() {
         displayAllergyList();

@@ -24,6 +24,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 /**
+ * @author Francis O. Makokha
+ * Gestion de l'onglet "a proximité" pour la partie allergie de l'application
  * A simple {@link Fragment} subclass.
  */
 public class MapsFragment extends Fragment {

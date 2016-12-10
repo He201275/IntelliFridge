@@ -16,6 +16,10 @@ import static ovh.intellifridge.intellifridge.Config.USER_LOCALITE_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_NOM_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_PRENOM_PREFS;
 
+/**
+ * Activité de profile
+ * Affiche les informations profil de l'utilisateur et permet leur modification
+ */
 public class ProfileActivity extends AppCompatActivity {
     TextView fullName,email,firstName,lastName,locale,gender,language;
 

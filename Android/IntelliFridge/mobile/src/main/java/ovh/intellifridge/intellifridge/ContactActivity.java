@@ -14,6 +14,11 @@ import android.webkit.WebViewClient;
 import static ovh.intellifridge.intellifridge.Config.CONTACT_URL;
 import static ovh.intellifridge.intellifridge.Config.DOMAIN_URL;
 
+/**
+ * @author Francis O. Makokha
+ * Activité de contact.
+ * Affiche une vue de la page de contact du site vitrine @see <a href="http://intellifridge.ovh">IntelliFridge</a>
+ */
 public class ContactActivity extends AppCompatActivity {
 
     @Override
@@ -30,6 +35,11 @@ public class ContactActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
     }
 
+    /**
+     * Permet de créer le client web interne à l'activité
+     * Reste dans l'application tant qu'on reste sur le domaine d'IntelliFridge
+     * Renvoie au navigateur par défaut du smartphone, si on sort du domaine d'IntelliFridge
+     */
     private class MyWebViewClient extends WebViewClient {
 
         @SuppressWarnings("deprecation")

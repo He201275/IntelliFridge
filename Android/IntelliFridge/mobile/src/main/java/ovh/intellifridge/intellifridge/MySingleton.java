@@ -10,7 +10,9 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 /**
- * Created by franc on 24-11-16.
+ * @author Francis O. Makokha
+ * Classe avec les méthodes de connexion
+ * A chaque fois que l'application se connecte à l'API, elle utilise une méthode de cette classe
  */
 public class MySingleton {
     private static MySingleton mAppSingletonInstance;

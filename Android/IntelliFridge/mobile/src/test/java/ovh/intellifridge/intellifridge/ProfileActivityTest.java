@@ -30,13 +30,13 @@ public class ProfileActivityTest {
     @Test
     public void isEmptyString() throws Exception {
         String test = "";
-        assertThat(profileActivity.isEmptyString(test),is(true));
+        assertThat(ProfileActivity.isEmptyString(test),is(true));
         String test1 = "a";
-        assertThat(profileActivity.isEmptyString(test1),is(false));
+        assertThat(ProfileActivity.isEmptyString(test1),is(false));
         String test2 = "null";
-        assertThat(profileActivity.isEmptyString(test2),is(true));
+        assertThat(ProfileActivity.isEmptyString(test2),is(true));
         String test3 = null;
-        assertThat(profileActivity.isEmptyString(test3),is(true));
+        assertThat(ProfileActivity.isEmptyString(test3),is(true));
     }
 
 }

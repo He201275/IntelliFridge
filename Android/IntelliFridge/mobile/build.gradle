@@ -9,7 +9,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
-        versionName "0.8-beta"
+        versionName "0.8.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     packagingOptions {
@@ -48,6 +48,6 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
     compile 'com.google.code.gson:gson:2.8.0'
-    testCompile 'junit:junit:4.12'
     compile 'com.auth0:java-jwt:2.2.1'
+    testCompile 'junit:junit:4.12'
 }

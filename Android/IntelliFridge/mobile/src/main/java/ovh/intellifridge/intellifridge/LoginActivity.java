@@ -63,6 +63,11 @@ import static ovh.intellifridge.intellifridge.Config.USER_NOM_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_PRENOM_DB;
 import static ovh.intellifridge.intellifridge.Config.USER_PRENOM_PREFS;
 
+/**
+ * @author Francis O. Makokha
+ * Activité de login
+ * Activité de lancement de l'application
+ */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
     private EditText editTextEmail;
     private EditText editTextPassword;
@@ -75,12 +80,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.login_activity_title);
         if (getAllergyModStatus() && !getFridgeModStatus()){
             setContentView(R.layout.activity_login_allerance);
         }else {
             setContentView(R.layout.activity_login);
         }
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         editTextEmail = (EditText) findViewById(R.id.email_login);
         editTextPassword = (EditText) findViewById(R.id.password_login);
@@ -92,10 +97,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         signup_link.setOnClickListener(this);
     }
 
+    /**
+     * Récupère le statut du module frigo
+     * @return
+     */
     public Boolean getFridgeModStatus() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         return sharedPreferences.getBoolean(MOD_FRIDGE_KEY,true);
     }
+
+    /**
+     * Récupère le statut du module allergie
+     * @return
+     */
     public Boolean getAllergyModStatus(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         return sharedPreferences.getBoolean(MOD_ALLERGY_KEY,true);
@@ -106,6 +120,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         moveTaskToBack(true);
     }
 
+    /**
+     * Si l'utilisateur est déjà connecté, on démarre l'activité principale
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -124,6 +141,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    /**
+     *
+     * Fait les requêtes de login avec l'API
+     */
     private void login(){
         StringRequest stringRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
                 new Response.Listener<String>() {
@@ -175,6 +196,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, LOGIN_REQUEST_TAG);
     }
 
+    /**
+     * {@link BarcodeReaderActivity#signParamsIsInDb(String, String, int)}
+     * @param email
+     * @param password
+     * @return
+     */
     private String signParams(String email, String password) {
         final String secret = JWT_KEY;
         String jwt = "";
@@ -186,11 +213,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         return jwt = signer.sign(claims);
     }
 
+    /**
+     * {@link BarcodeReaderActivity#startMainActivity()}
+     */
     private void startMainActivity() {
         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Permet de sauver les infos utilisateurs pour divers activités et requêtes
+     * @param userJson Réponse de l'api lors de la connexion
+     * @throws JSONException
+     */
     private void saveUserData(JSONObject userJson) throws JSONException {
         SharedPreferences sharedPreferences = LoginActivity.this.getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -214,6 +249,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         editor.apply();
     }
 
+    /**
+     * Méthode pour la gestion de cliques des boutons
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -226,6 +265,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    /**
+     * Permet de démarrer l'activité de création de compte
+     */
     private void startRegisterActivity() {
         Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
         startActivity(intent);

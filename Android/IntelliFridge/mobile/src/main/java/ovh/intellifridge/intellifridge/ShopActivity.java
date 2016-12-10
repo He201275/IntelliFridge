@@ -14,6 +14,10 @@ import android.webkit.WebViewClient;
 import static ovh.intellifridge.intellifridge.Config.DOMAIN_URL;
 import static ovh.intellifridge.intellifridge.Config.SHOP_URL;
 
+/**
+ * Activité pour la boutique IntelliFridge
+ * Très similaire à {@link ContactActivity}
+ */
 public class ShopActivity extends AppCompatActivity {
 
     @Override

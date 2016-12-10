@@ -3,14 +3,11 @@ package ovh.intellifridge.intellifridge;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.view.ActionMode;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +51,10 @@ import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
 import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
 
-
+/**
+ * @author Francis O. Makokha
+ * Remplit un rôle quasi-identique que {@link FridgeContentRVAdapter} mais pour les frigos, plutôt que le contenu de ceux-ci
+ */
 public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.FridgeViewHolder>{
     Fridge[] fridges;
     Context context;
@@ -139,6 +139,10 @@ public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.Fridge
         // TODO: 06-12-16
     }
 
+    /**
+     * Permet de faire la requête pour la supression d'un frigo
+     * @param fridgeName
+     */
     private void deleteFridge(final String fridgeName) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, FRIDGE_REMOVE_URL,
                 new Response.Listener<String>() {
@@ -198,11 +202,19 @@ public class FridgeRVAdapter extends RecyclerView.Adapter<FridgeRVAdapter.Fridge
         return signer.sign(claims);
     }
 
+    /**
+     * {@link BarcodeReaderActivity#getApiKey()}
+     * @return
+     */
     private String getApiKey(){
         SharedPreferences preferences = context.getSharedPreferences(SHARED_PREF_NAME,Context.MODE_PRIVATE);
         return preferences.getString(USER_API_KEY,"");
     }
 
+    /**
+     * {@link BarcodeReaderActivity#getUserId()}
+     * @return
+     */
     private int getUserId() {
         SharedPreferences preferences = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return preferences.getInt(USER_ID_PREFS,0);
