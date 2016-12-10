@@ -1,4 +1,6 @@
 /* eslint-disable */
+// TODO Bouton ajouter à la liste
+//TODO Quand quantité du produit dans contenu = 0 demander si il veut l'ajouter à la liste
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, Link, browserHistory } from 'react-router';
@@ -86,37 +88,35 @@ class Left extends Component {
 				<SkyLight hideOnOverlayClicked dialogStyles={itemsInOutPopupStyle} ref="popupAddItems" id="add-items-popup" className="popup items-in-out">
 					<h1>Comment ?</h1>
 					<div className="methods-buttons">
-						<Link id="scanLaunch" to="scan/add" className="method">
+						<Link id="scanLaunch" to="/scan/add" className="method">
 							<span>
 								<img src="/assets/images/barcode.svg"/>
 								<h3>Scanner</h3>
 							</span>
 						</Link>
-						{/* TODO test
-						<Link to="products/add" className="method">
+						<Link to="/products/add" className="method">
 							<span>
 								<img src="/assets/images/hand.svg"/>
 								<h3>Ajouter manuellement</h3>
 							</span>
-						</Link>*/}
+						</Link>
 					</div>
 				</SkyLight>
 				<SkyLight hideOnOverlayClicked dialogStyles={itemsInOutPopupStyle} ref="popupRemoveItems" id="add-items-popup" className="popup items-in-out">
 					<h1>Comment ?</h1>
 					<div className="methods-buttons">
-						<Link id="scanLaunch" to="scan/remove" className="method">
+						<Link id="scanLaunch" to="/scan/remove" className="method">
 							<span>
 								<img src="/assets/images/barcode.svg"/>
 								<h3>Scanner</h3>
 							</span>
 						</Link>
-						{/* TODO test
-						<Link to="products/remove" className="method">
+						<Link to="/products/remove" className="method">
 							<span>
 								<img src="/assets/images/hand.svg"/>
 								<h3>Retirer manuellement</h3>
 							</span>
-						</Link>*/}
+						</Link>
 					</div>
 				</SkyLight>
 			</div>
@@ -345,7 +345,7 @@ class Settings extends Component {
 			margin: '0',
 			top: '200px',
 			left: '387px'
-		}
+		};
 
 		return (
 			<div id="middle-block" className="main-part">
@@ -363,7 +363,7 @@ class Settings extends Component {
 				</form>
 				<div id="buttons">
 					<a href="#"><img src="/assets/images/dark-red/confirm-button.svg" onClick={() => this.refs.popupComfirm.show()} /></a>
-					<Link to="#"><img src="/assets/images/dark-red/gear-button.svg"/></Link>
+					<Link to="#"><img src="/assets/images/dark-red/X-button.svg"/></Link>
 				</div>
 				<SkyLight hideOnOverlayClicked dialogStyles={addFridgePopupStyle} ref="popupComfirm" id="send-method-popup" className="popup">
 					<div className="send-fields">
@@ -378,29 +378,31 @@ class Settings extends Component {
 }
 
 class FridgeContent extends Component {
-	constructor(props){
-		super(props);
-		apiRequest("POST", "fridges/getFridgeContent", {FrigoNom : props.fridgeName}, function(an){
-			console.log(an);
-			list = an;
-			this.render();
-		}, function(an){
-			console.log(an);
-			if(an.status==201){
-				list = "Frigo Vide.";
-				this.render();
-			}else{
-				list = "Erreur d'API";
-				this.render();
-			}
-		});
-	}
-
 	componentDidMount(){
-		addListEvents("FridgeContent");
+		apiRequest("GET", "fridges/getName", {FrigoId:this.props.fridge}, function(an){
+			console.log(an);
+			$("h1").html(an.FridgeNom);
+			apiRequest("POST", "fridges/getFridgeContent", {FrigoNom : an.FridgeNom}, function(an){
+				console.log(an);
+				list = an;
+				listFridgeContent();
+				addListEvents("FridgeContent");
+			}, function(an){
+				console.log(an);
+				if(an.status==201){
+					list = "Frigo Vide.";
+					this.render();
+				}else{
+					list = "Erreur d'API";
+					this.render();
+				}
+			});
+
+		}, apiError);
 	}
 
 	render() {
+		console.log("ok");
 
 		var removeItemPopupStyle = {
 			backgroundColor: '#d6d6d6',
@@ -444,6 +446,12 @@ class FridgeContent extends Component {
 }
 
 class ScanList extends Component {
+	componentDidMount(){
+		addListEvents("Scan");
+		if(this.props.scanType=="list"){
+			$("select").remove();
+		}
+	}
 	render() {
 
 		var removeItemPopupStyle = {
@@ -559,7 +567,7 @@ class ShoppingList extends Component {
 class ProductsList extends Component {
 	constructor(props){
 		super(props);
-		apiRequest("GET", "list/getProductNS", null, function(an){
+		apiRequest("POST", "products/getProductNS", null, function(an){
 			list = an;
 			this.render();
 		}, apiError);
@@ -569,33 +577,10 @@ class ProductsList extends Component {
 		addListEvents("ProductsList");
 	}
 	render() {
-
-		var quantityPopupStyle = {
-			backgroundColor: '#d6d6d6',
-			borderRadius: '20px',
-			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
-			height: '200px',
-			width: '250px',
-			margin: '0',
-			top: '200px',
-			left: '387px'
-		}
-
-		var removeItemPopupStyle = {
-			backgroundColor: '#d6d6d6',
-			borderRadius: '20px',
-			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
-			height: '220px',
-			width: '300px',
-			margin: '0',
-			top: '190px',
-			left: '362px'
-		}
-
 		return (
 			<ul id="list">
 				<li></li>
-				{list.map((dynamicComponent, i) => <ListElem
+				{list.map((dynamicComponent, i) => <ListElem products="yes"
 					key = {i} componentData = {dynamicComponent}/>)}
 			</ul>
 		);
@@ -604,13 +589,26 @@ class ProductsList extends Component {
 
 class ListElem extends Component {
 	render() {
-		if(this.props.componentData.Note==undefined) {
+		if(this.props.componentData.Note!=undefined) {
 			return (
 				<li id={this.props.componentData.ProduitId}>
 					<span
 						className="ProduitNom">{this.props.componentData.ProduitNom}</span> - <span
-						className='Quantite'>{this.props.componentData.Quantite}</span> - <span
-						className='DateAjout'>{this.props.componentData.DateAjout}</span>
+					className='Quantite'>{this.props.componentData.Quantite}</span> - <span
+					className='DateAjout'>{this.props.componentData.DateAjout}</span> - <span
+					className='Note'>{this.props.componentData.Note}</span>
+					<a href="#"><i className="minus fa fa-minus" aria-hidden="true"></i></a>
+					<a href="#"><i className="plus fa fa-plus" aria-hidden="true"></i></a>
+					<a href="#"><i className="remove fa fa-times" aria-hidden="true"></i></a>
+				</li>
+			);
+		}else if(this.props.products){
+			return (
+				<li id={this.props.componentData.ProduitNSId}>
+					<span className="ProduitNSNom">{this.props.componentData.ProduitNSNomFR}</span> -
+					<span id='quantite'>0</span>
+					{/*TODO ajouter la photo de l'aliment quand c'est possible
+					<img src="" alt={"Photo "+this.props.componentData.ProduitNSNomFR} />*/}
 					<a href="#"><i className="minus fa fa-minus" aria-hidden="true"></i></a>
 					<a href="#"><i className="plus fa fa-plus" aria-hidden="true"></i></a>
 					<a href="#"><i className="remove fa fa-times" aria-hidden="true"></i></a>
@@ -622,41 +620,53 @@ class ListElem extends Component {
 				<li id={this.props.componentData.ProduitId}>
 					<span
 						className="ProduitNom">{this.props.componentData.ProduitNom}</span> - <span
-						className='Quantite'>{this.props.componentData.Quantite}</span> - <span
-						className='DateAjout'>{this.props.componentData.DateAjout}</span> - <span
-						className='Note'>{this.props.componentData.Note}</span>
+					className='Quantite'>{this.props.componentData.Quantite}</span> - <span
+					className='DateAjout'>{this.props.componentData.DateAjout}</span>
 					<a href="#"><i className="minus fa fa-minus" aria-hidden="true"></i></a>
 					<a href="#"><i className="plus fa fa-plus" aria-hidden="true"></i></a>
 					<a href="#"><i className="remove fa fa-times" aria-hidden="true"></i></a>
 				</li>
+
 			);
 		}
 	}
 }
 
 class MiddleList extends Component {
-	constructor(props){
-		super(props);
-		apiRequest("GET", "fridges/getName", {FrigoId:props.fridge}, function(an){
-			fridgeName = an.FridgeNom;
-			this.render();
-		}, apiError);
-	}
 	componentDidMount(){
 		if(this.props.scanType){
 			addListEvents("Scan");
+		}else if (this.props.productsType){
+			addListEvents("Products");
 		}
+		$("#add-to-list").on("click", function (e) {
+			e.preventDefault();
+		});
 	}
 	render() {
+		var itemsInOutPopupStyle = {
+			backgroundColor: '#d6d6d6',
+			borderRadius: '20px',
+			boxShadow: 'inset 0 -5px #ff3131, inset 0 -8px #0d0d0d, 0 0 5px #0f0f0f',
+			height: '270px',
+			width: '380px',
+			margin: '0',
+			top: '160px',
+			left: '322px',
+			padding: '0'
+		}
+
 		if(this.props.fridge){
 			return (
 				<div id="middle-block" className="main-part list-block">
 					<h1>{fridgeName}</h1>
-					<FridgeContent fridgeName={fridgeName} fridge={this.props.fridge} />
-					<div id="add-item">
+					<FridgeContent fridge={this.props.fridge} />
+					{/*<div id="add-item">
 						<div id="mask"></div>
-						<img src="/assets/images/dark-red/plus-button.svg"/>
-					</div>
+						//TODO vers un add du frigo en cours d'affichage
+						//TODO afficher popup scan ou manuel
+						<Link to="/scan/add"><img src="/assets/images/dark-red/plus-button.svg"/></Link>
+					</div>*/}
 				</div>
 			);
 		}else if(this.props.scanType){
@@ -669,26 +679,24 @@ class MiddleList extends Component {
 						<input type="number" id="ProductId" placeholder="Scannez le code barre" min="1001" required />
 						<a id="submit" href="#"><img src="/assets/images/dark-red/go-button.svg" /></a>
 					</form>
-					<ScanList />
-					<div id="add-item">
-						<div id="mask"></div>
-						<img src="/assets/images/dark-red/plus-button.svg"/>
-					</div>
+					<ScanList scanType={this.props.scanType} />
 				</div>
 			);
 		}else if(this.props.productsType){
 			return (
 				<div id="middle-block" className="main-part list-block">
 					<h1>Liste de produits</h1>
-					<span id="scanType" hidden>{this.props.productsType}</span>
+					<span id="productsType" hidden>{this.props.productsType}</span>
 					<form>
-						<select name="fridgesSelect" id="fridgesSelect"></select>
+						<select name="fridgesSelect" id="fridgesSelect"></select><br/>
+						<label htmlFor="productType">Type de produit : </label>
+						<select name="productType" id="productType">
+							<option value="0">Tous</option>
+						</select>
+						<br/>
+						<input name="search" id="search" type="text" placeholder="Recherche" />
 					</form>
 					<ProductsList />
-					<div id="add-item">
-						<div id="mask"></div>
-						<img src="/assets/images/dark-red/plus-button.svg"/>
-					</div>
 				</div>
 			);
 		}else{
@@ -698,8 +706,25 @@ class MiddleList extends Component {
 					<ShoppingList />
 					<div id="add-item">
 						<div id="mask"></div>
-						<img src="/assets/images/dark-red/plus-button.svg"/>
+						<a href="#" id="add-to-list" onClick={() => this.refs.popupAddItems.show()}><img src="/assets/images/dark-red/plus-button.svg"/></a>
 					</div>
+					<SkyLight hideOnOverlayClicked dialogStyles={itemsInOutPopupStyle} ref="popupAddItems" id="add-items-popup" className="popup items-in-out">
+						<h1>Comment ?</h1>
+						<div className="methods-buttons">
+							<Link id="scanLaunch" to="/scan/list" className="method">
+							<span>
+								<img src="/assets/images/barcode.svg"/>
+								<h3>Scanner</h3>
+							</span>
+							</Link>
+							<Link to="/products/list" className="method">
+							<span>
+								<img src="/assets/images/hand.svg"/>
+								<h3>Ajouter manuellement</h3>
+							</span>
+							</Link>
+						</div>
+					</SkyLight>
 				</div>
 			);
 		}
@@ -744,7 +769,7 @@ class List extends Component {
 			);
 		}else if(this.props.params.productsType){
 			return (
-				<div className="Scan">
+				<div className="Products">
 					<TopPages />
 					<div id="wrapper">
 						<MiddleList productsType={this.props.params.productsType} />
@@ -762,7 +787,6 @@ class List extends Component {
 				</div>
 			);
 		}
-
 	}
 }
 
@@ -852,14 +876,14 @@ function apiRequest(type, url, data, fs, fe){
 	}else{
 		var sData = JSON.stringify(apiBase);
 	}
-	console.log(sData);
+	console.log("Requète API : \n"+type+"\n"+url+"\n"+sData);
 	var sJWT = {jwt:jwt.sign(sData, "wAMxBauED07a4GurMpuD", {header:{alg: 'HS256', typ: 'JWT'}})};
 	//console.log(sJWT);
 	request(type, "http://api.intellifridge.ovh/v1/"+url, sJWT, function(an){
 		var decoded = jwt.decode(an, {complete: true});
 		console.log("Réponse : \n"+an+"\nDécodée : \n"+JSON.stringify(decoded));
 		if(decoded==null){
-			alert("Erreur API");
+			alert("Impossible de décoder la réponse : \n"+an);
 			return -1;
 		}
 		if(decoded.payload.status==200){
@@ -868,181 +892,41 @@ function apiRequest(type, url, data, fs, fe){
 			fe(decoded.payload);
 		}
 	}, function(an){
-		alert("Erreur d'API : \n\n"+an);
-		fe(null);
+		alert("Erreur d'API : \n\n"+JSON.stringify(an));
+		fe(an);
+		document.location.href = "/";
 	});
 }
 function setFridgeList(data){
 	fridgesList = data;
 }
 function addListEvents(type){
-	if(type=="FridgeContent"){
-		$("#list a i").on("click", function (e) {
-			e.preventDefault();
-			var action=$(this).attr("class").split(" ")[0];
-			var productId = this.closest("li").id;
-			if(action=="remove"){
-				console.log("I must remove " + productId + " from fridge."+fridgeName);
-			}else if(action=="plus"){
-				console.log("Plus one " + productId + " to fridge"+fridgeName);
-			}else if(action=="minus"){
-				console.log("Minest one " + productId + " from fridge"+fridgeName);
-			}else{
-				console.log("No behavior set for this action : "+action);
-			}
-		});
-	}else if(type=="ShoppingList"){
-		$("#list a i").on("click", function (e) {
-			e.preventDefault();
-			var action=$(this).attr("class").split(" ")[0];
-			var productId = this.closest("li").id;
-			if(action=="remove"){
-				apiRequest("POST", "list/setQuantity",
-					{ProduitSId: productId, ListeQuantite: -1},
-					function(an){
-						$("#"+productId).remove();
-					},
-					apiError
-				);
-			}else if(action=="plus"){
-				apiRequest("POST", "list/setQuantity",
-					{ProduitSId: productId, ListeQuantite: (parseInt($("#"+productId+" .Quantite").html())+1) },
-					function(an){
-						$("#"+productId+" .Quantite").html(parseInt($("#"+productId+" .Quantite").html())+1);
-					},
-					apiError
-				);
-			}else if(action=="minus"){
-				apiRequest("POST", "list/setQuantity",
-					{ProduitSId: productId, ListeQuantite: (parseInt($("#"+productId+" .Quantite").html())-1)},
-					function(an){
-						if(parseInt($("#"+productId+" .Quantite").html())-1==0){
-							$("#"+productId).remove();
-						}else{
-							$("#"+productId+" .Quantite").html(parseInt($("#"+productId+" .Quantite").html())-1);
-						}
-					},
-					apiError
-				);
-			}else{
-				console.log("No behavior set for this action : "+action);
-			}
-		});
-	}else if(type=="Left"){
-		$("#fridge-add").closest("a").on("click", function (e) {
-			e.preventDefault();
-		});
-		$("#fridge-remove").closest("a").on("click", function (e) {
-			e.preventDefault();
-		});
-		console.log($("#fridge-add").closest("a"));
-	}else if(type=="Scan"){
-		$("#ProductId").focus();
-		$("#submit").on("click", function(e){
-			e.preventDefault();
-			$("form").submit();
-		});
-		apiRequest("GET", "fridges/list", null, function(an){
-			var select = $("#fridgesSelect");
-			if($("#scanType").html()=="add"){
-				for(var i = 0;i<an.length;i++){
-					select.append("<option value='"+an[i].FrigoNom+"'>"+an[i].FrigoNom+"</option>");
-				}
-			}else{
-				for(var i = 0;i<an.length;i++){
-					select.append("<option value='"+an[i].FrigoId+"'>"+an[i].FrigoNom+"</option>");
-				}
-			}
-
-		}, function (an) {
-			console.log("Erreur : \n"+JSON.stringify(an));
-		});
-		$("form").on("submit", function (e) {
-			e.preventDefault();
-			if($("#waiting")){
-				$("#waiting").remove();
-			}
-			var barcode = $("#ProductId").val();
-			var type = $("#scanType").html();
-			console.log(type);
-			if(type=="add"){
-				request("GET", "http://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
-					//ProduitSId, ProduitSNom, ProduitSMarque, FrigoNom, ProduitImageUrl, ListeNote, Contenance
-					//3179732333919
-					var OFF = JSON.parse(an);
-					console.log(OFF);
-					if(OFF.status==1){
-						product.ProduitSId = barcode;
-						product.FrigoNom = $("#fridgesSelect").val();
-						product.ProduitSMarque = OFF.product.brands;
-						product.ProduitSNom = OFF.product.generic_name;
-						product.ProduitImageUrl = OFF.product.image_url;
-						product.Contenance = OFF.product.quantity;
-
-						console.log(JSON.stringify(product));
-
-						apiRequest("POST", "products/add", product, function(an){
-							$("#list").append("<li>"+product.ProduitSMarque + " - " +
-								product.ProduitSNom + " - " +
-								product.Contenance +" : Ajouté au frigo "+ product.FrigoNom +"</li>");
-							$("#ProductId").val("");
-							$("#ProductId").focus();
-						}, function (an) {
-							console.log("Erreur : \n"+JSON.stringify(an));
-						});
-						product = {ProduitSId : null, ProduitSNom : null,ProduitSMarque : null, FrigoNom : null,ProduitImageUrl : null,ListeNote : null,Contenance : null };
-					}else{
-						$("#list").append("<li>Produit non trouvé : "+barcode+"</li>");
-						$("#ProductId").val("");
-						$("#ProductId").focus();
-					}
-				}, apiError);
-			}else if(type=="remove"){
-				apiRequest("POST", "products/removeOneFromFridge", {ProduitSId:barcode, FrigoId : $("#fridgesSelect").val()})
-
-
-				request("GET", "http://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
-					//ProduitSId, ProduitSNom, ProduitSMarque, FrigoNom, ProduitImageUrl, ListeNote, Contenance
-					//3179732333919
-					var OFF = JSON.parse(an);
-					console.log(OFF);
-					if(OFF.status==1){
-						product.ProduitSId = barcode;
-						product.FrigoNom = $("#fridgesSelect").val();
-						product.ProduitSMarque = OFF.product.brands;
-						product.ProduitSNom = OFF.product.generic_name;
-						product.ProduitImageUrl = OFF.product.image_url;
-						product.Contenance = OFF.product.quantity;
-
-						console.log(JSON.stringify(product));
-
-						apiRequest("POST", "products/removeOneFromFridge", {ProduitSId:barcode, FrigoId : $("#fridgesSelect").val()}, function(an){
-							$("#list").append("<li>"+product.ProduitSMarque + " - " +
-								product.ProduitSNom + " - " +
-								product.Contenance +" : Retiré du frigo "+ $("#fridgesSelect option:selected").html() +"</li>");
-							$("#ProductId").val("");
-							$("#ProductId").focus();
-						}, function (an) {
-							console.log("Erreur : \n"+JSON.stringify(an));
-						});
-						product = {ProduitSId : null, ProduitSNom : null,ProduitSMarque : null, FrigoNom : null,ProduitImageUrl : null,ListeNote : null,Contenance : null };
-					}else{
-						$("#list").append("<li>Produit non trouvé : "+barcode+"</li>");
-						$("#ProductId").val("");
-						$("#ProductId").focus();
-					}
-				}, apiError);
-
-
-			}else{
-				alert("ce type de scan n'existe pas");
-			}
-		});
-	}else{
-		console.log("No handler for this : "+type);
+	switch(type){
+		case "FridgeContent" :
+			addEventsFridgeContent();
+			break;
+		case "ShoppingList" :
+			addEventsShoppingList();
+			break;
+		case "Left" :
+			addEventsLeft();
+			break;
+		case "Scan" :
+			addEventsScan();
+			break;
+		case "Products" :
+			addEventsProducts();
+			break;
+		case "ProductsList" :
+			addEventsProductsList();
+			break;
+		default :
+			console.log("No handler for this : "+type);
+			break;
 	}
 }
 function addFridgeAdd(t){
+	//TODO fermer le popup une fois le frigo ajouté
 	t.preventDefault();
 	var fridgeName = $("form input").val();
 	apiRequest("POST", "fridges/add", {FrigoNom : fridgeName}, function (an) {
@@ -1056,13 +940,324 @@ function preventDefault(e){
 	e.preventDefault();
 }
 function removeList(){
-	//TODO tests
-	//apiRequest("GET", "list/removeAll", null, function (an) {
-	//	console.log("Liste vidée : "+an);
-	//}, apiError);
+	apiRequest("POST", "list/removeAll", null, function (an) {
+		console.log("Liste vidée : "+an);
+	}, apiError);
 }
 function removeFridge(id){
 	//TODO when sof do it
 	console.log("removing fridge "+id);
+}
+function addEventsFridgeContent(){
+	$("#list a i").on("click", function (e) {
+		e.preventDefault();
+		var action=$(this).attr("class").split(" ")[0];
+		var productId = this.closest("li").id;
+		if(action=="remove"){
+			console.log("I must remove " + productId + " from fridge."+fridgeName);
+		}else if(action=="plus"){
+			console.log("Plus one " + productId + " to fridge"+fridgeName);
+		}else if(action=="minus"){
+			console.log("Minest one " + productId + " from fridge"+fridgeName);
+		}else{
+			console.log("No behavior set for this action : "+action);
+		}
+	});
+}
+function addEventsShoppingList(){
+	$("#list a i").on("click", function (e) {
+		e.preventDefault();
+		var action=$(this).attr("class").split(" ")[0];
+		var productId = this.closest("li").id;
+		if(action=="remove"){
+			apiRequest("POST", "list/setQuantity",
+				{ProduitSId: productId, ListeQuantite: -1},
+				function(an){
+					$("#"+productId).remove();
+				},
+				apiError
+			);
+		}else if(action=="plus"){
+			apiRequest("POST", "list/setQuantity",
+				{ProduitSId: productId, ListeQuantite: (parseInt($("#"+productId+" .Quantite").html())+1) },
+				function(an){
+					$("#"+productId+" .Quantite").html(parseInt($("#"+productId+" .Quantite").html())+1);
+				},
+				apiError
+			);
+		}else if(action=="minus"){
+			apiRequest("POST", "list/setQuantity",
+				{ProduitSId: productId, ListeQuantite: (parseInt($("#"+productId+" .Quantite").html())-1)},
+				function(an){
+					if(parseInt($("#"+productId+" .Quantite").html())-1==0){
+						$("#"+productId).remove();
+					}else{
+						$("#"+productId+" .Quantite").html(parseInt($("#"+productId+" .Quantite").html())-1);
+					}
+				},
+				apiError
+			);
+		}else{
+			console.log("No behavior set for this action : "+action);
+		}
+	});
+}
+function addEventsLeft(){
+	$("#fridge-add").closest("a").on("click", function (e) {
+		e.preventDefault();
+	});
+	$("#fridge-remove").closest("a").on("click", function (e) {
+		e.preventDefault();
+	});
+	console.log($("#fridge-add").closest("a"));
+}
+function addEventsScan() {
+	$("#ProductId").focus();
+	$("#submit").on("click", function(e){
+		e.preventDefault();
+		$("form").submit();
+	});
+	handleFridgeSelect();
+	$("form").on("submit", function (e) {
+		e.preventDefault();
+		if($("#waiting")){
+			$("#waiting").remove();
+		}
+		var barcode = $("#ProductId").val();
+		var type = $("#scanType").html();
+		if(type=="add"){
+			request("GET", "http://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
+				//ProduitSId, ProduitSNom, ProduitSMarque, FrigoNom, ProduitImageUrl, ListeNote, Contenance
+				//3179732333919
+				var OFF = JSON.parse(an);
+				console.log(OFF);
+				if(OFF.status==1){
+					if((product.ProduitSId = barcode) == null ||
+						(product.FrigoNom = $("#fridgesSelect").val()) == null ||
+						(product.ProduitSMarque = OFF.product.brands) == null ||
+						(product.ProduitSNom = OFF.product.generic_name) == null ||
+						(product.ProduitImageUrl = OFF.product.image_url) == null ||
+						(product.Contenance = OFF.product.quantity) == null
+					){
+						$("#list").append("<li>Informations OFF pas complètes : "+barcode+"</li>");
+						$("#ProductId").val("");
+						$("#ProductId").focus();
+					}
+
+					console.log(JSON.stringify(product));
+
+					apiRequest("POST", "products/add", product, function(an){
+						$("#list").append("<li>"+product.ProduitSMarque + " - " +
+							product.ProduitSNom + " - " +
+							product.Contenance +" : Ajouté au frigo "+ product.FrigoNom +"</li>");
+						$("#ProductId").val("");
+						$("#ProductId").focus();
+					}, function (an) {
+						console.log("Erreur : \n"+JSON.stringify(an));
+					});
+					product = {ProduitSId : null, ProduitSNom : null,ProduitSMarque : null, FrigoNom : null,ProduitImageUrl : null,ListeNote : null,Contenance : null };
+				}else{
+					$("#list").append("<li>Produit non trouvé : "+barcode+"</li>");
+					$("#ProductId").val("");
+					$("#ProductId").focus();
+				}
+			}, apiError);
+		}else if(type=="remove"){
+			apiRequest("POST", "products/removeOneFromFridge", {ProduitSId:barcode, FrigoId : $("#fridgesSelect").val()})
+
+			request("GET", "http://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
+				//ProduitSId, ProduitSNom, ProduitSMarque, FrigoNom, ProduitImageUrl, ListeNote, Contenance
+				//3179732333919
+				var OFF = JSON.parse(an);
+				console.log(OFF);
+				if(OFF.status==1){
+					product.ProduitSId = barcode;
+					product.FrigoNom = $("#fridgesSelect").val();
+					product.ProduitSMarque = OFF.product.brands;
+					product.ProduitSNom = OFF.product.generic_name;
+					product.ProduitImageUrl = OFF.product.image_url;
+					product.Contenance = OFF.product.quantity;
+
+					console.log(JSON.stringify(product));
+
+					apiRequest("POST", "products/removeOneFromFridge", {ProduitSId:barcode, FrigoId : $("#fridgesSelect").val()}, function(an){
+						$("#list").append("<li>"+product.ProduitSMarque + " - " +
+							product.ProduitSNom + " - " +
+							product.Contenance +" : Retiré du frigo "+ $("#fridgesSelect option:selected").html() +"</li>");
+						$("#ProductId").val("");
+						$("#ProductId").focus();
+					}, function (an) {
+						console.log("Erreur : \n"+JSON.stringify(an));
+					});
+					product = {ProduitSId : null, ProduitSNom : null,ProduitSMarque : null, FrigoNom : null,ProduitImageUrl : null,ListeNote : null,Contenance : null };
+				}else{
+					$("#list").append("<li>Produit non trouvé : "+barcode+"</li>");
+					$("#ProductId").val("");
+					$("#ProductId").focus();
+				}
+			}, apiError);
+
+		}else if(type=="list"){
+			request("GET", "http://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
+				//ProduitSId, ProduitSNom, ProduitSMarque, FrigoNom, ProduitImageUrl, ListeNote, Contenance
+				//3179732333919
+				var OFF = JSON.parse(an);
+				console.log(OFF);
+				if(OFF.status==1){
+					if((product.ProduitSId = barcode) == null ||
+						(product.ProduitSMarque = OFF.product.brands) == null ||
+						(product.ProduitSNom = OFF.product.generic_name) == null ||
+						(product.ProduitImageUrl = OFF.product.image_url) == null ||
+						(product.Contenance = OFF.product.quantity) == null
+					){
+						$("#list").append("<li>Informations OFF pas complètes : "+barcode+"</li>");
+						$("#ProductId").val("");
+						$("#ProductId").focus();
+					}
+					//TODO encoder une note pour le produit
+					product.ListeNote="ok";
+					console.log(JSON.stringify(product));
+
+					apiRequest("POST", "list/addProduct", product, function(an){
+						$("#list").append("<li>"+product.ProduitSMarque + " - " +
+							product.ProduitSNom + " - " +
+							product.Contenance +" : Ajouté à votre liste de course</li>");
+						$("#ProductId").val("");
+						$("#ProductId").focus();
+					}, function (an) {
+						console.log("Erreur : \n"+JSON.stringify(an));
+					});
+					product = {ProduitSId : null, ProduitSNom : null,ProduitSMarque : null, FrigoNom : null,ProduitImageUrl : null,ListeNote : null,Contenance : null };
+				}else{
+					$("#list").append("<li>Produit non trouvé : "+barcode+"</li>");
+					$("#ProductId").val("");
+					$("#ProductId").focus();
+				}
+			}, apiError);
+		}else{
+			alert("ce type de scan n'existe pas");
+		}
+	});
+}
+function addEventsProducts(){
+
+}
+function addEventsProductsList(){
+	var type = [];
+	for(var i = 0;i<list.length;i++){
+		if(type.indexOf(list[i].ProduitNSType)==-1){
+			type.push(list[i].ProduitNSType);
+		}
+	}
+	for(var i = 0;i<type.length;i++){
+		$("#productType").append("<option value="+(i+1)+" >"+type[i]+"</option>");
+	}
+	$("#productType").on("change", function () {
+		$("#search").val("");
+		var newList=[];
+		$("#list").html("<li></li>");
+		if($("#productType option:selected").html()=="Tous"){
+			newList = list;
+		}else{
+			for(var i = 0;i<list.length;i++){
+				if($("#productType option:selected").html()==list[i].ProduitNSType){
+					newList.push(list[i]);
+				}
+			}
+		}
+		for(var i = 0;i<newList.length;i++){
+			$("#list").append("<li id="+newList[i].ProduitNSId+"><span class=\"ProduitNSNom\">"+newList[i].ProduitNSNomFR+"</span> - <span id='quantite'>0</span><a href=\"#\"><i class=\"minus fa fa-minus\" aria-hidden=\"true\"></i></a><a href=\"#\"><i class=\"plus fa fa-plus\" aria-hidden=\"true\"></i></a><a href=\"#\"><i class=\"remove fa fa-times\" aria-hidden=\"true\"></i></a></li>");
+		}
+		productAddQuantite();
+	});
+	$("#search").on("keyup", function () {
+		$("#productType").val(0);
+		$("#list").html("<li></li>");
+		var search = [];
+		var re;
+		if($(this).val()==""){
+			search = list;
+		}else{
+			for(var i = 0;i<list.length;i++){
+				re = new RegExp($(this).val(),"gi");
+				if(list[i].ProduitNSNomFR.match(re)){
+					search.push(list[i]);
+				}
+			}
+		}
+		for(var i = 0;i<search.length;i++){
+			$("#list").append("<li id="+search[i].ProduitNSId+"><span class=\"ProduitNSNom\">"+search[i].ProduitNSNomFR+"</span> - <span id='quantite'>0</span><a href=\"#\"><i class=\"minus fa fa-minus\" aria-hidden=\"true\"></i></a><a href=\"#\"><i class=\"plus fa fa-plus\" aria-hidden=\"true\"></i></a><a href=\"#\"><i class=\"remove fa fa-times\" aria-hidden=\"true\"></i></a></li>");
+		}
+		productAddQuantite();
+	});
+	$("form").on("submit", function (e) {
+		e.preventDefault();
+	});
+	handleFridgeSelect("products");
+	$("#list a i").on("click", function (e) {
+		e.preventDefault();
+		var action=$(this).attr("class").split(" ")[0];
+		var productId = this.closest("li").id;
+		var fridgeNam = $("#fridgesSelect option:selected").html();
+		if(action=="remove"){
+			//TODO attendre que sof fasse la fonction (products/removeFromFridge)
+			console.log("I must remove " + productId + " from fridge : "+fridgeNam);
+		}else if(action=="plus"){
+			//TODO attendre que sof fasse la fonction (products/addOneFromFridge)
+			console.log("Plus one " + productId + " to fridge : "+fridgeNam);
+		}else if(action=="minus"){
+			//TODO tests
+			console.log("Minest one " + productId + " from fridge : "+fridgeNam);
+			//apiRequest("POST", "products/removeOneFromFridge", {ProduitSId : productId, FrigoId: $("#fridgesSelect").val()}, function (an) {
+			//	$("#"+productId+" quantite").html(0);
+			//}, function (an) {
+			//	console.log("Erreur : \n"+an);
+			//})
+		}else{
+			console.log("No behavior set for this action : "+action);
+		}
+	});
+}
+function handleFridgeSelect(quantite=undefined){
+	apiRequest("GET", "fridges/list", null, function(an){
+		var select = $("#fridgesSelect");
+		if($("#scanType").html()=="add"){
+			for(var i = 0;i<an.length;i++){
+				select.append("<option value='"+an[i].FrigoNom+"'>"+an[i].FrigoNom+"</option>");
+			}
+		}else{
+			for(var i = 0;i<an.length;i++){
+				select.append("<option value='"+an[i].FrigoId+"'>"+an[i].FrigoNom+"</option>");
+			}
+		}
+		if(quantite){
+			productAddQuantite();
+		}
+	}, function (an) {
+		console.log("Erreur : \n"+JSON.stringify(an));
+	});
+}
+function productAddQuantite(){
+	apiRequest("POST", "fridges/getFridgeContent", {FrigoNom : $("#fridgesSelect option:selected").html()}, function(an){
+		for(var i = 0;i<an.length;i++){
+			$("#"+an[i].ProduitId+" quantite").html(an[i].Quantite);
+		}
+	}, function(an){
+		console.log(an);
+	});
+}
+function listFridgeContent(){
+	$("#list").html("<li></li>");
+	var html = list.map(function(v, i, t){
+		$("#list").append("<li id="+t[i].ProduitId+">"+
+			"<span"+
+		"className='ProduitNom'>"+t[i].ProduitNom+"</span> - <span"+
+		"	className='Quantite'>"+t[i].Quantite+"</span> - <span"+
+		"	className='DateAjout'>"+t[i].DateAjout+"</span>"+
+		"<a href='#'><i className='minus fa fa-minus' aria-hidden='true'></i></a>"+
+			"<a href='#'><i className='plus fa fa-plus' aria-hidden='true'></i></a>"+
+			"<a href='#'><i className='remove fa fa-times' aria-hidden='true'></i></a>"+
+			"</li>");
+	});
 }
 //TODO Fonction pour envoyer liste de courses par mail
