@@ -44,6 +44,7 @@ import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_URL;
 import static ovh.intellifridge.intellifridge.Config.BARCODE_CHECK_REQUEST_TAG;
+import static ovh.intellifridge.intellifridge.Config.DATA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.GET_INFO_LOCAL_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.GET_INFO_OFF_REQUEST_TAG;
@@ -98,7 +99,7 @@ public class BarcodeReaderActivity extends AppCompatActivity {
     String secret = JWT_KEY;
     private String server_status;
     String imageUrl,productName,quantity, off_status,brands;
-    JSONObject product;
+    JSONObject product,server_response;
     Fridge[] fridges;
     TextView txtProduct,txtQuantity;
     View addProductCard;
@@ -246,8 +247,23 @@ public class BarcodeReaderActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.wtf("LOCAL",response);
-                        // TODO: 10-12-16 : decode and display info from local db 
+                        try {
+                            final JWTVerifier verifier = new JWTVerifier(secret);
+                            final Map<String, Object> claims= verifier.verify(response);
+                            server_response = new JSONObject(claims);
+                            server_status = server_response.getString(SERVER_STATUS);
+                        } catch (JWTVerifyException e) {
+                            // Invalid Token
+                            Log.e("JWT ERROR",e.toString());
+                        } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            displayProductInfoLocalDb(server_response.getJSONArray(DATA));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -268,6 +284,67 @@ public class BarcodeReaderActivity extends AppCompatActivity {
             }
         };
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest, GET_INFO_LOCAL_REQUEST_TAG);
+    }
+
+    private void displayProductInfoLocalDb(JSONArray jsonArray) throws JSONException {
+        JSONObject productInfo = jsonArray.getJSONObject(0);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(BarcodeReaderActivity.this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        addProductCard = inflater.inflate(R.layout.add_product_s_card,null);
+
+        imageUrl = productInfo.getString(KEY_PRODUCT_IMAGEURL);
+        ImageView productImage = (ImageView) addProductCard.findViewById(R.id.product_image);
+        Picasso.with(getBaseContext()).load(imageUrl)
+                .fit().centerInside()
+                .into(productImage);
+        productName = productInfo.getString(KEY_PRODUCT_NAME);
+        brands = productInfo.getString(KEY_PRODUCT_BRAND);
+        txtProduct = (TextView)addProductCard.findViewById(R.id.productName);
+        txtProduct.setText(productName);
+        quantity = productInfo.getString(KEY_PRODUCT_QUANTITY);
+        txtQuantity = (TextView)addProductCard.findViewById(R.id.quantityName);
+        txtQuantity.setText(quantity);
+
+        builder.setView(addProductCard);
+        builder.setTitle(R.string.add_product_title);
+        builder.setPositiveButton(R.string.add_fridge_addBtn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                addProductSFridge();
+                startMainActivity();
+            }
+        });
+        builder.setNegativeButton(R.string.add_fridge_cancelBtn, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                startMainActivity();
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        Bundle extras = getIntent().getExtras();
+        if (extras.getString(FRIDGE_NAME_EXTRA) != null) {
+            fridge_selected_name = extras.getString(FRIDGE_NAME_EXTRA);
+            getFridgeIdFromName(fridge_selected_name);
+        }else {
+            final Spinner spinner = (Spinner)addProductCard.findViewById(R.id.fridge_spinner);
+            ArrayAdapter spinnerArrayAdapter= new ArrayAdapter(this,android.R.layout.simple_spinner_item,fridges);
+            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(spinnerArrayAdapter);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                    fridge_selected_name = adapterView.getItemAtPosition(position).toString();
+                    getFridgeIdFromName(fridge_selected_name);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        }
+
+        alertDialog.show();
+        alertDialog.setCanceledOnTouchOutside(false);
     }
 
     /**
