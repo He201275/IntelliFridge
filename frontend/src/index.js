@@ -587,9 +587,9 @@ class ListElem extends Component {
 		if(this.props.componentData.Note!=undefined) {
 			return (
 				<li id={this.props.componentData.ProduitId}>
-					<span className="ProduitNom">{this.props.componentData.ProduitNom}</span> -
-					<span className='Quantite'>{this.props.componentData.Quantite}</span> -
-					<span className='DateAjout'>{this.props.componentData.DateAjout}</span> -
+					<span className="ProduitNom">{this.props.componentData.ProduitNom}</span>
+					<span className='Quantite'>{this.props.componentData.Quantite}</span>
+					<span className='DateAjout'>{this.props.componentData.DateAjout}</span>
 					<span className='Note'>{this.props.componentData.Note}</span>
 					<a href="#"><i className="minus fa fa-minus" aria-hidden="true"></i></a>
 					<a href="#"><i className="plus fa fa-plus" aria-hidden="true"></i></a>
@@ -599,7 +599,7 @@ class ListElem extends Component {
 		}else if(this.props.products){
 			return (
 				<li id={this.props.componentData.ProduitNSId}>
-					<span className="ProduitNSNom">{this.props.componentData.ProduitNSNomFR}</span> -
+					<span className="ProduitNSNom">{this.props.componentData.ProduitNSNomFR}</span>
 					<span id='quantite'>0</span>
 					{/*TODO ajouter la photo de l'aliment quand c'est possible
 					<img src="" alt={"Photo "+this.props.componentData.ProduitNSNomFR} />*/}
@@ -612,8 +612,8 @@ class ListElem extends Component {
 		}else{
 			return (
 				<li id={this.props.componentData.ProduitId}>
-					<span className="ProduitNom">{this.props.componentData.ProduitNom}</span> -
-					<span className='Quantite'>{this.props.componentData.Quantite}</span> -
+					<span className="ProduitNom">{this.props.componentData.ProduitNom}</span>
+					<span className='Quantite'>{this.props.componentData.Quantite}</span>
 					<span className='DateAjout'>{this.props.componentData.DateAjout}</span>
 					<a href="#"><i className="minus fa fa-minus" aria-hidden="true"></i></a>
 					<a href="#"><i className="plus fa fa-plus" aria-hidden="true"></i></a>
@@ -714,7 +714,7 @@ class MiddleList extends Component {
 				<div id="middle-block" className="shoppingList main-part list-block">
 					<h1>Ma liste</h1>
 					<ShoppingList />
-					<div id="add-item">
+					{/*<div id="add-item">
 						<div id="mask"></div>
 						<a href="#" id="add-to-list" onClick={() => this.refs.popupAddItems.show()}><img src="/assets/images/dark-red/plus-button.svg"/></a>
 					</div>
@@ -734,7 +734,7 @@ class MiddleList extends Component {
 							</span>
 							</Link>
 						</div>
-					</SkyLight>
+					</SkyLight>*/}
 				</div>
 			);
 		}
@@ -1453,7 +1453,7 @@ function listFridgeContent(){
 	}
 	var html = list.map(function(v, i, t){
 		//TODO Error + - and x not showing
-		$("#list").append("<li id="+t[i].ProduitId+"><span className='ProduitNom'>"+t[i].ProduitNom+"</span> - <span className='Quantite'>"+t[i].Quantite+"</span> - <span	className='DateAjout'>"+t[i].DateAjout+"</span><a href='#'><i className='minus fa fa-minus' aria-hidden='true'></i></a><a href='#'><i className='plus fa fa-plus' aria-hidden='true'></i></a><a href='#'><i className='remove fa fa-times' aria-hidden='true'></i></a></li>");
+		$("#list").append("<li id="+t[i].ProduitId+"><span className='ProduitNom'>"+t[i].ProduitNom+"</span><span className='Quantite'>"+t[i].Quantite+"</span><span className='DateAjout'>"+t[i].DateAjout+"</span><a href='#'><i className='minus fa fa-minus' aria-hidden='true'></i></a><a href='#'><i className='plus fa fa-plus' aria-hidden='true'></i></a><a href='#'><i className='remove fa fa-times' aria-hidden='true'></i></a></li>");
 	});
 }
 async function productsContent(){
