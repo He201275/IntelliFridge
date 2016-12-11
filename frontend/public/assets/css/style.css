@@ -441,10 +441,11 @@ a {
   margin-left: .8em;
   padding-left: .4em;
   font-size: 1em;
-  height: 20%;
+  height: 12%;
   border-bottom: 1px solid #bcbcbc;
   margin-top: 4%;
   margin-right: .6em;
+  position: relative;
 }
 
 #list li:nth-child(1) {
@@ -470,6 +471,18 @@ a {
   font-size: 1em;
   float: right;
   margin-right: .6em;
+}
+
+.DateAjout {
+  position: absolute;
+  bottom: 0;
+  left: 20px; 
+}
+
+.Quantite {
+  position: absolute;
+  right: 5px;
+  font-size: 1.5em;
 }
 
 #add-item {
