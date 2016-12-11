@@ -144,7 +144,6 @@ class RightHome extends Component {
 				<h2>Ma liste de<br/>courses</h2>
 				<div id="right-block" className="side-block">
 					<div className="separator"></div>
-					<div className="separator"></div>
 					<Link to="/list">
 						<div id="view-list" className="right-button">
 						    <i className="fa fa-search fa-4x" aria-hidden="true"></i>
@@ -207,7 +206,6 @@ class RightList extends Component {
 			<div id="right-part" className="side-part main-part">
 				<h2>Ma liste de<br/>courses</h2>
 				<div id="right-block" className="side-block">
-					<div className="separator"></div>
 					<div className="separator"></div>
 					<a href="#" onClick={() => this.refs.popupEmpty.show()}>
 						<div id="empty-list" className="right-button">
