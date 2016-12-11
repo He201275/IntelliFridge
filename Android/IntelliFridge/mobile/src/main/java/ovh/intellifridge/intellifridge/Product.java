@@ -7,19 +7,27 @@ package ovh.intellifridge.intellifridge;
 
 public class Product {
     String productName,productNameNS_fr,productNameNS_en,productNameNS_nl,productNSType;
-    int productSId,productNSId;
+    int productNSId;
+    long productSId;
     int productQuantity;
+
+    public long getProductSId() {
+        return productSId;
+    }
+
+    public void setProductSId(long productSId) {
+
+        this.productSId = productSId;
+    }
+
     int frigoId;
 
     public Product(){
         super();
     }
 
-    public Product(String pName, int pId, int pQuantity){
+    public Product(String pName, int pQuantity){
         this.productName = pName;
-        this.productSId = pId;
-
-
         this.productQuantity = pQuantity;
     }
 
@@ -69,14 +77,6 @@ public class Product {
 
     public int getFrigoId() {
         return frigoId;
-    }
-
-    public void setProductSId(int productSId) {
-        this.productSId = productSId;
-    }
-
-    public int getProductSId() {
-        return productSId;
     }
 
     public int getProductQuantity() {

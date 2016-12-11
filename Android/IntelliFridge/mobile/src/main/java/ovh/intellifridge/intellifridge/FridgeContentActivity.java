@@ -46,6 +46,7 @@ import static ovh.intellifridge.intellifridge.Config.JWT_POST;
 import static ovh.intellifridge.intellifridge.Config.KEY_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.KEY_FRIDGE_NAME;
 import static ovh.intellifridge.intellifridge.Config.KEY_USERID;
+import static ovh.intellifridge.intellifridge.Config.PRODUCT_ID;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_NAME_DB;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_QUANTITY_DB;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_S_ID_DB;
@@ -95,7 +96,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                 // TODO: 04-12-16 : Add to current fridge 
             }
         });
-        
+
         ImageView scan = new ImageView(this);
         scan.setImageDrawable(getDrawable(R.drawable.ic_camera_black));
         SubActionButton scanButton = itemBuilder.setContentView(scan).build();
@@ -204,7 +205,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
      * Récupère la liste de produits d'un frigo pour les afficher dans un {@link RecyclerView}
      * @param jsonArray Json du contenu d'un frido, récupéré de la db, passant par l'API
      */
-    private void getFridgeContentList(JSONArray jsonArray) {
+    private void getFridgeContentList(JSONArray jsonArray) throws JSONException {
         Product[] fridgeContent = getFridgeContentArray(jsonArray);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.fridge_content_recyclerview);
@@ -219,20 +220,16 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
      * @param jsonArray Contenu du frigo récupéré de la db et l'API, en JSON
      * @return Array de {@link ovh.intellifridge.intellifridge.Product}
      */
-    private Product[] getFridgeContentArray(JSONArray jsonArray){
+    private Product[] getFridgeContentArray(JSONArray jsonArray) throws JSONException {
         int length = jsonArray.length();
         Product[] fridgeContent = new Product[length];
-
         for(int i=0;i<length;i++){
-            try {
-                fridgeContent[i]= new Product("",0,0);
-                fridgeContent[i].setProductName(jsonArray.optJSONObject(i).optString(PRODUCT_NAME_DB));
-                fridgeContent[i].setProductSId(jsonArray.optJSONObject(i).optInt(PRODUCT_S_ID_DB));
-                fridgeContent[i].setProductQuantity(jsonArray.getJSONObject(i).optInt(PRODUCT_QUANTITY_DB));
-                fridgeContent[i].setFrigoId(fridgeId);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            fridgeContent[i]= new Product("",0);
+            fridgeContent[i].setProductName(jsonObject.optString(PRODUCT_NAME_DB));
+            fridgeContent[i].setProductSId(jsonObject.optLong(PRODUCT_ID));
+            fridgeContent[i].setProductQuantity(jsonObject.optInt(PRODUCT_QUANTITY_DB));
+            fridgeContent[i].setFrigoId(fridgeId);
         }
         return fridgeContent;
     }

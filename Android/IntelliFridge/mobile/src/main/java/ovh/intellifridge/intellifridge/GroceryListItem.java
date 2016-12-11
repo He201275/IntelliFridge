@@ -11,7 +11,7 @@ public class GroceryListItem extends Product {
         super();
     }
 
-    public GroceryListItem(String pName, int pSId,int pNSId, int pQuantity, String lNote){
+    public GroceryListItem(String pName, long pSId,int pNSId, int pQuantity, String lNote){
         this.productSId = pSId;
         this.productNSId = pNSId;
         this.productName = pName;
@@ -41,16 +41,6 @@ public class GroceryListItem extends Product {
     @Override
     public void setProductQuantity(int productQuantity) {
         super.setProductQuantity(productQuantity);
-    }
-
-    @Override
-    public int getProductSId() {
-        return super.getProductSId();
-    }
-
-    @Override
-    public void setProductSId(int productSId) {
-        super.setProductSId(productSId);
     }
 
     public void setListNote(String listNote) {

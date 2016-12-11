@@ -165,4 +165,6 @@
     <string name="grocery_list">The grocery list is empty!</string>
 
     <string name="versionLbl">Version</string>
+    <string name="minus_one_success">One product removed from fridge:</string>
+    <string name="plus_one_success">One product added to fridge:</string>
 </resources>

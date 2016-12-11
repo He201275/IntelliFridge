@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -18,18 +19,33 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.auth0.jwt.JWTSigner;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.JWTVerifyException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_URL;
 import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
 import static ovh.intellifridge.intellifridge.Config.JWT_POST;
 import static ovh.intellifridge.intellifridge.Config.KEY_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.KEY_FRIDGE_ID;
 import static ovh.intellifridge.intellifridge.Config.KEY_PRODUCT_S_ID;
 import static ovh.intellifridge.intellifridge.Config.KEY_USERID;
+import static ovh.intellifridge.intellifridge.Config.MINUS_ONE;
+import static ovh.intellifridge.intellifridge.Config.PLUS_ONE;
+import static ovh.intellifridge.intellifridge.Config.PLUS_ONE_PRODUCT_URL;
 import static ovh.intellifridge.intellifridge.Config.PRODUCT_REMOVE_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.REMOVE_ONE_PRODUCT_URL;
+import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
+import static ovh.intellifridge.intellifridge.Config.SERVER_SUCCESS;
 import static ovh.intellifridge.intellifridge.Config.SHARED_PREF_NAME;
 import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.USER_ID_PREFS;
@@ -41,7 +57,9 @@ import static ovh.intellifridge.intellifridge.Config.VOLLEY_ERROR_TAG;
  */
 public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRVAdapter.ProductViewHolder>{
     Product[] fridgeContent;
-    int productId, fridgeId;
+    int fridgeId;
+    private JSONObject server_response;
+    private String server_status;
 
     FridgeContentRVAdapter(Product[] content_fridge){
         this.fridgeContent = content_fridge;
@@ -74,7 +92,7 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
      */
     @Override
     public void onBindViewHolder(final ProductViewHolder productViewHolderHolder, int position) {
-        productId = fridgeContent[position].getProductSId();
+        final long productId = fridgeContent[position].getProductSId();
         fridgeId = fridgeContent[position].getFrigoId();
         productViewHolderHolder.product_name.setText(fridgeContent[position].getProductName());
         productViewHolderHolder.product_quantity.setText(Integer.toString(fridgeContent[position].getProductQuantity()));
@@ -87,13 +105,13 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
                 builder.setPositiveButton(R.string.add_fridgeContent_addBtn, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO: 07-12-16  
+                        addRemoveOneProduct(productViewHolderHolder.cardView.getContext(),productId,PLUS_ONE);
                     }
                 });
                 builder.setNegativeButton(R.string.add_fridgeContent_removeBtn, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        removeOneProduct(productViewHolderHolder.cardView.getContext());
+                        addRemoveOneProduct(productViewHolderHolder.cardView.getContext(),productId,MINUS_ONE);
                     }
                 });
                 builder.show();
@@ -106,13 +124,37 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
      * Permet d'enlever un élément d'un produit
      * Ex.: Si on a 4 bouteilles d'eau, on passe à 3
      * @param context
+     * @param productId
      */
-    private void removeOneProduct(final Context context) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, REMOVE_ONE_PRODUCT_URL,
+    private void addRemoveOneProduct(final Context context, final long productId,final String type) {
+        String url = "";
+        if (type.equals(MINUS_ONE)){
+            url = REMOVE_ONE_PRODUCT_URL;
+        }else if (type.equals(PLUS_ONE)){
+            url = PLUS_ONE_PRODUCT_URL;
+        }
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.wtf("RES",response);
+                        final String secret = JWT_KEY;
+                        try {
+                            final JWTVerifier verifier = new JWTVerifier(secret);
+                            final Map<String, Object> claims= verifier.verify(response);
+                            server_response = new JSONObject(claims);
+                            server_status = server_response.getString(SERVER_STATUS);
+                        } catch (JWTVerifyException e) {
+                            // Invalid Token
+                            Log.e("JWT ERROR",e.toString());
+                        } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (server_status.equals(SERVER_SUCCESS) && type.equals(MINUS_ONE)){
+                            Toast.makeText(context,R.string.minus_one_success,Toast.LENGTH_LONG).show();
+                        }else  if (server_status.equals(SERVER_SUCCESS) && type.equals(PLUS_ONE)){
+                            Toast.makeText(context,R.string.plus_one_success,Toast.LENGTH_LONG).show();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -125,7 +167,8 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
             protected Map<String, String> getParams() throws AuthFailureError {
                 String apiKey = getApiKey(context);
                 int userId = getUserId(context);
-                String jwt = signParamsRemoveOneProduct(apiKey,userId);
+                String jwt = signParamsAddRemoveOneProduct(apiKey,userId,productId);
+                Log.wtf("-1REQ",jwt);
                 Map<String,String> params = new HashMap<>();
                 params.put(JWT_POST, jwt);
                 return params;
@@ -135,12 +178,13 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
     }
 
     /**
-     * Signe la requête pour {@link #removeOneProduct(Context)}
+     * Signe la requête pour {@link #addRemoveOneProduct(Context, long, String)} (Context, long)}
      * @param apiKey
      * @param userId
+     * @param productId
      * @return
      */
-    private String signParamsRemoveOneProduct(String apiKey, int userId) {
+    private String signParamsAddRemoveOneProduct(String apiKey, int userId, long productId) {
         final JWTSigner signer = new JWTSigner(JWT_KEY);
         final HashMap<String, Object> claims = new HashMap<String, Object>();
         claims.put(KEY_PRODUCT_S_ID,productId);
@@ -148,11 +192,6 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
         claims.put(KEY_API_KEY,apiKey);
         claims.put(KEY_FRIDGE_ID,fridgeId);
         return signer.sign(claims);
-    }
-
-    public void remove(int position) {
-        //fridgeContent.remove(position);
-        notifyItemRemoved(position);
     }
 
     /**

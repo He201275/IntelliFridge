@@ -22,7 +22,9 @@ public class Config {
     public static final String FRIDGE_REMOVE_URL = "http://api.intellifridge.ovh/v1/fridges/remove";
     public static final String GROCERY_LIST_GET_URL = "http://api.intellifridge.ovh/v1/list/get";
     public static final String REMOVE_ONE_PRODUCT_URL = "http://api.intellifridge.ovh/v1/fridges/minusOneProduct";
+    public static final String PLUS_ONE_PRODUCT_URL = "http://api.intellifridge.ovh/v1/fridges/minusOneProduct";
     public static final String GET_PRODUCT_NS_URL= "http://api.intellifridge.ovh/v1/products/getProductNS";
+    public static final String GET_RECENT_CONTENT_URL = "http://api.intellifridge.ovh/v1/products/getRecentProduct";
 
     public static final String JWT_KEY = "wAMxBauED07a4GurMpuD";
 
@@ -86,6 +88,7 @@ public class Config {
     public static final String PRODUCT_NAME_DB = "ProduitNom";
     public static final String PRODUCT_ID_NS_DB = "ProduitNSId";
     public static final String PRODUCT_QUANTITY_DB = "Quantite";
+    public static final String PRODUCT_ID = "ProduitId";
     public static final String LIST_NOTE_DB = "ListeNote";
 
 
@@ -113,6 +116,7 @@ public class Config {
     public static final String ADD_FRIDGE_REQUEST_TAG = "ovh.intellifridge.addfridge";
     public static final String GET_GROCERY_LIST_TAG = "ovh.intellifridge.getgrocerylist";
     public static final String PRODUCT_REMOVE_REQUEST_TAG = "ovh.intellifridge.removeoneprod";
+    public static final String RECENT_CONTENT_REQUEST_TAG = "ovh.intellifridge.recentcontent";
 
     public static final int TAB_RECENT_DEFAULT = 0;
     public static final int TAB_FRIDGE_DEFAULT = 1;
@@ -139,5 +143,8 @@ public class Config {
     public static final String SHARED_PREF_NAME_ALLERGY = "spAllergy"; // TODO: 04-12-16
     public static final String SHARED_PREF_NAME = "intellifridge";
     public static final String SHARED_PREF_FRIDGES_NAME = "intellifridge_fridges";
+
+    public static final String MINUS_ONE = "minus_one";
+    public static final String PLUS_ONE = "plus_one";
 
 }

@@ -149,7 +149,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         if (getFridgeModStatus() && getAllergyModStatus()){
-            mViewPager.setCurrentItem(TAB_FRIDGE_DEFAULT);
+            mViewPager.setCurrentItem(TAB_FRIDGE_FRIDGE);
+            setEmailNav();
+        }else if (getFridgeModStatus() && !getAllergyModStatus()){
+            mViewPager.setCurrentItem(TAB_FRIDGE_FRIDGE);
             setEmailNav();
         }
 
