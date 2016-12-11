@@ -154,18 +154,7 @@ h2 {
   background-color: #0d0d0d;
   position: absolute;
   left: 0;
-}
-
-#left-block .separator {
   top: 50%;
-}
-
-#right-block .separator:nth-child(1) {
-  top: 33%;
-}
-
-#right-block .separator:nth-child(2) {
-  top: 66%;
 }
 
 .left-button {
@@ -367,7 +356,7 @@ a {
 }
 
 .method img {
-  height: 3em;
+  height: 2em;
   margin-left: auto;
   margin-right: auto;
 }
@@ -461,7 +450,7 @@ a {
   margin-right: .5em;
 }
 
-#list .fa {
+#list .fa.remove-item {
   color: #ff3131;
   font-size: 1em;
   float: right;
@@ -502,8 +491,4 @@ a {
   width: 3.4em;
   background-color: #d6d6d6;
   border-bottom: 3px solid #0d0d0d;
-}
-
-.skylight-close-button{
-  color: #ff3131;
 }
