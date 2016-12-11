@@ -426,7 +426,7 @@ a {
   margin-left: .8em;
   padding-left: .4em;
   font-size: 1em;
-  height: 8%;
+  height: 20%;
   border-bottom: 1px solid #bcbcbc;
   margin-top: 4%;
   margin-right: .6em;
@@ -480,12 +480,13 @@ a {
   text-align: center;
   position: relative;
   top: 3%;
+  right: 8%;
   width: 2.5em;
 }
 
 #add-item #mask{
   position: absolute;
-  top: -.3em;
+  top: -.25em;
   left: -.4em;
   height: 55%;
   width: 3.4em;
