@@ -14,8 +14,11 @@ use \Firebase\JWT\JWT;
 require '../vendor/autoload.php';
 
 require "../include/classes/UserController.php";
+require "../include/classes/FridgeController.php";
+require "../include/classes/AllergyController.php";
 require '../include/Config/Config.php';
 require '../include/functions.php';
+
 
 /*
  * Slim Framework initialization
@@ -50,10 +53,10 @@ $container['logger'] = function($c) {
 };
 
 $container["UserController"] = function($c) {
-    return new UserController($c["db"], $c["sql"]);
+    return new UserController($c["db"], $c["sql"], $c["logger"]);
 };
 $container["FridgeController"] = function($c) {
-    return new FridgeController($c["db"], $c["sql"]);
+    return new FridgeController($c["db"], $c["sql"],$c["logger"]);
 };
 $container["AllergyController"] = function($c) {
     return new AllergyController($c["db"], $c["sql"]);
@@ -66,11 +69,16 @@ $container["AllergyController"] = function($c) {
 
 $app->get('/hello/{name}', function (Request $request, Response $response) {
     $name = $request->getAttribute('name');
-    $response->getBody()->write("Hello, $name");
+    //$response->getBody()->write("Hello, $name");
+    $this->logger->addDebug("dededef");
+    $msg=contentMail(1,"sofiane","ayoutesofiane@gmail.com", "dflkjnfdjnjdsfnfs");
+    $response->getBody()->write(sendMail("test","inscription","ayoutesofiane@gmail.com","noreply@intellifridge.ovh","Intelli"));
+
     return $response;
 
 });
-$app->get('/tickets', function (Request $request, Response $response) {
+/*
+    $app->get('/tickets', function (Request $request, Response $response) {
     $this->logger->addInfo("Ticket list");
     $mapper = new TicketMapper($this->db);
     $tickets = $mapper->getTickets();
@@ -78,33 +86,58 @@ $app->get('/tickets', function (Request $request, Response $response) {
     $response->getBody()->write(var_export($tickets, true));
     return $response;
 });
+*/
 
 
 $app->group("/user",function (){
     $this->post("/login", "UserController:authenticateUser");
-    $this->post("/newAccount", "UserController:createUser");
-    $this->post("/editProfile", "UserController:createUser");
+    $this->post("/register", "UserController:createUser");
+    $this->post("/editProfile", "UserController:editProfile");
     $this->post("/lostPass", "UserController:createUser");
 } );
 $app->group("/fridges",function (){
-    $this->get('/list','FridgeController:listFridge');
-    $this->delete('/remove','FridgeController:removeFridge');
+    $this->get("/list","FridgeController:listFridge");
+    $this->post("/remove","FridgeController:removeFridge");
     $this->post('/add','FridgeController:addFridge');
+    $this->post('/getFridgeContent','FridgeController:getFridgeContent');
+    $this->get('/getName','FridgeController:getFridgeName');
+    $this->post('/plusOneProduct','FridgeController:plusOneProduct');
+    $this->post('/minusOneProduct','FridgeController:minusOneProduct');
 } );
 $app->group("/products",function (){
-    $this->post("/addOne", 'FridgeController:addProduct');
-    $this->post("/addMany", 'FridgeController:addMultiProduct');
-    $this->get("/listFromFridge", 'FridgeController:listProductFromFridge');
+    $this->post("/add", 'FridgeController:addProduct');
+    $this->post("/addNS", 'FridgeController:addProductNS');
     $this->get("/listAll", 'FridgeController:listAllProducts');
-    //$this->get("/removeOne", 'FridgeController:listAllProducts');
+    $this->get("/searchById", 'FridgeController:searchById');
+    $this->post("/isInDB", 'FridgeController:isInDB');
+    $this->post("/removeOneFromFridge", 'FridgeController:removeOneProductFromFridge');
+    $this->post("/removeFromFridge", 'FridgeController:removeProductFromFridge');
+    $this->post("/listNS", 'FridgeController:listNS');
+    $this->post("/getProductNS",'FridgeController:getProductNS');
+    $this->post("/getProductSInfo",'FridgeController:getProductSInfo');
+    $this->post("/getRecentProduct",'FridgeController:getRecentProduct');
     //$this->get("/removeMany", 'FridgeController:listAllProducts');
     //$this->get("/editProduct", 'FridgeController:listAllProducts');
-
 } );
+$app->group("/allergy",function (){
+    $this->get("/get",'AllergyController:getAllergies');
+    $this->post("/set",'AllergyController:setAllergies');
+    $this->get("/check",'AllergyController:checkAllergies');
+});
+$app->group("/list",function (){
+    $this->get("/get",'FridgeController:getBuyList');
+    $this->post("/removeAll",'FridgeController:buyListRemoveAll');
+    $this->post("/plusOne",'FridgeController:buyListPlusOne');
+    $this->post("/minusOne",'FridgeController:buyListMinusOne');
+    $this->post("/setQuantity",'FridgeController:setListQuantity');
+    $this->post("/setNote",'FridgeController:setListNote');
+    $this->post("/addProduct",'FridgeController:addListProduct');
+});
 
-$app->post("/login", "UserController:authenticateUser");
-$app->post("/newAccount", "UserController:createUser");
-
+$app->get("/test",function (Request $request, Response $response){
+    $encoded = $request->getBody();
+    $this->logger->addInfo("TEST :".$encoded);
+});
 
 
 

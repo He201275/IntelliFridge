@@ -2,9 +2,64 @@
   "user":{
     "passwordByLogin": "SELECT UserPassword FROM User WHERE UserAdresseMail=:user_email",
     "idFromLogin": "SELECT UserId FROM User WHERE UserAdresseMail=:user_email",
-    "basicInfosById": "SELECT UserId, UserPrenom, UserNom, UserLocalite, UserAdresseMail, UserGenre, UserLangue FROM User WHERE Userid=:user_id",
-    "accountExists": "tety",
+    "basicInfosById": "SELECT UserId, UserPrenom, UserNom, CommuneLocalite, UserAdresseMail, UserGenre, LangueCode, ApiKey FROM User WHERE UserId=:user_id",
+    "checkAPI": "SELECT ApiKey FROM User WHERE UserId=:user_id",
+    "setResetToken": "INSERT INTO ResetToken (Token, ExpDate, UserId) VALUES (:token, :exp_date, :user_id)",
+    "create": "INSERT INTO User (UserPrenom, UserNom, UserAdresseMail, LangueCode, UserPassword, ApiKey) VALUES(:UserPrenom,:UserNom,:UserAdresseMail,:LangueCode,:UserPassword, :ApiKey)",
+    "createWithLocale": "INSERT INTO User (UserPrenom, UserNom, UserAdresseMail, LangueCode, UserPassword, ApiKey, CommuneCode, CommuneLocalite) VALUES(:UserPrenom,:UserNom,:UserAdresseMail,:LangueCode,:UserPassword, :ApiKey :CommuneCode, :CommuneLocalite)",
+    "accountActivation":"INSERT INTO Activation (Token, ExpDate, UserId) VALUES (:token, :exp_date, :user_id)",
+    "editProfile":"UPDATE User SET UserPrenom=:UserPrenom,UserNom=:UserNom,CommuneLocalite=:CommuneLocalite,UserAdresseMail=:UserAdresseMail WHERE UserId=:UserId",
     "LostPass":"testss"
+  },
+  "fridge":{
+    "listFridges": "SELECT FrigoId, FrigoNom FROM Frigo WHERE UserId=:user_id",
+    "getFridgeId": "SELECT FrigoId FROM Frigo WHERE FrigoNom=:FrigoNom AND UserId=:UserId",
+    "getFridgeName": "SELECT FrigoNom FROM Frigo WHERE FrigoId=:FrigoId",
+    "getFridgeContent": "SELECT IF(IsScannable, ps.ProduitSNom, pns.ProduitNSNomFR) as ProduitNom, IF(IsScannable, ProduitSId, ProduitNSId) as ProduitId, Quantite, DateAjout FROM Contenu as c NATURAL JOIN ProduitNS as pns NATURAL JOIN ProduitS as ps WHERE FrigoId = :FrigoId AND Quantite <> 0",
+    "getFridgeContenttt": "SELECT IF(IsScannable, ps.ProduitSNom, pns.ProduitNSNomFR) as ProduitNom, IF(IsScannable, ProduitSId, ProduitNSId) as ProduitId, Quantite DateAjout FROM Contenu as c NATURAL JOIN ProduitNS as pns NATURAL JOIN ProduitS as ps WHERE FrigoId = :FrigoId AND Quantite <> 0",
+    "getFridgeContentttttt": "SELECT * FROM Contenu WHERE FrigoId = :FrigoId AND Quantite <> 0",
+    "add": "INSERT INTO Frigo (FrigoNom, UserId) VALUES (:FrigoNom, :UserId)",
+    "remove": "DELETE FROM Frigo WHERE FrigoNom = :FrigoNom AND UserId = :UserId",
+    "exists": "SELECT FrigoId FROM Frigo WHERE FrigoNom =:FrigoNom AND UserId =:UserId",
+    "getProductNbFromFridge":"SELECT Quantite FROM Contenu WHERE FrigoId=:FrigoId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
+    "removeOneProductFromFridge":"UPDATE Contenu SET Quantite = Quantite-1 WHERE FrigoId=:FrigoId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
+    "removeProductFromFridge":"DELETE FROM Contenu WHERE FrigoId=:FrigoId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId"
+  },
+  "products":{
+    "listNS0":"SELECT ProduitNSId, ProduitNSNomFR, ProduitNSType FROM ProduitNS WHERE ProduitNSId<>1 LIMIT 20 OFFSET 0",
+    "listNS1":"SELECT ProduitNSId, ProduitNSNomFR, ProduitNSType FROM ProduitNS WHERE ProduitNSId<>1 LIMIT 20 OFFSET 20",
+    "listNS2":"SELECT ProduitNSId, ProduitNSNomFR, ProduitNSType FROM ProduitNS WHERE ProduitNSId<>1 LIMIT 20 OFFSET 40",
+    "listNS3":"SELECT ProduitNSId, ProduitNSNomFR, ProduitNSType FROM ProduitNS WHERE ProduitNSId<>1 LIMIT 20 OFFSET 60",
+    "listNS4":"SELECT ProduitNSId, ProduitNSNomFR, ProduitNSType FROM ProduitNS WHERE ProduitNSId<>1 LIMIT 20 OFFSET 80",
+    "listNS5":"SELECT ProduitNSId, ProduitNSNomFR, ProduitNSType FROM ProduitNS WHERE ProduitNSId<>1 LIMIT 20 OFFSET 100",
+    "listNS6":"SELECT ProduitNSId, ProduitNSNomFR, ProduitNSType FROM ProduitNS WHERE ProduitNSId<>1 LIMIT 20 OFFSET 120",
+    "listNS7":"SELECT ProduitNSId, ProduitNSNomFR, ProduitNSType FROM ProduitNS WHERE ProduitNSId<>1 LIMIT 20 OFFSET 140",
+    "listNS8":"SELECT ProduitNSId, ProduitNSNomFR, ProduitNSType FROM ProduitNS WHERE ProduitNSId<>1 LIMIT 20 OFFSET 160",
+    "listNS9":"SELECT ProduitNSId, ProduitNSNomFR, ProduitNSType FROM ProduitNS WHERE ProduitNSId<>1 LIMIT 20 OFFSET 180",
+    "isInDB":"SELECT ProduitSId FROM ProduitS WHERE ProduitSId =:ProduitSId",
+    "newProductInfo": "INSERT INTO ProduitS (ProduitSId,ProduitSNom,ProduitSMarque,Contenance,ProduitImageUrl) VALUES (:ProduitSId,:ProduitSNom,:ProduitSMarque,:Contenance,:ProduitImageUrl)",
+    "insertProductDB": "INSERT INTO ProduitS (ProduitSId,ProduitSNom, ProduitSMarque,Contenance,ProduitImageUrl) VALUES (ProduitSId=:ProduitSId, ProduitSNom=:ProduitSNom, ProduitSMarque=:ProduitSMarque, Contenance=:Contenance,ProduitImageUrl=:ProduitImageUrl)",
+    "insertIntoFridge":"INSERT INTO Contenu (FrigoId,ProduitNSId, ProduitSId,isScannable,Quantite,DateAjout) VALUES (:FrigoId,:ProduitNSId,:ProduitSId,:isScannable,:Quantite,:DateAjout)",
+    "getById":"SELECT * FROM ProduitS WHERE ProduitSId =:ProductSId",
+    "existsInFridge":"SELECT ProduitSId FROM Contenu WHERE ProduitNSId=:ProduitNSId AND ProduitSId=:ProduitSId AND FrigoId=:FrigoId",
+    "addIntoFridge":"UPDATE Contenu SET Quantite = Quantite+1, DateAjout=:DateAjout WHERE FrigoId=:FrigoId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
+    "minusOneProduct":"UPDATE Contenu SET Quantite = Quantite-1, DateAjout=:DateAjout WHERE FrigoId=:FrigoId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
+    "getRecent":"SELECT * FROM Contenu WHERE FrigoId IN (SELECT FrigoId FROM Frigo WHERE UserId=:UserId) AND NOT Quantite=0 ORDER BY DateAjout",
+    "getInfo":"SELECT ProduitSNom,ProduitSMarque,Contenance,ProduitImageUrl FROM ProduitS WHERE ProduitSId=:ProduitSId"
+  },
+  "allergy":{
+    "getAllergyFromProductId":"SELECT a.AllergieNom FROM ProduitS as p NATURAL JOIN Produit_IngredientS as pi NATURAL JOIN IngredientS as i NATURAL JOIN Allergie_Ingredient as ai NATURAL JOIN Allergie as a WHERE p.ProduitSId=:ProduitSId"
+  },
+  "list":{
+    "getList":"SELECT IF(IsScannable, ps.ProduitSNom, pns.ProduitNSNomFR) as ProduitNom, IF(IsScannable, ProduitSId, ProduitNSId) as ProduitId, ListeQuantite as Quantite, ListeNote as Note, ListeDateAjout as DateAjout FROM Liste as l NATURAL JOIN ProduitNS as pns NATURAL JOIN ProduitS as ps WHERE UserId=:UserId",
+    "removeAll":"DELETE FROM Liste WHERE UserId=:UserId",
+    "plusOne":"UPDATE Liste SET ListeQuantite=ListeQuantite+1, ListeDateAjout=:ListeDateAjout WHERE UserId=:UserId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
+    "minusOne":"UPDATE Liste SET ListeQuantite=ListeQuantite-1, ListeDateAjout=:ListeDateAjout WHERE UserId=:UserId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
+    "setQuantity":"UPDATE Liste SET ListeQuantite=:ListeQuantite WHERE UserId=:UserId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
+    "setNote":"UPDATE Liste SET ListeNote=:ListeNote WHERE UserId=:UserId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
+    "productQuantity":"SELECT ListeQuantite FROM Liste WHERE UserId=:UserId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
+    "insert":"INSERT INTO Liste (UserId,ProduitSId,ProduitNSId,IsScannable, ListeQuantite, ListeNote, ListeDateAjout) VALUES (:UserId,:ProduitSId,:ProduitNSId,:IsScannable,:ListeQuantite,:ListeNote,:ListeDateAjout)",
+    "removeProduct":"DELETE FROM Liste WHERE UserId=:UserId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
+    "getNS":"SELECT * FROM ProduitNS WHERE ProduitNSId <> 1"
   }
 }
-

@@ -9,8 +9,8 @@
 $config['displayErrorDetails'] = true;
 $config['addContentLengthHeader'] = false;
 
-$config['db']['host']   = "franmakokb24.mysql.db";
-$config['db']['user']   = "franmakokb24";
-$config['db']['pass']   = "9ilSoznStfQW";
-$config['db']['dbname'] = "franmakokb24";
+$config['db']['host']   = "172.17.0.3";
+$config['db']['user']   = "api";
+$config['db']['pass']   = "lLHeatK3OTQlyw2M";
+$config['db']['dbname'] = "intelliFridge";
 ?>

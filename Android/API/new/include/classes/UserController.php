@@ -12,26 +12,35 @@ use \Firebase\JWT\JWT;
 class userController{
     private $db;
     private $sql;
+    private $logger;
 
-    public function __construct($db, $sql) {
+    public function __construct($db, $sql,$logger) {
         $this->db = $db;
         $this->sql = $sql;
+        $this->logger = $logger;
+
     }
 //http://flaven.fr/2014/11/slim-api-framework-les-bonnes-pratiques-pour-creer-une-api-avec-le-micro-framework-php-slim/
+
     public function lostPassword(Request $request, Response $response){
-        $post = $request->getParsedBody();
+        $post = checkJWT($request->getBody());
         if (!empty($post['email'])){
             if ($id = fetchSQLReq($this->db, $this->sql["user"]["idFromLogin"],array(":user_email" => $post['email']),true, true)){
-                // TODO Random string
-                $resetToken = random_bytes(10);
-                if (sendSQLReq($this->db,$this->sql["user"]["setResetToken"],array(":user_id"=>$id,":token"=>$resetToken))){
+                $resetToken = randomChar(25);
+                $date = new DateTime();
+                $int = new DateInterval('P0Y2DT0H0M');
+                $date->add($int);
+                $exp = $date->format('Y-m-d');
+                if (sendSQLReq($this->db,$this->sql["user"]["setResetToken"],array(":user_id"=>$id,":token"=>$resetToken, ":exp_date"=>$exp))){
                     //TODO Send mail @Rémy
+                    //sendMail($mail,$title ,$email,"noreply@intellifridge.ovh", $name);
                     $response = $response->withStatus(201);
                     $responseBody = array(
                         "status"=>"200",
                         "data"=>"Reset password successful",
                     );
                 }else{
+                    $this->
                     $response = $response->withStatus(422);
                     $responseBody = array(
                         "status" => "422",
@@ -49,125 +58,298 @@ class userController{
         }else{
             $responseBody = array(
                 "status" => "401",
-                "error" => "Insuficient arguments",
+                "error" => "Insufficient arguments",
                 "data" => $post,
             );
         }
-        $response = $response->withHeader('Content-type', 'application/json');
-        $response->getBody()->write(json_encode($responseBody));
+        $response = $response->withHeader('Content-type', 'text/plain');
+        $response = $response->withHeader('Access-Control-Allow-Origin', '*');
+        $response->getBody()->write(encodeJWT($responseBody));
         return $response;
         
 
     }
     public function createUser(Request $request, Response $response){
-        $post = $request->getParsedBody();
+        $post = checkJWT($request->getParam("jwt"));
+        
+        $this->logger->addInfo("jwt====".$request->getParam("jwt"));
+        $this->logger->addInfo("Creating user:=======================================");
+        $this->logger->addInfo("PW:".$post['UserPassword']);
+        $this->logger->addInfo("Nom:".$post['UserNom']);
+        $this->logger->addInfo("Prenom:".$post['UserPrenom']);
+        $this->logger->addInfo("Lang:".$post['LangueCode']);
+        if (!empty($post['UserAdresseMail']) && !empty($post['UserPassword']) && !empty($post['UserNom'])
+            && !empty($post['UserPrenom']) && !empty($post['LangueCode'])){ //&& !empty($post['UserGenre'])
+            $apiKey = randomChar(15);
+            $this->logger->addInfo("Creating user:".$post['UserAdresseMail']);
+            $email = htmlspecialchars($post['UserAdresseMail']);
+            $password = htmlspecialchars($post['UserPassword']);
+            $lastName = htmlspecialchars($post['UserNom']);
+            $name = htmlspecialchars($post['UserPrenom']);
+            $locale = htmlspecialchars($post['LangueCode']);
+            //$gender = htmlspecialchars($post['UserGenre']);
+            $mailAlreadyInDB = fetchSQLReq($this->db, $this->sql['user']['idFromLogin'], array("user_email"=>$email),true, true);
+            if ($mailAlreadyInDB > 0){
+                $returnBody = array(
+                    "status" => "401",
+                    "error" => "Email already in database",
+                );
+            }else{
+                if (!empty($post['CommuneCode']) && !empty($post['CommuneLocalite'])){
+                    $CommuneCode = htmlspecialchars($post['CommuneCode']);
+                    $CommuneLocalite = htmlspecialchars($post['CommuneLocalite']);
+                    $sqlInsert = sendSQLReq($this->db, $this->sql["user"]["createWithLocale"],array(
+                        ":UserAdresseMail" => $email,
+                        ":UserPassword" => $password,
+                        ":UserNom" => $lastName,
+                        ":UserPrenom" => $name,
+                        ":LangueCode" => $locale,
+                        ":CommuneCode" => $CommuneCode,
+                        ":CommuneLocalite" => $CommuneLocalite,
+                        ":ApiKey"=>$apiKey,
+                    ));
+                }else{
+                    $sqlInsert = sendSQLReq($this->db, $this->sql["user"]["create"],array(
+                        ":UserAdresseMail" => $email,
+                        ":UserPassword" => $password,
+                        ":UserNom" => $lastName,
+                        ":UserPrenom" => $name,
+                        ":LangueCode" => $locale,
+                        ":ApiKey"=>$apiKey,
+                    ));
+                }
+                if ($sqlInsert){
+                    $this->logger->addInfo("mail :".$email);
 
-        if (!empty($post['email']) && !empty($post['password']) && !empty($post['lastName'])
-            && !empty($post['name']) && !empty($post['locale']) && !empty($post['gender']) && !empty($post['language'])
-            && !empty($post['password'])){
-                $email = htmlspecialchars($post['email']);
-                $password = htmlspecialchars($post['password']);
-                $lastName = htmlspecialchars($post['lastName']);
-                $name = htmlspecialchars($post['name']);
-                $locale = htmlspecialchars($post['locale']);
-                $gender = htmlspecialchars($post['gender']);
-                $language = htmlspecialchars($post['language']);
-            if (sendSQLReq($this->db, $this->sql["user"]["create"],array(
-                ":email" => $email,
-                ":password" => $password,
-                ":lastName" => $lastName,
-                ":name" => $name,
-                ":locale" => $locale,
-                ":gender" => $gender,
-                ":language" => $language,
-            ))){
-                $userId = $this->userPasswordVerify($email, $password);
-                if ($userId){
-                    // User verified
+                    $activationToken = randomChar(15);
+                    $user_id = fetchSQLReq($this->db,$this->sql['user']['idFromLogin'],array(":user_email"=>$email),true,true);
+                    $this->logger->addInfo("user id:'".$user_id."'");
+
+                    if ($user_id >0){
+                        $date = new DateTime();
+                        $int = new DateInterval('P0Y2DT0H0M');
+                        $date->add($int);
+                        $expDate = $date->format('Y-m-d');
+                        if (sendSQLReq($this->db,$this->sql['user']['accountActivation'],array(":token"=> $activationToken,"exp_date"=>$expDate, "user_id"=>$user_id) )){
+                            $this->logger->addInfo("mail Send test at :'".$email."'");
+                            //$msg=contentMail(1,"sofiane","ayoutesofiane@gmail.com", "dflkjnfdjnjdsfnfs");
+                            //$var = sendMail("test", "inscription",$email, "noreply@intellifridge.ovh", "IntelliFridge");
+
+                            //$this->logger->addInfo("dsjnjsndjsdds".$var);
+
+                            //sendMail("Inscription", $email, "noreply@intellifridge.ovh", "IntelliFridge", 1, $activationToken);
+                        }else{
+                            // TODO Activation Key creation went wrong
+                        }
+                    }else{
+                        // TODO user not created error
+                    }
+
+
+                    $userId = $this->userPasswordVerify($email, $password);
+                    if ($userId >= 0){
+                        $returnBody = array(
+                            "status" => "200",
+                        );
+                        // User verified
+
+                    }else{
+                        // return error user password not recognized due to account creation went wrong
+                    }
 
                 }else{
-                    // return error user password not recognized due to account creation went wrong
+                    $returnBody = array(
+                        "status" => "401",
+                        "error" => "Creation in SQL went wrong",
+                        "data" => $post,
+                    );
                 }
-                
             }
 
-        }
-        else
+
+        } else{
             $returnBody = array(
                 "status" => "401",
                 "error" => "Insuficient arguments",
                 "data" => $post,
             );
-        $response->getBody()->write(json_encode($returnBody));
+        }
+        $response = $response->withHeader('Content-type', 'text/plain');
+        $response = $response->withHeader('Access-Control-Allow-Origin', '*');
+        $response->getBody()->write(encodeJWT($returnBody));
         return $response;
     }
 
     public function authenticateUser (Request $request, Response $response) {
-        $post = $request->getParsedBody();
+        $post = checkJWT($request->getParam("jwt"));
+       /* $response->getBody()->write($post['login']);
+        return $response;*/
+        if ($post){
+            if (!empty($post['UserAdresseMail']) && !empty($post['UserPassword'])) {
+                $userId = $this->userPasswordVerify($post['UserAdresseMail'], $post['UserPassword']);
+                if ($userId >= 0) {
+                    $userInfos = fetchSQLReq($this->db, $this->sql["user"]["basicInfosById"],array(":user_id" => $userId), false, true);
+                    /*$payload = array(
+                        "iss" => "http://api.intellifridge.ovh",
+                        "iat" => time(),
+                        "nbf" => time()+ (120 * 60),
+                        "data" => [
+                            "userId" => $userInfos["UserId"],
+                            "username" => $userInfos["UserPrenom"],
+                            "userlastname" => $userInfos["UserNom"],
+                            "usermail" => $userInfos["UserAdresseMail"],
+                            "userlang" => $userInfos["UserLangue"],
+                        ]
+                    );
+                    $key = "putain";
 
-        if (!empty($post['login']) && !empty($post['password'])) {
+                    $jwt = JWT::encode($payload, $key, "HS256");
+                    */
+                    $responseBody = array(
+                        "status" => "200",
+                        "data" => [
+                            "UserId" => $userInfos["UserId"],
+                            "UserPrenom" => $userInfos["UserPrenom"],
+                            "UserNom" => $userInfos["UserNom"],
+                            "UserAdresseMail" => $userInfos["UserAdresseMail"],
+                            "LangueCode" => $userInfos["LangueCode"],
+                            "ApiKey" => $userInfos["ApiKey"],
+                            "CommuneLocalite" => $userInfos["CommuneLocalite"],
+                            "UserGenre" => $userInfos["UserGenre"],
+                            "LangueCode" => $userInfos["LangueCode"],
+                            "ApiKey" => $userInfos["ApiKey"],
+                        ]
+                    );
 
-            if ($userId = $this->userPasswordVerify($post['login'], $post['password'])) {
-                $userInfos = fetchSQLReq($this->db, $this->sql["user"]["basicInfosById"],array(":user_id" => $userId), false, true);
-                $payload = array(
-                    "iss" => "https://intellifridge.ovh",
-                    "iat" => time(),
-                    "nbf" => time()+ (120 * 60),
-                    "data" => [
-                        "userId" => $userInfos["UserId"],
-                        "username" => $userInfos["UserPrenom"],
-                        "userlastname" => $userInfos["UserNom"],
-                        "usermail" => $userInfos["UserAdresseMail"],
-                        "userlang" => $userInfos["UserLangue"],
-                    ]
-                );
-                $key = "putain";
 
-                $jwt = JWT::encode($payload, $key, "HS256");
-
-                $responseBody = array(
-                    "Authorization"=>"Bearer ".$jwt,
-                    "userId" => $userInfos["UserId"],
-                    "username" => $userInfos["UserPrenom"]." ".$userInfos["UserNom"],
-                    "test" => $userInfos,
-                );
-                $response->getBody()->write(json_encode($responseBody));
-                $response = $response->withHeader('Content-type', 'application/json');
+                } else {
+                    if ($userId == -1){
+                        $responseBody = array(
+                            "status" => "401",
+                            "error" => "user does not exists",
+                            "data" => $post,
+                        );
+                    }elseif ($userId == -2){
+                        $responseBody = array(
+                            "status" => "500",
+                            "error" => "password is incorrect",
+                            "data" => $post,
+                        );
+                    }
+                }
             } else {
-                $response = $response->withStatus(422);
+                //$response = $response->withStatus(400);
                 $responseBody = array(
-                    "Authorization"=>"Bearer ",
-                    "userId" => "ee",
-                    "username" => "rdjei",
+                    "status" => "500",
+                    "error" => "password is incorrect",
+                    "data" => $post,
                 );
-                $response->getBody()->write(json_encode($responseBody));
-            }
-        } else {
-            $response = $response->withStatus(400);
-            //$response->getBody()->write(json_encode(array("error" => "MissingParameter")));
-            $response->getBody()->write(json_encode($post));
+                //$response->getBody()->write(json_encode(array("error" => "MissingParameter")));
 
+
+            }
+        }else{
+            $responseBody = array(
+                "status" => "500",
+                "error" => "JSON TOKEN INCORRECT",
+                "data" => $post,
+            );
         }
 
+        $response->getBody()->write(encodeJWT($responseBody));
+        $response = $response->withHeader('Content-type', 'text/plain');
+        $response = $response->withHeader('Access-Control-Allow-Origin', '*');
         return $response;
     }
     private function userPasswordVerify($login="", $password="") {
         $login = filter_var($login, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         $password = filter_var($password, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-
         $dbPassword = fetchSQLReq($this->db, $this->sql["user"]["passwordByLogin"], array(":user_email" => $login), true, true);
-        if (!$dbPassword) {
-            // User does not exist
-            // TODO Response user not exist 
 
-            return false;
-        } elseif ($password == $dbPassword) {
+        if (!$dbPassword) {
+            //user do not exist
+
+            return -1;
+        }
+        if ($password == $dbPassword) {
             //} elseif (password_verify($password, $dbPassword)) {
             // When passwords will be hashed
-            return fetchSQLReq($this->db, $this->sql["user"]["idFromLogin"], array(":user_email" => $login), true, true);
-        } else {
-            return false;
+
+            $err =fetchSQLReq($this->db, $this->sql["user"]["idFromLogin"], array(":user_email" => $login), true, true);
+            return $err;
+        }else{
+            return -2;
         }
     }
+    public function editProfile(Request $request, Response $response){
+        $post = checkJWT($request->getParam("jwt"));
+        /*
+         * API KEY presence verification
+         */
+        if (!empty($post["ApiKey"])
+            && !empty($post["UserId"])
+            && !empty($post["UserPrenom"])
+            && !empty($post["UserNom"])
+            && !empty($post["CommuneLocalite"])
+            && !empty($post["UserAdresseMail"])){
+            /*
+             * Check API KEY correlation check
+             */
+            if (checkApiKey($this->db,$this->sql,$post["ApiKey"],$post["UserId"])){
+                /*
+                 * SENDING SQL REQUEST
+                 */
+
+                //IF REQUEST
+                if (sendSQLReq($this->db,$this->sql['user']['editProfile'],array(
+                    ":UserId"=>$post['UserId'],
+                    ":UserPrenom"=>$post['UserPrenom'],
+                    ":UserNom"=>$post['UserNom'],
+                    ":CommuneLocalite"=>$post['CommuneLocalite'],
+                    ":UserAdresseMail"=>$post['UserAdresseMail']))){
+
+                    $responseBody = array(
+                        "status"=>"200",
+                    );
+
+                }else {
+                    /*
+                     * GENERIC SQL REQUEST ERROR
+                     */
+                    $responseBody = array(
+                        "status" => "500",
+                        "error" => "unknown error in sql request",
+                        "data" => $post,
+                    );
+                }
+            }
+            else{
+                /*
+                 * API KEY ERROR
+                 */
+                $responseBody = array(
+                    "status"=>"402",
+                    "error" =>"API KEY invalid for this user",
+                );
+            }
+        }else{
+            /*
+             * API KEY MISSING
+             */
+            $responseBody = array(
+                "status"=>"403",
+                "error" =>"API KEY or userId not sent",
+            );
+        }
+
+
+
+        //Return "encapsulation"
+        $response = $response->withHeader('Access-Control-Allow-Origin', '*');
+        $response->getBody()->write(encodeJWT($responseBody));
+        return $response;
+
+    }
+
 
 }
