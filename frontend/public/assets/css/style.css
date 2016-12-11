@@ -525,3 +525,28 @@ a {
 .fridgeList {
   margin-left: 0;
 }
+
+.list-buttons {
+    position: absolute;
+    bottom: 1px;
+    right: 2px;
+    width: 94px;
+    font-size: 1.2em;
+}
+
+.list-buttons a:not(:last-child) {
+    position: relative;
+    left: 38px;
+}
+
+.list-buttons a:not(:first-child) {
+    margin-left: 5px;
+}
+
+.list-buttons a:last-child {
+    margin-left: 15px;
+    color: #ff3131;
+    position: relative;
+    bottom: 39px;
+}
+
