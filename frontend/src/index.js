@@ -649,7 +649,7 @@ class MiddleList extends Component {
 
 		if(this.props.fridge){
 			return (
-				<div id="middle-block fridgeList" className="main-part list-block">
+				<div id="middle-block" className="fridgeList main-part list-block">
 					<h1>{fridgeName}</h1>
 					<FridgeContent fridge={this.props.fridge} />
 					<div id="add-item">
@@ -681,7 +681,7 @@ class MiddleList extends Component {
 			);
 		}else if(this.props.scanType){
 			return (
-				<div id="middle-block" className="main-part list-block">
+				<div id="middle-block" className="scanList main-part list-block">
 					<h1>Scannez votre produit</h1>
 					<span id="scanType" hidden>{this.props.scanType}</span>
 					<form id="addProductToFridge">
@@ -694,7 +694,7 @@ class MiddleList extends Component {
 			);
 		}else if(this.props.productsType){
 			return (
-				<div id="middle-block productList" className="main-part list-block">
+				<div id="middle-block" className="productList main-part list-block">
 					<h1>Liste de produits</h1>
 					<span id="productsType" hidden>{this.props.productsType}</span>
 					<form id="productForm">
@@ -711,7 +711,7 @@ class MiddleList extends Component {
 			);
 		}else{
 			return (
-				<div id="middle-block shoppingList" className="main-part list-block">
+				<div id="middle-block" className="shoppingList main-part list-block">
 					<h1>Ma liste</h1>
 					<ShoppingList />
 					<div id="add-item">
@@ -1161,7 +1161,7 @@ function addEventsScan() {
 			}, apiError);
 		// si il faut retiré le produit scanné d'un frigo
 		}else if(type=="remove"){
-			apiRequest("POST", "products/removeOneFromFridge", {ProduitSId:barcode, FrigoId : $("#fridgesSelect").val()})
+			apiRequest("POST", "products/removeOneFromFridge", {ProduitSId:barcode, FrigoId : $("#fridgesSelect").val()});
 
 			request("GET", "http://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
 				//ProduitSId, ProduitSNom, ProduitSMarque, FrigoNom, ProduitImageUrl, ListeNote, Contenance
@@ -1384,7 +1384,7 @@ function addEventsProductsList(){
 		var fridgeNam = $("#fridgesSelect option:selected").html();
 		if(action=="remove"){
 			//TODO add to list popup
-			//TODO attendre que sof fasse la fonction (products/removeFromFridge ou products/setQuantity)
+			apiRequest("POST", "products/removeFromFridge", {ProduitSId:productId, FrigoId : fridgeNam});
 			console.log("I must remove " + productId + " from fridge : "+fridgeNam);
 		}else if(action=="plus"){
 			if($(this.closest("li")).children("#quantite").html()==0){
