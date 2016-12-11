@@ -293,7 +293,6 @@ class Fridge extends Component {
 
 class MiddleHome extends Component {
 	componentDidMount(){
-		addFridgeAdd();
 	}
 	render() {
 
@@ -316,12 +315,12 @@ class MiddleHome extends Component {
 					<a id="add-fridge" href="#" onClick={preventDefault}><img src="/assets/images/dark-red/plus-button.svg" onClick={() => this.refs.popupAddFridge.show()}/></a>
 					<Link to="/settings"><img src="/assets/images/dark-red/gear-button.svg"/></Link>
 				</div>
-				<SkyLight hideOnOverlayClicked dialogStyles={addFridgePopupStyle} ref="popupAddFridge" id="send-method-popup" className="popup">
+				<SkyLight hideOnOverlayClicked dialogStyles={addFridgePopupStyle} ref="popupAddFridge" id="add-fridge-popup" className="popup">
 					<div className="send-fields">
 						<div>
 							<form id="addFridgeForm" onSubmit={addFridgeAdd}>
 								<input type="text" name="new-fridge-name" placeholder="nom du frigo"/>
-								<a id="addfridgebutton" href="#" onClick={addFridgeAdd} ><img src="/assets/images/dark-red/go-button.svg"/></a>
+								<a id="addfridgebutton" href="#" onClick={$("form").submit()} ><img src="/assets/images/dark-red/go-button.svg"/></a>
 							</form>
 						</div>
 					</div>
@@ -388,8 +387,8 @@ class FridgeContent extends Component {
 			}, function(an){
 				console.log(an);
 				if(an.status==201){
-					list = "Frigo Vide.";
-					this.render();
+					$("#list").html("<li></li>");
+					$("#list").append("<li>Frigo Vide</li>");
 				}else{
 					list = "Erreur d'API";
 					this.render();
@@ -650,7 +649,7 @@ class MiddleList extends Component {
 
 		if(this.props.fridge){
 			return (
-				<div id="middle-block" className="main-part list-block">
+				<div id="middle-block fridgeList" className="main-part list-block">
 					<h1>{fridgeName}</h1>
 					<FridgeContent fridge={this.props.fridge} />
 					<div id="add-item">
@@ -695,7 +694,7 @@ class MiddleList extends Component {
 			);
 		}else if(this.props.productsType){
 			return (
-				<div id="middle-block" className="main-part list-block">
+				<div id="middle-block productList" className="main-part list-block">
 					<h1>Liste de produits</h1>
 					<span id="productsType" hidden>{this.props.productsType}</span>
 					<form id="productForm">
@@ -712,7 +711,7 @@ class MiddleList extends Component {
 			);
 		}else{
 			return (
-				<div id="middle-block" className="main-part list-block">
+				<div id="middle-block shoppingList" className="main-part list-block">
 					<h1>Ma liste</h1>
 					<ShoppingList />
 					<div id="add-item">
@@ -948,9 +947,8 @@ function addFridgeAdd(t){
 	//TODO fermer le popup une fois le frigo ajouté
 	t.preventDefault();
 	var fridgeName = $("form input").val();
-	apiRequest("POST", "fridges/add", {FrigoNom : fridgeName}, function (an) {
+	apiRequest("POST", "fridges/add", {FrigoNom : fridgeName}, function () {
 		$("form input").val("");
-		render();
 	}, function (an) {
 		render();
 	});
@@ -978,7 +976,6 @@ function removeFridge(id){
  * Ajoute les evenements liés à la page d'un frigo permettant de faire + - et x
  */
 function addEventsFridgeContent(){
-	//TODO ajouter les requètes API correspondantes
 	$("#list a i").on("click", function (e) {
 		e.preventDefault();
 		var action=$(this).attr("class").split(" ")[0];
@@ -1147,7 +1144,7 @@ function addEventsScan() {
 					console.log(JSON.stringify(product));
 
 					apiRequest("POST", "products/add", product, function(an){
-						$("#list").append("<li><img src='"+product.ProduitImageUrl+"' alt='"+product.ProduitSNom+"'>"+product.ProduitSMarque + " - " +
+						$("#list").append("<li>"+product.ProduitSMarque + " - " +
 							product.ProduitSNom + " - " +
 							product.Contenance +" : Ajouté au frigo "+ product.FrigoNom +"</li>");
 						$("#ProductId").val("");
@@ -1225,7 +1222,7 @@ function addEventsScan() {
 					}
 					//TODO add to list popup si = 0 (sof renvoie 0?)
 					apiRequest("POST", "products/removeOneFromFridge", {ProduitSId:barcode, FrigoId : $("#fridgesSelect").val()}, function(an){
-						$("#list").append("<li><img src='"+product.ProduitImageUrl+"' alt='"+product.ProduitSNom+"'>"+product.ProduitSMarque + " - " +
+						$("#list").append("<li>"+product.ProduitSMarque + " - " +
 							product.ProduitSNom + " - " +
 							product.Contenance +" : Retiré du frigo "+ $("#fridgesSelect option:selected").html() +"</li>");
 						$("#ProductId").val("");
@@ -1304,7 +1301,7 @@ function addEventsScan() {
 					console.log(JSON.stringify(product));
 
 					apiRequest("POST", "list/addProduct", product, function(an){
-						$("#list").append("<li><img src='"+product.ProduitImageUrl+"' alt='"+product.ProduitSNom+"'>"+product.ProduitSMarque + " - " +
+						$("#list").append("<li>"+product.ProduitSMarque + " - " +
 							product.ProduitSNom + " - " +
 							product.Contenance +" : Ajouté à votre liste de course</li>");
 						$("#ProductId").val("");
@@ -1451,23 +1448,40 @@ function productAddQuantite(){
 }
 function listFridgeContent(){
 	$("#list").html("<li></li>");
+	if(list.length==0){
+		$("#list").append("<li>Frigo Vide</li>");
+	}
 	var html = list.map(function(v, i, t){
 		//TODO Error + - and x not showing
 		$("#list").append("<li id="+t[i].ProduitId+"><span className='ProduitNom'>"+t[i].ProduitNom+"</span> - <span className='Quantite'>"+t[i].Quantite+"</span> - <span	className='DateAjout'>"+t[i].DateAjout+"</span><a href='#'><i className='minus fa fa-minus' aria-hidden='true'></i></a><a href='#'><i className='plus fa fa-plus' aria-hidden='true'></i></a><a href='#'><i className='remove fa fa-times' aria-hidden='true'></i></a></li>");
 	});
 }
-function productsContent(){
+async function productsContent(){
 	//TODO Make the function below work (display elements by myself)
 	//TODO Find a way to know when its finished (list.length%20?)
 	list = [];
-	function getContent(j){
-		apiRequest("POST", "products/getProductNS", {offset : j}, function(an){
-			list = list.concat(an);
-		}, apiError);
-	}
+	//var ok = 0;
+	//var j = 0;
+	//while(ok==0){
+	//	apiRequest("POST", "products/getProductNS", {offset : j}, function(an){
+	//		list = list.concat(an);
+	//	}, apiError);
+	//	await sleep(2000);
+	//	console.log(list.length%30);
+	//	if(list.length%30!=0){
+	//		ok = 1;
+	//	}
+	//	j++;
+	//}
+	apiRequest("POST", "products/getProductNS", {offset : 1}, function(an){
+		list = list.concat(an);
+	}, apiError);
+	await sleep(2000);
 	for(var i = 0;i<list.length;i++){
-		console.log("ok");
 		$("#list").append("<li>ok</li>");
 	}
+}
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
 //TODO Fonction pour envoyer liste de courses par mail
