@@ -591,9 +591,11 @@ class ListElem extends Component {
 					<span className='Quantite'>{this.props.componentData.Quantite}</span>
 					<span className='DateAjout'>{this.props.componentData.DateAjout}</span>
 					<span className='Note'>{this.props.componentData.Note}</span>
-					<a href="#"><i className="minus fa fa-minus" aria-hidden="true"></i></a>
-					<a href="#"><i className="plus fa fa-plus" aria-hidden="true"></i></a>
-					<a href="#"><i className="remove fa fa-times" aria-hidden="true"></i></a>
+					<div className="list-buttons">
+						<a href="#"><i className="minus fa fa-minus" aria-hidden="true"></i></a>
+						<a href="#"><i className="plus fa fa-plus" aria-hidden="true"></i></a>
+						<a href="#"><i className="remove fa fa-times" aria-hidden="true"></i></a>
+					</div>
 				</li>
 			);
 		}else if(this.props.products){
@@ -603,9 +605,11 @@ class ListElem extends Component {
 					<span id='quantite'>0</span>
 					{/*TODO ajouter la photo de l'aliment quand c'est possible
 					<img src="" alt={"Photo "+this.props.componentData.ProduitNSNomFR} />*/}
-					<a href="#"><i className="minus fa fa-minus" aria-hidden="true"></i></a>
-					<a href="#"><i className="plus fa fa-plus" aria-hidden="true"></i></a>
-					<a href="#"><i className="remove fa fa-times" aria-hidden="true"></i></a>
+					<div className="list-buttons">
+						<a href="#"><i className="minus fa fa-minus" aria-hidden="true"></i></a>
+						<a href="#"><i className="plus fa fa-plus" aria-hidden="true"></i></a>
+						<a href="#"><i className="remove fa fa-times" aria-hidden="true"></i></a>
+					</div>
 				</li>
 
 			);
@@ -615,9 +619,11 @@ class ListElem extends Component {
 					<span className="ProduitNom">{this.props.componentData.ProduitNom}</span>
 					<span className='Quantite'>{this.props.componentData.Quantite}</span>
 					<span className='DateAjout'>{this.props.componentData.DateAjout}</span>
-					<a href="#"><i className="minus fa fa-minus" aria-hidden="true"></i></a>
-					<a href="#"><i className="plus fa fa-plus" aria-hidden="true"></i></a>
-					<a href="#"><i className="remove fa fa-times" aria-hidden="true"></i></a>
+					<div className="list-buttons">
+						<a href="#"><i className="minus fa fa-minus" aria-hidden="true"></i></a>
+						<a href="#"><i className="plus fa fa-plus" aria-hidden="true"></i></a>
+						<a href="#"><i className="remove fa fa-times" aria-hidden="true"></i></a>
+					</div>
 				</li>
 
 			);
@@ -633,6 +639,7 @@ class MiddleList extends Component {
 		$("#add-to-list").on("click", function (e) {
 			e.preventDefault();
 		});
+		console.log(this.refs.popupAddItems);
 	}
 	render() {
 		var itemsInOutPopupStyle = {
@@ -651,11 +658,25 @@ class MiddleList extends Component {
 			return (
 				<div id="middle-block" className="fridgeList main-part list-block">
 					<h1>{fridgeName}</h1>
+					<span id="fridge-id" hidden>{this.props.fridge}</span>
 					<FridgeContent fridge={this.props.fridge} />
 					<div id="add-item">
 						<div id="mask"></div>
 						<a  onClick={() => this.refs.popupAddItems.show()}><img src="/assets/images/dark-red/plus-button.svg"/></a>
 					</div>
+					<SkyLight hideOnOverlayClicked dialogStyles={itemsInOutPopupStyle} ref="popupAddList" id="addtolist-popup" className="popup">
+						<h1>Vider la liste ?</h1>
+						<div id="confirm-buttons">
+							<a onClick={removeList} href="#">
+								<img src="/assets/images/dark-red/confirm-button.svg"/>
+							</a>
+						</div>
+						<div id="cancel-buttons">
+							<a onClick={() => this.refs.popupAddItems.hide()} href="#">
+								<img src="/assets/images/dark-red/x-button.svg"/>
+							</a>
+						</div>
+					</SkyLight>
 					 <SkyLight hideOnOverlayClicked dialogStyles={itemsInOutPopupStyle} ref="popupAddItems" id="add-items-popup" className="popup items-in-out">
 						 <h1>Comment ?</h1>
 						 <div className="methods-buttons">
@@ -683,6 +704,7 @@ class MiddleList extends Component {
 			return (
 				<div id="middle-block" className="scanList main-part list-block">
 					<h1>Scannez votre produit</h1>
+					<h2></h2>
 					<span id="scanType" hidden>{this.props.scanType}</span>
 					<form id="addProductToFridge">
 						<select name="fridgesSelect" id="fridgesSelect"></select><br/>
@@ -714,7 +736,7 @@ class MiddleList extends Component {
 				<div id="middle-block" className="shoppingList main-part list-block">
 					<h1>Ma liste</h1>
 					<ShoppingList />
-					{/*<div id="add-item">
+					<div id="add-item">
 						<div id="mask"></div>
 						<a href="#" id="add-to-list" onClick={() => this.refs.popupAddItems.show()}><img src="/assets/images/dark-red/plus-button.svg"/></a>
 					</div>
@@ -734,7 +756,7 @@ class MiddleList extends Component {
 							</span>
 							</Link>
 						</div>
-					</SkyLight>*/}
+					</SkyLight>
 				</div>
 			);
 		}
@@ -822,7 +844,7 @@ var product = {ProduitSId : null, ProduitSNom : null,ProduitSMarque : null, Frig
  * Permet d'aller chercher les variables de session nécessaires
  * TODO when build remettre les vraies variables de session
  */
-request("GET", "http://app.intellifridge.ovh/app/getSession.php", "", storeApiDatas, apiError);
+request("GET", "https://app.intellifridge.ovh/app/getRealSession.php", "", storeApiDatas, apiError);
 /**
  * lance le rendu de l'application
  */
@@ -873,7 +895,7 @@ function apiSuccess(an){
 /**
  * Permet de faire une requète vers l'API d'IntelliFridge
  * @param type type de requète. Ex : GET, POST etc
- * @param url Fin de l'URL http://api.intellifridge.ovh/v1/ pour avoir accès aux informations souhaitées
+ * @param url Fin de l'URL https://api.intellifridge.ovh/v1/ pour avoir accès aux informations souhaitées
  * @param data Données envoyées pour la requète (viendra s'ajouter ApiKey et UserId automatiquement)
  * @param fs Fonction lancée si la requète réussi
  * @param fe Fonction lancée si la requète ne réussit pas
@@ -889,7 +911,7 @@ function apiRequest(type, url, data, fs, fe){
 	console.log("Requète API : \n"+type+"\n"+url+"\n"+sData);
 	var sJWT = {jwt:jwt.sign(sData, "wAMxBauED07a4GurMpuD", {header:{alg: 'HS256', typ: 'JWT'}})};
 	//console.log(sJWT);
-	request(type, "http://api.intellifridge.ovh/v1/"+url, sJWT, function(an){
+	request(type, "https://api.intellifridge.ovh/v1/"+url, sJWT, function(an){
 		var decoded = jwt.decode(an, {complete: true});
 		console.log("Réponse : \n"+an+"\nDécodée : \n"+JSON.stringify(decoded));
 		if(decoded==null){
@@ -983,10 +1005,15 @@ function addEventsFridgeContent(){
 		if(action=="remove"){
 			//TODO add to list popup
 			//TODO attendre que sof fasse la fonction (products/removeFromFridge ou products/setQuantity)
-			console.log("I must remove " + productId + " from fridge : "+fridgeNam);
+			apiRequest("POST", "products/removeFromFridge", {ProductSId : $(this.closest("li")).attr("id"), FrigoId: $("#fridge-id").html()}, function (an) {
+				$(this.closest("li")).remove();
+			}, function (an) {
+				alert("Erreur : \n"+JSON.stringify(an));
+			});
+			console.log("I must remove " + productId + " from fridge : "+$("#fridge-id").html());
 		}else if(action=="plus"){
 			//TODO resolve Unknown error in SQL with Sof
-			apiRequest("POST", "fridges/plusOneProduct", {ProductSId : $(this.closest("li")).attr("id"), FrigoId: $("select").val()}, function (an) {
+			apiRequest("POST", "fridges/plusOneProduct", {ProductSId : $(this.closest("li")).attr("id"), FrigoId: $("#fridge-id").html()}, function (an) {
 				$(this.closest("li")).children("#quantite").html(parseInt($(this.closest("li")).children("#quantite").html())+1);
 			}, function (an) {
 				alert("Erreur : \n"+JSON.stringify(an));
@@ -994,14 +1021,14 @@ function addEventsFridgeContent(){
 		}else if(action=="minus"){
 			//TODO add to list popup si = 0 apres click
 			//TODO resolve Unknown error in SQL with Sof
-			if($(this.closest("li")).children("#quantite").html()!=0){
-				apiRequest("POST", "fridges/minusOneProduct", {ProductSId : $(this.closest("li")).attr("id"), FrigoId: $("#fridgesSelect").val()}, function (an) {
-					$("#"+productId+" quantite").html(0);
+				apiRequest("POST", "fridges/minusOneProduct", {ProductSId : $(this.closest("li")).attr("id"), FrigoId: $("#fridge-id").html()}, function (an) {
 					$(this.closest("li")).children("#quantite").html(parseInt($(this.closest("li")).children("#quantite").html())-1);
+					if(parseInt($(this.closest("li")).children("#quantite").html())==0){
+						$(this.closest("li")).remove();
+					}
 				}, function (an) {
 					alert("Erreur : \n"+JSON.stringify(an));
 				})
-			}
 		}else{
 			console.log("No behavior set for this action : "+action);
 		}
@@ -1071,6 +1098,17 @@ function addEventsScan() {
 		e.preventDefault();
 		$("form").submit();
 	});
+	var type = $("#scanType").html();
+	if(type=="add"){
+		$("h2").html("Pour l'ajouter à un frigo");
+		$("h2").attr("class", "subt")
+	}else if(type=="remove"){
+		$("h2").html("Pour le retirer d'un frigo");
+		$("h2").attr("class", "subt")
+	}else if(type=="list") {
+		$("h2").html("pour l'ajouter à votre liste de course");//@here
+		$("h2").attr("class", "subt")
+	}
 	//Rempli le select avec les frigos de l'utilisateur
 	handleFridgeSelect();
 	$("form").on("submit", function (e) {
@@ -1084,7 +1122,7 @@ function addEventsScan() {
 		// si il faut ajouter le produit scanné à un frigo
 		if(type=="add"){
 			//Requète vers openfoodfact
-			request("GET", "http://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
+			request("GET", "https://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
 				//ProduitSId, ProduitSNom, ProduitSMarque, FrigoNom, ProduitImageUrl, ListeNote, Contenance
 				//3179732333919
 				var OFF = JSON.parse(an);
@@ -1100,29 +1138,30 @@ function addEventsScan() {
 					if(product.ProduitSMarque == ""){
 						OFFUncomplete("ProduitSMarque");
 					}
-					if(product.ProduitSNom  == ""){
+					if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 						product.ProduitSNom = OFF.product.product_name;
-						if(product.ProduitSNom  == ""){
+						if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 							product.ProduitSNom = OFF.product.product_name_fr;
-							if(product.ProduitSNom  == ""){
+							if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 								product.ProduitSNom = OFF.product.generic_name_fr;
-								if(product.ProduitSNom  == ""){
+								if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 									OFFUncomplete("ProduitSNom");
 								}
 							}
 						}
 					}
-					if(product.ProduitImageUrl == ""){
+					console.log("Nom : "+product.ProduitSNom);
+					if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 						product.ProduitImageUrl = image_front_small_url;
-						if(product.ProduitImageUrl == ""){
+						if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 							product.ProduitImageUrl = image_front_thumb_url;
-							if(product.ProduitImageUrl == ""){
+							if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 								product.ProduitImageUrl = image_front_url;
-								if(product.ProduitImageUrl == ""){
+								if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 									product.ProduitImageUrl = image_small_url;
-									if(product.ProduitImageUrl == ""){
+									if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 										product.ProduitImageUrl = image_thumb_url;
-										if(product.ProduitImageUrl == ""){
+										if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 											OFFUncomplete("ProduitImageUrl");
 										}
 									}
@@ -1134,7 +1173,7 @@ function addEventsScan() {
 						OFFUncomplete("Contenance");
 					}
 					function OFFUncomplete(missing){
-						$("#list").append("<li>Informations OFF pas complètes ("+missing+") : "+barcode+"<br/>N'hésitez pas à aller <a href='http://fr.openfoodfacts.org/comment-ajouter-un-produit'>Ajouter les informations manquantes dans la base de données</a></li>");
+						$("#list").append("<li>Informations OFF pas complètes ("+missing+") : "+barcode+"<br/>N'hésitez pas à aller <a href='https://fr.openfoodfacts.org/comment-ajouter-un-produit'>Ajouter les informations manquantes dans la base de données</a></li>");
 						status=-1;
 					}
 					if(status==-1){
@@ -1154,7 +1193,7 @@ function addEventsScan() {
 					});
 					product = {ProduitSId : null, ProduitSNom : null,ProduitSMarque : null, FrigoNom : null,ProduitImageUrl : null,ListeNote : null,Contenance : null };
 				}else{
-					$("#list").append("<li>Produit non trouvé : "+barcode+"<br/>N'hésitez pas à aller l'<a href='http://fr.openfoodfacts.org/comment-ajouter-un-produit'>ajouter dans la base de données</a></li>");
+					$("#list").append("<li>Produit non trouvé : "+barcode+"<br/>N'hésitez pas à aller l'<a href='https://fr.openfoodfacts.org/comment-ajouter-un-produit'>ajouter dans la base de données</a></li>");
 					$("#ProductId").val("");
 					$("#ProductId").focus();
 				}
@@ -1163,7 +1202,7 @@ function addEventsScan() {
 		}else if(type=="remove"){
 			apiRequest("POST", "products/removeOneFromFridge", {ProduitSId:barcode, FrigoId : $("#fridgesSelect").val()});
 
-			request("GET", "http://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
+			request("GET", "https://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
 				//ProduitSId, ProduitSNom, ProduitSMarque, FrigoNom, ProduitImageUrl, ListeNote, Contenance
 				//3179732333919
 				var OFF = JSON.parse(an);
@@ -1179,29 +1218,30 @@ function addEventsScan() {
 					if(product.ProduitSMarque == ""){
 						OFFUncomplete("ProduitSMarque");
 					}
-					if(product.ProduitSNom  == ""){
+					if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 						product.ProduitSNom = OFF.product.product_name;
-						if(product.ProduitSNom  == ""){
+						if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 							product.ProduitSNom = OFF.product.product_name_fr;
-							if(product.ProduitSNom  == ""){
+							if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 								product.ProduitSNom = OFF.product.generic_name_fr;
-								if(product.ProduitSNom  == ""){
+								if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 									OFFUncomplete("ProduitSNom");
 								}
 							}
 						}
 					}
-					if(product.ProduitImageUrl == ""){
+					console.log("Nom : "+product.ProduitSNom);
+					if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 						product.ProduitImageUrl = image_front_small_url;
-						if(product.ProduitImageUrl == ""){
+						if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 							product.ProduitImageUrl = image_front_thumb_url;
-							if(product.ProduitImageUrl == ""){
+							if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 								product.ProduitImageUrl = image_front_url;
-								if(product.ProduitImageUrl == ""){
+								if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 									product.ProduitImageUrl = image_small_url;
-									if(product.ProduitImageUrl == ""){
+									if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 										product.ProduitImageUrl = image_thumb_url;
-										if(product.ProduitImageUrl == ""){
+										if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 											OFFUncomplete("ProduitImageUrl");
 										}
 									}
@@ -1213,7 +1253,7 @@ function addEventsScan() {
 						OFFUncomplete("Contenance");
 					}
 					function OFFUncomplete(missing){
-						$("#list").append("<li>Informations OFF pas complètes ("+missing+") : "+barcode+"<br/>N'hésitez pas à aller <a href='http://fr.openfoodfacts.org/comment-ajouter-un-produit'>Ajouter les informations manquantes dans la base de données</a></li>");
+						$("#list").append("<li>Informations OFF pas complètes ("+missing+") : "+barcode+"<br/>N'hésitez pas à aller <a href='https://fr.openfoodfacts.org/comment-ajouter-un-produit'>Ajouter les informations manquantes dans la base de données</a></li>");
 						status=-1;
 					}
 					if(status==-1){
@@ -1232,14 +1272,15 @@ function addEventsScan() {
 					});
 					product = {ProduitSId : null, ProduitSNom : null,ProduitSMarque : null, FrigoNom : null,ProduitImageUrl : null,ListeNote : null,Contenance : null };
 				}else{
-					$("#list").append("<li>Produit non trouvé : "+barcode+"<br/>N'hésitez pas à aller l'<a href='http://fr.openfoodfacts.org/comment-ajouter-un-produit'>ajouter dans la base de données</a></li>");
+					$("#list").append("<li>Produit non trouvé : "+barcode+"<br/>N'hésitez pas à aller l'<a href='https://fr.openfoodfacts.org/comment-ajouter-un-produit'>ajouter dans la base de données</a></li>");
 					$("#ProductId").val("");
 					$("#ProductId").focus();
 				}
 			}, apiError);
 		// si il faut ajouter le produit scanné à la liste de course
 		}else if(type=="list"){
-			request("GET", "http://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
+			console.log("whut");
+			request("GET", "https://fr.openfoodfacts.org/api/v0/product/" + barcode + ".json", null, function (an) {
 				//ProduitSId, ProduitSNom, ProduitSMarque, FrigoNom, ProduitImageUrl, ListeNote, Contenance
 				//3179732333919
 				var OFF = JSON.parse(an);
@@ -1255,29 +1296,30 @@ function addEventsScan() {
 					if(product.ProduitSMarque == ""){
 						OFFUncomplete("ProduitSMarque");
 					}
-					if(product.ProduitSNom  == ""){
+					if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 						product.ProduitSNom = OFF.product.product_name;
-						if(product.ProduitSNom  == ""){
+						if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 							product.ProduitSNom = OFF.product.product_name_fr;
-							if(product.ProduitSNom  == ""){
+							if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 								product.ProduitSNom = OFF.product.generic_name_fr;
-								if(product.ProduitSNom  == ""){
+								if(product.ProduitSNom  == "" || product.ProduitSNom == undefined){
 									OFFUncomplete("ProduitSNom");
 								}
 							}
 						}
 					}
-					if(product.ProduitImageUrl == ""){
+					console.log("Nom : "+product.ProduitSNom);
+					if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 						product.ProduitImageUrl = image_front_small_url;
-						if(product.ProduitImageUrl == ""){
+						if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 							product.ProduitImageUrl = image_front_thumb_url;
-							if(product.ProduitImageUrl == ""){
+							if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 								product.ProduitImageUrl = image_front_url;
-								if(product.ProduitImageUrl == ""){
+								if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 									product.ProduitImageUrl = image_small_url;
-									if(product.ProduitImageUrl == ""){
+									if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 										product.ProduitImageUrl = image_thumb_url;
-										if(product.ProduitImageUrl == ""){
+										if(product.ProduitImageUrl == ""|| product.ProduitImageUrl == undefined){
 											OFFUncomplete("ProduitImageUrl");
 										}
 									}
@@ -1289,7 +1331,7 @@ function addEventsScan() {
 						OFFUncomplete("Contenance");
 					}
 					function OFFUncomplete(missing){
-						$("#list").append("<li>Informations OFF pas complètes ("+missing+") : "+barcode+"<br/>N'hésitez pas à aller <a href='http://fr.openfoodfacts.org/comment-ajouter-un-produit'>Ajouter les informations manquantes dans la base de données</a></li>");
+						$("#list").append("<li>Informations OFF pas complètes ("+missing+") : "+barcode+"<br/>N'hésitez pas à aller <a href='https://fr.openfoodfacts.org/comment-ajouter-un-produit'>Ajouter les informations manquantes dans la base de données</a></li>");
 						status=-1;
 					}
 					if(status==-1){
@@ -1311,7 +1353,7 @@ function addEventsScan() {
 					});
 					product = {ProduitSId : null, ProduitSNom : null,ProduitSMarque : null, FrigoNom : null,ProduitImageUrl : null,ListeNote : null,Contenance : null };
 				}else{
-					$("#list").append("<li>Produit non trouvé : "+barcode+"<br/>N'hésitez pas à aller l'<a href='http://fr.openfoodfacts.org/comment-ajouter-un-produit'>ajouter dans la base de données</a></li>");
+					$("#list").append("<li>Produit non trouvé : "+barcode+"<br/>N'hésitez pas à aller l'<a href='https://fr.openfoodfacts.org/comment-ajouter-un-produit'>ajouter dans la base de données</a></li>");
 					$("#ProductId").val("");
 					$("#ProductId").focus();
 				}
@@ -1377,26 +1419,38 @@ function addEventsProductsList(){
 	});
 	handleFridgeSelect("products");
 	//Ajoute les actions sur les + - et x pour gérer les produits NS
-	$("#list a i").on("click", function (e) {
+	$(".productList #list a i").on("click", function (e) {
 		e.preventDefault();
 		var action=$(this).attr("class").split(" ")[0];
 		var productId = this.closest("li").id;
 		var fridgeNam = $("#fridgesSelect option:selected").html();
+		console.log("product");
 		if(action=="remove"){
 			//TODO add to list popup
 			apiRequest("POST", "products/removeFromFridge", {ProduitSId:productId, FrigoId : fridgeNam});
-			console.log("I must remove " + productId + " from fridge : "+fridgeNam);
 		}else if(action=="plus"){
 			if($(this.closest("li")).children("#quantite").html()==0){
 				// TODO resolve Unknown error in SQL with Sof
-				apiRequest("POST", "products/addNS", {ProduitSId : $(this.closest("li")).attr("id"), ProduitSNom : $(this.closest("li")).children(".ProduitNSNom").html(), FrigoId: $("select").val()}, function (an) {
-					$(this.closest("li")).children("#quantite").html(parseInt($(this.closest("li")).children("#quantite").html())+1);
+
+				product.ProduitSId = productId;
+				product.FrigoNom = fridgeNam;
+				product.ProduitSMarque = $(this.closest("li")).children(".ProduitNSNom").html();
+				product.ProduitSNom = $(this.closest("li")).children(".ProduitNSNom").html();
+				product.ProduitImageUrl = "ok";
+				product.Contenance = "ok";
+				apiRequest("POST", "products/add", product, function(an){
+					$("#list").append("<li>"+product.ProduitSMarque + " - " +
+						product.ProduitSNom + " - " +
+						product.Contenance +" : Ajouté au frigo "+ product.FrigoNom +"</li>");
+					$("#ProductId").val("");
+					$("#ProductId").focus();
 				}, function (an) {
-					alert("Erreur : \n"+JSON.stringify(an));
+					console.log("Erreur : \n"+JSON.stringify(an));
 				});
+				product = {ProduitSId : null, ProduitSNom : null,ProduitSMarque : null, FrigoNom : null,ProduitImageUrl : null,ListeNote : null,Contenance : null };
 			}else{
 				//TODO resolve Unknown error in SQL with Sof
-				apiRequest("POST", "fridges/plusOneProduct", {ProductSId : $(this.closest("li")).attr("id"), FrigoId: $("select").val()}, function (an) {
+				apiRequest("POST", "fridges/plusOneProduct", {ProductSId : $(this.closest("li")).attr("id"), FrigoId: $("#fridgesSelect").val()}, function (an) {
 					$(this.closest("li")).children("#quantite").html(parseInt($(this.closest("li")).children("#quantite").html())+1);
 				}, function (an) {
 					alert("Erreur : \n"+JSON.stringify(an));
@@ -1412,6 +1466,9 @@ function addEventsProductsList(){
 				}, function (an) {
 					alert("Erreur : \n"+JSON.stringify(an));
 				})
+				if($(this.closest("li")).children("#quantite").html()==0){
+					//TODO display popup
+				}
 			}
 		}else{
 			console.log("No behavior set for this action : "+action);
@@ -1452,34 +1509,29 @@ function listFridgeContent(){
 		$("#list").append("<li>Frigo Vide</li>");
 	}
 	var html = list.map(function(v, i, t){
-		//TODO Error + - and x not showing
-		$("#list").append("<li id="+t[i].ProduitId+"><span className='ProduitNom'>"+t[i].ProduitNom+"</span><span className='Quantite'>"+t[i].Quantite+"</span><span className='DateAjout'>"+t[i].DateAjout+"</span><a href='#'><i className='minus fa fa-minus' aria-hidden='true'></i></a><a href='#'><i className='plus fa fa-plus' aria-hidden='true'></i></a><a href='#'><i className='remove fa fa-times' aria-hidden='true'></i></a></li>");
+		$("#list").append("<li id="+t[i].ProduitId+"><span class='ProduitNom'>"+t[i].ProduitNom+"</span><span class='Quantite'>"+t[i].Quantite+"</span><span class='DateAjout'>"+t[i].DateAjout+"</span><div class='list-buttons'><a href='#'><i class='minus fa fa-minus' aria-hidden='true'></i></a><a href='#'><i class='plus fa fa-plus' aria-hidden='true'></i></a><a href='#'><i class='remove fa fa-times' aria-hidden='true'></i></a></div></li>");
 	});
 }
 async function productsContent(){
 	//TODO Make the function below work (display elements by myself)
 	//TODO Find a way to know when its finished (list.length%20?)
 	list = [];
-	//var ok = 0;
-	//var j = 0;
-	//while(ok==0){
-	//	apiRequest("POST", "products/getProductNS", {offset : j}, function(an){
-	//		list = list.concat(an);
-	//	}, apiError);
-	//	await sleep(2000);
-	//	console.log(list.length%30);
-	//	if(list.length%30!=0){
-	//		ok = 1;
-	//	}
-	//	j++;
-	//}
-	apiRequest("POST", "products/getProductNS", {offset : 1}, function(an){
-		list = list.concat(an);
-	}, apiError);
-	await sleep(2000);
-	for(var i = 0;i<list.length;i++){
-		$("#list").append("<li>ok</li>");
+	var ok = 0;
+	var j = 0;
+	while(ok==0){
+		apiRequest("POST", "products/getProductNS", {offset : j}, function(an){
+			list = list.concat(an);
+		}, apiError);
+		console.log(list.length%20);
+		if(list.length%20!=0){
+			ok = 1;
+		}
+		j++;
 	}
+	for(var i = 0;i<list.length;i++){
+		$("#list").append("<li id="+list[i].ProduitNSId+"><span class=\"ProduitNSNom\">"+list[i].ProduitNSNomFR+"</span><span id='quantite'>0</span><div class=\"list-buttons\"><a href=\"#\"><i class=\"minus fa fa-minus\" aria-hidden=\"true\"></i></a><a href=\"#\"><i class=\"plus fa fa-plus\" aria-hidden=\"true\"></i></a><a href=\"#\"><i class=\"remove fa fa-times\" aria-hidden=\"true\"></i></a></div></li>");
+	}
+	productAddQuantite();
 }
 function sleep(ms) {
 	return new Promise(resolve => setTimeout(resolve, ms));
