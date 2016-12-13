@@ -550,3 +550,9 @@ a {
     bottom: 39px;
 }
 
+h2.subt {
+  font-size: 1.2em;
+  text-align: center;
+  color: #000000;
+  text-shadow: 0 1px #0d0d0d;
+}
