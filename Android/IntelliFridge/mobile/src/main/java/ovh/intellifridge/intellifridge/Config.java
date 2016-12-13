@@ -98,6 +98,8 @@ public class Config {
     public static final String PRODUCT_ID = "ProduitId";
     public static final String LIST_NOTE_DB = "ListeNote";
     public static final String DATE_AJOUT_DB = "DateAjout";
+    public static final String PRODUCT_NS_NAME_FR_DB = "ProduitNSNomFR";
+    public static final String PRODUCT_NS_TYPE_DB = "ProduitNSType";
 
 
     public static final String LOGIN_REGISTER_EXTRA= "new_user_email";

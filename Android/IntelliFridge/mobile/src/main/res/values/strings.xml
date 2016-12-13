@@ -13,7 +13,7 @@
     <!-- Fetch product info  -->
     <string name="pdMessage">Fetching product information…</string>
     <string name="productNameTitle">Product</string>
-    <string name="productQuantityTitle">Quantity</string>
+    <string name="productQuantityTitle">Capacity</string>
     <string name="BrandsLabel">Brand</string>
     <string name="categoryLabel">Category</string>
     <string name="IngredientsLabel">Ingredients</string>
@@ -178,5 +178,6 @@
     <string name="download_notif_btn">Download</string>
     <string name="download_notif_big">There are some brand new functionalities! Download the update, to try them!</string>
     <string name="download_update">Download update</string>
-    <string name="download_update_progress">Downloading update...</string>
+    <string name="download_update_progress">Downloading update…</string>
+    <string name="up_to_date">Up-to-date</string>
 </resources>

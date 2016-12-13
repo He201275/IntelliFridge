@@ -24,7 +24,7 @@
     <string name="navigation_drawer_open">Ouvrir panneau de navigation</string>
     <string name="pdMessage">Récupération des infos…</string>
     <string name="productNameTitle">Produit</string>
-    <string name="productQuantityTitle">Quantité</string>
+    <string name="productQuantityTitle">Contenance</string>
     <string name="scan_error">Erreur du scan!</string>
     <string name="scanner_prompt">Scanner le code barre</string>
     <string name="section_format">Section: %1$d</string>
@@ -116,4 +116,6 @@
     <string name="download_notif_btn">Télécharger</string>
     <string name="download_notif_big">De nouvelles fonctionnalités sont disponibles! Télécharger la mise à jour, pour en profiter!</string>
     <string name="download_update">Télécharger mise à jour</string>
+    <string name="download_update_progress">Téléchargement en cours...</string>
+    <string name="up_to_date">A jour</string>
 </resources>

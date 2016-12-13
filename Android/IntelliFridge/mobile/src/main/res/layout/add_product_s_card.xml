@@ -64,6 +64,13 @@
             android:layout_below="@+id/fridge_spinner"
             android:layout_marginBottom="20dp"
             android:textSize="20sp"/>
+        <EditText
+            android:id="@+id/edit_productName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone"
+            android:inputType="text"/>
 
         <TextView
             android:id="@+id/quantityLabel"
@@ -85,5 +92,12 @@
             android:layout_below="@id/productName"
             android:textSize="20sp"
             android:layout_marginTop="20dp"/>
+        <EditText
+            android:id="@+id/edit_quantityName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone"
+            android:inputType="text"/>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

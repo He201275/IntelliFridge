@@ -373,7 +373,7 @@ public class BarcodeReaderActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            displayProductInfoOFF(response);
+                            displayProductInfo(response);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -400,7 +400,7 @@ public class BarcodeReaderActivity extends AppCompatActivity {
      * @param response Un objet json contenant les infos du produit scanné
      * @throws JSONException
      */
-    private void displayProductInfoOFF(JSONObject response) throws JSONException {
+    private void displayProductInfo(JSONObject response) throws JSONException {
         off_status = response.getString(OFF_STATUS_VERBOSE);
         final AlertDialog.Builder builder = new AlertDialog.Builder(BarcodeReaderActivity.this);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -414,6 +414,7 @@ public class BarcodeReaderActivity extends AppCompatActivity {
                         .fit().centerInside()
                         .into(productImage);
             }
+
             if (product.has(OFF_PRODUCTNAME)){
                 productName = product.getString(OFF_PRODUCTNAME);
             }else if (product.has(OFF_PRODUCTNAME_EN)){
@@ -421,11 +422,14 @@ public class BarcodeReaderActivity extends AppCompatActivity {
             }else if (product.has(OFF_PRODUCTNAME_FR)){
                 productName = product.getString(OFF_PRODUCTNAME_FR);
             }
+
             if (product.has(OFF_BRANDS)){
                 brands = product.getString(OFF_BRANDS);
             }
             txtProduct = (TextView)addProductCard.findViewById(R.id.productName);
+
             txtProduct.setText(productName);
+
             quantity = product.getString(OFF_QUANTITY);
             txtQuantity = (TextView)addProductCard.findViewById(R.id.quantityName);
             txtQuantity.setText(quantity);

@@ -93,7 +93,7 @@ public class AboutActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         if (response.equals(UPDATE_AVAILABLE)){
-                            updateResponse.setText(UPDATE_AVAILABLE);
+                            updateResponse.setText(R.string.update_available);
                             updateResponse.setTextColor(getResources().getColor(R.color.colorAccent));
                             downloadBtn.setVisibility(View.VISIBLE);
                             downloadBtn.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +103,7 @@ public class AboutActivity extends AppCompatActivity {
                                 }
                             });
                         }else if (response.equals(UP_TO_DATE)){
-                            updateResponse.setText(UP_TO_DATE);
+                            updateResponse.setText(R.string.up_to_date);
                             updateResponse.setTextColor(getResources().getColor(R.color.btn_add));
                         }
                     }

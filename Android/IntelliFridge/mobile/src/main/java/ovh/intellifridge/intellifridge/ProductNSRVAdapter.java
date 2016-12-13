@@ -23,15 +23,14 @@ public class ProductNSRVAdapter extends RecyclerView.Adapter<ProductNSRVAdapter.
 
     public static class ProductNSViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
-        TextView productName;
-        ImageView overflow,productImage;
+        TextView productName,productType;
+        ImageView overflow;
 
         public ProductNSViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView)itemView.findViewById(R.id.product_ns_card_view);
-            productName = (TextView)itemView.findViewById(R.id.product_name_card);
-            overflow = (ImageView)itemView.findViewById(R.id.overflow_product_ns);
-            productImage = (ImageView)itemView.findViewById(R.id.thumbnail_product_ns);
+            productName = (TextView)itemView.findViewById(R.id.product_ns_name);
+            productType = (TextView)itemView.findViewById(R.id.product_ns_type);
         }
     }
     @Override
@@ -43,23 +42,12 @@ public class ProductNSRVAdapter extends RecyclerView.Adapter<ProductNSRVAdapter.
 
     @Override
     public void onBindViewHolder(ProductNSViewHolder productNSViewHolder, int position) {
-        if (Locale.getDefault().getDisplayLanguage().equals("English")){
-            productNSViewHolder.productName.setText(productNsList[position].getProductNameNS_en());
-        }else if (Locale.getDefault().getDisplayLanguage().equals("Français")){
-            productNSViewHolder.productName.setText(productNsList[position].getProductNameNS_fr());
-        }else if (Locale.getDefault().getDisplayLanguage().equals("Nederlands")){
-            productNSViewHolder.productName.setText(productNsList[position].getProductNameNS_nl());
-        }
-        productNSViewHolder.productImage.setOnClickListener(new View.OnClickListener() {
+        productNSViewHolder.productName.setText(productNsList[position].getProductNameNS_fr());
+        productNSViewHolder.productType.setText(productNsList[position].getProductNSType());
+        productNSViewHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
-                // TODO: 10-12-16  
-            }
-        });
-        productNSViewHolder.overflow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: 10-12-16
+            public boolean onLongClick(View view) {
+                return false;
             }
         });
     }
