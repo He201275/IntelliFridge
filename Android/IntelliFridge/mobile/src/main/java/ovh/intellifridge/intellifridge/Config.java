@@ -8,23 +8,25 @@ public class Config {
     public static final String TITLE_ALLERANCE = "Allerance";
     public static final String TITLE_IF = "IntelliFridge";
 
-    public static final String DOMAIN_URL = "http://www.intellifridge.ovh";
-    public static final String LOGIN_URL = "http://api.intellifridge.ovh/v1/user/login";
-    public static final String REGISTER_URL = "http://api.intellifridge.ovh/v1/user/register";
-    public static final String FRIDGE_GET_LIST_URL = "http://api.intellifridge.ovh/v1/fridges/list";
-    public static final String FRIDGE_ADD_URL = "http://api.intellifridge.ovh/v1/fridges/add";
-    public static final String CONTACT_URL = "http://www.intellifridge.ovh/contact.php";
-    public static final String SHOP_URL = "http://www.intellifridge.ovh/shop.php";
-    public static final String PRODUCT_DB_LOCATION_CHECK_URL = "http://api.intellifridge.ovh/v1/products/isInDB";
-    public static final String GET_PRODUCT_INFO_LOCAL_URL = "http://api.intellifridge.ovh/v1/products/getProductSInfo";
-    public static final String ADD_PRODUCT_URL= "http://api.intellifridge.ovh/v1/products/add";
-    public static final String FRIDGE_CONTENT_URL = "http://api.intellifridge.ovh/v1/fridges/getFridgeContent";
-    public static final String FRIDGE_REMOVE_URL = "http://api.intellifridge.ovh/v1/fridges/remove";
-    public static final String GROCERY_LIST_GET_URL = "http://api.intellifridge.ovh/v1/list/get";
-    public static final String REMOVE_ONE_PRODUCT_URL = "http://api.intellifridge.ovh/v1/fridges/minusOneProduct";
-    public static final String PLUS_ONE_PRODUCT_URL = "http://api.intellifridge.ovh/v1/fridges/minusOneProduct";
-    public static final String GET_PRODUCT_NS_URL= "http://api.intellifridge.ovh/v1/products/getProductNS";
-    public static final String GET_RECENT_CONTENT_URL = "http://api.intellifridge.ovh/v1/products/getRecentProduct";
+    public static final String DOMAIN_URL = "https://www.intellifridge.ovh";
+    public static final String LOGIN_URL = "https://api.intellifridge.ovh/v1/user/login";
+    public static final String REGISTER_URL = "https://api.intellifridge.ovh/v1/user/register";
+    public static final String FRIDGE_GET_LIST_URL = "https://api.intellifridge.ovh/v1/fridges/list";
+    public static final String FRIDGE_ADD_URL = "https://api.intellifridge.ovh/v1/fridges/add";
+    public static final String CONTACT_URL = "https://www.intellifridge.ovh/contact.php";
+    public static final String SHOP_URL = "https://www.intellifridge.ovh/shop.php";
+    public static final String PRODUCT_DB_LOCATION_CHECK_URL = "https://api.intellifridge.ovh/v1/products/isInDB";
+    public static final String GET_PRODUCT_INFO_LOCAL_URL = "https://api.intellifridge.ovh/v1/products/getProductSInfo";
+    public static final String ADD_PRODUCT_URL= "https://api.intellifridge.ovh/v1/products/add";
+    public static final String FRIDGE_CONTENT_URL = "https://api.intellifridge.ovh/v1/fridges/getFridgeContent";
+    public static final String FRIDGE_REMOVE_URL = "https://api.intellifridge.ovh/v1/fridges/remove";
+    public static final String GROCERY_LIST_GET_URL = "https://api.intellifridge.ovh/v1/list/get";
+    public static final String REMOVE_ONE_PRODUCT_URL = "https://api.intellifridge.ovh/v1/fridges/minusOneProduct";
+    public static final String PLUS_ONE_PRODUCT_URL = "https://api.intellifridge.ovh/v1/fridges/minusOneProduct";
+    public static final String GET_PRODUCT_NS_URL= "https://api.intellifridge.ovh/v1/products/getProductNS";
+    public static final String GET_RECENT_CONTENT_URL = "https://api.intellifridge.ovh/v1/products/getRecentProduct";
+    public static final String UPDATE_APP_URL = "https://intellifridge.franmako.com/update.php";
+    public static final String ADD_GROCERY_FROM_FRIDGE_URL = "https://api.intellifridge.ovh/v1/list/addProduct";
 
     public static final String JWT_KEY = "wAMxBauED07a4GurMpuD";
 
@@ -38,6 +40,8 @@ public class Config {
     public static final String SERVER_PROD_NOTINDB = "201";
     public static final String SERVER_FRIDGE_EXISTS= "202";
     public static final String SERVER_DB_ERROR = "500";
+    public static final String UPDATE_AVAILABLE = "Update available";
+    public static final String UP_TO_DATE = "App up-to-date";
 
     //Keys for email and password as defined in our $_POST['key']
     public static final String KEY_EMAIL = "UserAdresseMail";
@@ -59,9 +63,12 @@ public class Config {
     public static final String KEY_PRODUCT_SCANNABLE = "IsScannable";
     public static final String KEY_PRODUCT_PRESENT = "IsPresent";
     public static final String KEY_OFFSET = "offset";
+    public static final String KEY_VERSION = "version";
 
     //Keys for Sharedpreferences
     public static final String LOGGEDIN_SHARED_PREF = "loggedin";
+    public static final String UPDATE_NOTIF_PREFS = "updateNotif";
+    public static final String LAST_UPDATE_CHECK = "lastTimeActionDone";
     public static final String USER_ID_PREFS = "user_id";
     public static final String USER_EMAIL_PREFS = "user_email";
     public static final String USER_PRENOM_PREFS = "user_fName";
@@ -90,13 +97,13 @@ public class Config {
     public static final String PRODUCT_QUANTITY_DB = "Quantite";
     public static final String PRODUCT_ID = "ProduitId";
     public static final String LIST_NOTE_DB = "ListeNote";
+    public static final String DATE_AJOUT_DB = "DateAjout";
 
 
     public static final String LOGIN_REGISTER_EXTRA= "new_user_email";
     public static final String SCAN_TYPE_EXTRA = "scan_type";
     public static final String SCAN_FRIDGE = "scan_fridge";
     public static final String SCAN_ALLERGY = "scan_allergy";
-    public static final String SCAN_INFO = "scan_info";
     public static final String BARCODE_EXTRA = "scan_result";
     public static final String FRIDGE_NAME_EXTRA = "fridge_name";
     public static final String FRIDGE_ID_EXTRA = "fridge_id";

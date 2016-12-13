@@ -33,10 +33,12 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.DATA;
+import static ovh.intellifridge.intellifridge.Config.DATE_AJOUT_DB;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_CONTENT_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_CONTENT_URL;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_ID_EXTRA;
@@ -173,7 +175,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
                             try {
                                 jsonArray = server_response.getJSONArray(DATA);
                                 getFridgeContentList(jsonArray);
-                            } catch (JSONException e) {
+                            } catch (JSONException | ParseException e) {
                                 e.printStackTrace();
                             }
                         }else if (server_status.equals(SERVER_FRIDGE_EMPTY)){
@@ -205,7 +207,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
      * Récupère la liste de produits d'un frigo pour les afficher dans un {@link RecyclerView}
      * @param jsonArray Json du contenu d'un frido, récupéré de la db, passant par l'API
      */
-    private void getFridgeContentList(JSONArray jsonArray) throws JSONException {
+    private void getFridgeContentList(JSONArray jsonArray) throws JSONException, ParseException {
         Product[] fridgeContent = getFridgeContentArray(jsonArray);
 
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.fridge_content_recyclerview);
@@ -220,7 +222,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
      * @param jsonArray Contenu du frigo récupéré de la db et l'API, en JSON
      * @return Array de {@link ovh.intellifridge.intellifridge.Product}
      */
-    private Product[] getFridgeContentArray(JSONArray jsonArray) throws JSONException {
+    private Product[] getFridgeContentArray(JSONArray jsonArray) throws JSONException, ParseException {
         int length = jsonArray.length();
         Product[] fridgeContent = new Product[length];
         for(int i=0;i<length;i++){
@@ -229,6 +231,7 @@ public class FridgeContentActivity extends AppCompatActivity implements SwipeRef
             fridgeContent[i].setProductName(jsonObject.optString(PRODUCT_NAME_DB));
             fridgeContent[i].setProductSId(jsonObject.optLong(PRODUCT_ID));
             fridgeContent[i].setProductQuantity(jsonObject.optInt(PRODUCT_QUANTITY_DB));
+            fridgeContent[i].setDateAjout(jsonArray.getJSONObject(i).optString(DATE_AJOUT_DB));
             fridgeContent[i].setFrigoId(fridgeId);
         }
         return fridgeContent;

@@ -2,7 +2,7 @@
     <string name="app_name">IntelliFridge</string>
     <string name="action_settings">Settings</string>
     <!-- Tab titles -->
-    <string name="section1">Recent</string>
+    <string name="section1">All</string>
     <string name="section2">Fridges</string>
     <string name="section3">Allergies</string>
 
@@ -167,4 +167,16 @@
     <string name="versionLbl">Version</string>
     <string name="minus_one_success">One product removed from fridge:</string>
     <string name="plus_one_success">One product added to fridge:</string>
+    <string name="update">Check for update</string>
+    <string name="add_fridgeContent_groceryBtn">List</string>
+    <string name="add_list_succes">The product has been added to the list</string>
+    <string name="update_available">Update</string>
+    <string name="update_available_detail">A new update is available! Download it now to discover what\'s new!</string>
+    <string name="notif_down">Download</string>
+    <string name="expiry_notif">Expiration alert</string>
+    <string name="expiry_notif_detail">The following product is almost expiring: Tomatoes</string>
+    <string name="download_notif_btn">Download</string>
+    <string name="download_notif_big">There are some brand new functionalities! Download the update, to try them!</string>
+    <string name="download_update">Download update</string>
+    <string name="download_update_progress">Downloading update...</string>
 </resources>

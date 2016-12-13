@@ -29,7 +29,6 @@
     <string name="scanner_prompt">Scanner le code barre</string>
     <string name="section_format">Section: %1$d</string>
     <string name="title_activity_settings">Paramètres</string>
-    <string name="section1">Récent</string>
     <string name="section2">Frigos</string>
     <string name="section3">Allergies</string>
     <string name="settings_mod_allergy">Alerte allergie</string>
@@ -104,4 +103,17 @@
     <string name="login_activity_title">Se connecter</string>
     <string name="title_activity_fridge_content">Frigo :</string>
     <string name="versionLbl">Version</string>
+    <string name="add_fridgeContent_groceryBtn">Liste</string>
+    <string name="add_list_succes">Le produit a été ajouté à la liste</string>
+    <string name="minus_one_success">Produit retiré du frigo:</string>
+    <string name="update">Mettre à jour</string>
+    <string name="section1">Tout</string>
+    <string name="notif_down">Télécharger</string>
+    <string name="update_available">Mise à jour disponible</string>
+    <string name="update_available_detail">Une nouvelle mise à jour est disponible!</string>
+    <string name="expiry_notif">Alerte d\'expiration</string>
+    <string name="expiry_notif_detail">Le produit suivant sera bientôt périmé: Tomates</string>
+    <string name="download_notif_btn">Télécharger</string>
+    <string name="download_notif_big">De nouvelles fonctionnalités sont disponibles! Télécharger la mise à jour, pour en profiter!</string>
+    <string name="download_update">Télécharger mise à jour</string>
 </resources>

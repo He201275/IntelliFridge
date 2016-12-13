@@ -29,10 +29,14 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import static ovh.intellifridge.intellifridge.Config.ADD_GROCERY_FROM_FRIDGE_URL;
 import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_URL;
+import static ovh.intellifridge.intellifridge.Config.GROCERY_LIST_GET_URL;
 import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
 import static ovh.intellifridge.intellifridge.Config.JWT_POST;
 import static ovh.intellifridge.intellifridge.Config.KEY_API_KEY;
@@ -67,13 +71,15 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
-        TextView product_name,product_quantity;
+        TextView product_name,product_quantity,date,fridge;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView)itemView.findViewById(R.id.fridge_content_cardview);
             product_name = (TextView)itemView.findViewById(R.id.card_product_name);
             product_quantity = (TextView)itemView.findViewById(R.id.card_product_quantity);
+            date = (TextView)itemView.findViewById(R.id.card_product_date);
+            fridge = (TextView)itemView.findViewById(R.id.card_fridge_name);
         }
     }
 
@@ -96,6 +102,10 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
         fridgeId = fridgeContent[position].getFrigoId();
         productViewHolderHolder.product_name.setText(fridgeContent[position].getProductName());
         productViewHolderHolder.product_quantity.setText(Integer.toString(fridgeContent[position].getProductQuantity()));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String date = dateFormat.format(fridgeContent[position].getDateAjout());
+        productViewHolderHolder.date.setText(date);
+        productViewHolderHolder.fridge.setText(fridgeContent[position].getFrigoNom());
         productViewHolderHolder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -108,6 +118,12 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
                         addRemoveOneProduct(productViewHolderHolder.cardView.getContext(),productId,PLUS_ONE);
                     }
                 });
+                builder.setNeutralButton(R.string.add_fridgeContent_groceryBtn,new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        addToGroceryList(productViewHolderHolder.cardView.getContext(),productId);
+                    }
+                });
                 builder.setNegativeButton(R.string.add_fridgeContent_removeBtn, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -118,6 +134,62 @@ public class FridgeContentRVAdapter extends RecyclerView.Adapter<FridgeContentRV
                 return false;
             }
         });
+    }
+
+    private void addToGroceryList(final Context context, final long productId) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ADD_GROCERY_FROM_FRIDGE_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        final String secret = JWT_KEY;
+                        try {
+                            final JWTVerifier verifier = new JWTVerifier(secret);
+                            final Map<String, Object> claims= verifier.verify(response);
+                            server_response = new JSONObject(claims);
+                            Log.wtf("addlist",server_response.toString());
+                            server_status = server_response.getString(SERVER_STATUS);
+                        } catch (JWTVerifyException e) {
+                            // Invalid Token
+                            Log.e("JWT ERROR",e.toString());
+                        } catch (NoSuchAlgorithmException | IOException | SignatureException | InvalidKeyException | JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (server_status.equals(SERVER_SUCCESS)){
+                            Toast.makeText(context,R.string.add_list_succes,Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(VOLLEY_ERROR_TAG,error.toString());
+                    }
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                String apiKey = getApiKey(context);
+                int userId = getUserId(context);
+                String jwt = signParamsAddToList(apiKey,userId,productId);
+                Log.wtf("-1REQ",jwt);
+                Map<String,String> params = new HashMap<>();
+                params.put(JWT_POST, jwt);
+                return params;
+            }
+        };
+        MySingleton.getInstance(context).addToRequestQueue(stringRequest, PRODUCT_REMOVE_REQUEST_TAG);
+    }
+
+    private String signParamsAddToList(String apiKey, int userId, long productId) {
+        final JWTSigner signer = new JWTSigner(JWT_KEY);
+        final HashMap<String, Object> claims = new HashMap<String, Object>();
+        claims.put(KEY_PRODUCT_S_ID,productId);
+        claims.put(KEY_USERID,userId);
+        claims.put(KEY_API_KEY,apiKey);
+        claims.put(KEY_FRIDGE_ID,fridgeId);
+        claims.put("ListeNote"," ");// TODO: 12-12-16
+        claims.put("Quantite",1);
+        return signer.sign(claims);
     }
 
     /**

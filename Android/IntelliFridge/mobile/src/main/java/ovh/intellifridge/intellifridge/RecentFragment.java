@@ -31,10 +31,13 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.DATA;
+import static ovh.intellifridge.intellifridge.Config.DATE_AJOUT_DB;
+import static ovh.intellifridge.intellifridge.Config.FRIDGE_NAME_DB;
 import static ovh.intellifridge.intellifridge.Config.GET_RECENT_CONTENT_URL;
 import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
 import static ovh.intellifridge.intellifridge.Config.JWT_POST;
@@ -99,9 +102,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         if (server_status.equals(SERVER_SUCCESS)){
                             try {
                                 jsonArray = server_response.getJSONArray(DATA);
-                                Log.wtf("REC",jsonArray.toString());
                                 getRecentContentList(jsonArray);
-                            } catch (JSONException e) {
+                            } catch (JSONException | ParseException e) {
                                 e.printStackTrace();
                             }
                         }else {
@@ -155,7 +157,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         return signer.sign(claims);
     }
 
-    private void getRecentContentList(JSONArray jsonArray) {
+    private void getRecentContentList(JSONArray jsonArray) throws ParseException {
         Product[] fridgeContent = getRecentContentArray(jsonArray);
 
         RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.recent_content_recyclerview);
@@ -165,7 +167,7 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setAdapter(adapter);
     }
 
-    private Product[] getRecentContentArray(JSONArray jsonArray) {
+    private Product[] getRecentContentArray(JSONArray jsonArray) throws ParseException {
         int length = jsonArray.length();
         Product[] fridgeContent = new Product[length];
 
@@ -175,6 +177,8 @@ public class RecentFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 fridgeContent[i].setProductName(jsonArray.optJSONObject(i).optString(PRODUCT_NAME_DB));
                 fridgeContent[i].setProductSId(jsonArray.optJSONObject(i).optInt(PRODUCT_S_ID_DB));
                 fridgeContent[i].setProductQuantity(jsonArray.getJSONObject(i).optInt(PRODUCT_QUANTITY_DB));
+                fridgeContent[i].setDateAjout(jsonArray.getJSONObject(i).optString(DATE_AJOUT_DB));
+                fridgeContent[i].setFrigoNom(jsonArray.getJSONObject(i).optString(FRIDGE_NAME_DB));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

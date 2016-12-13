@@ -1,15 +1,41 @@
 package ovh.intellifridge.intellifridge;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @author Francis O. Makokha
  * Objet produit et ses méthodes
  */
 
 public class Product {
-    String productName,productNameNS_fr,productNameNS_en,productNameNS_nl,productNSType;
+    String productName,productNameNS_fr,productNameNS_en,productNameNS_nl,productNSType,frigoNom;
     int productNSId;
     long productSId;
     int productQuantity;
+    Date dateAjout;
+
+    public String getFrigoNom() {
+        return frigoNom;
+    }
+
+    public void setFrigoNom(String frigoNom) {
+        this.frigoNom = frigoNom;
+    }
+
+    public Date getDateAjout() {
+        return dateAjout;
+    }
+
+    public void setDateAjout(Date dateAjout) {
+        this.dateAjout = dateAjout;
+    }
+
+    public void setDateAjout(String dateAjout) throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        this.dateAjout = dateFormat.parse(dateAjout);
+    }
 
     public long getProductSId() {
         return productSId;

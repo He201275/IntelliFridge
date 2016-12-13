@@ -38,6 +38,7 @@ import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
 import static ovh.intellifridge.intellifridge.Config.JWT_POST;
 import static ovh.intellifridge.intellifridge.Config.KEY_EMAIL;
 import static ovh.intellifridge.intellifridge.Config.KEY_PASSWORD;
+import static ovh.intellifridge.intellifridge.Config.LAST_UPDATE_CHECK;
 import static ovh.intellifridge.intellifridge.Config.LOGGEDIN_SHARED_PREF;
 import static ovh.intellifridge.intellifridge.Config.LOGIN_REGISTER_EXTRA;
 import static ovh.intellifridge.intellifridge.Config.LOGIN_REQUEST_TAG;
@@ -46,6 +47,7 @@ import static ovh.intellifridge.intellifridge.Config.MOD_ALLERGY_KEY;
 import static ovh.intellifridge.intellifridge.Config.MOD_FRIDGE_KEY;
 import static ovh.intellifridge.intellifridge.Config.SERVER_STATUS;
 import static ovh.intellifridge.intellifridge.Config.SERVER_SUCCESS;
+import static ovh.intellifridge.intellifridge.Config.UPDATE_NOTIF_PREFS;
 import static ovh.intellifridge.intellifridge.Config.USER_API_KEY;
 import static ovh.intellifridge.intellifridge.Config.USER_API_KEY_DB;
 import static ovh.intellifridge.intellifridge.Config.USER_EMAIL_DB;
@@ -76,10 +78,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private String server_status;
     private JSONObject server_response;
     private JSONObject userData;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initSharedPrefs();
+
+        if (!sharedPreferences.contains(LAST_UPDATE_CHECK))
+            enableNotification(null);
+        Log.v("NotifService", "Starting CheckRecentRun service...");
+        startService(new Intent(this, CheckAppUpdate.class));
+
         setTitle(R.string.login_activity_title);
         if (getAllergyModStatus() && !getFridgeModStatus()){
             setContentView(R.layout.activity_login_allerance);
@@ -95,6 +107,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         buttonLogin.setOnClickListener(this);
         signup_link.setOnClickListener(this);
+    }
+
+    private void enableNotification(View view) {
+            editor.putBoolean(UPDATE_NOTIF_PREFS, true);
+            editor.commit();
+            Log.v("UpdateNotif", "Notifications enabled");
+    }
+
+    private void initSharedPrefs() {
+        sharedPreferences = LoginActivity.this.getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
     }
 
     /**
@@ -126,12 +149,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences sharedPreferences = getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
         boolean loggedIn = sharedPreferences.getBoolean(LOGGEDIN_SHARED_PREF, false);
 
         if(loggedIn){
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
+            startMainActivity();
         }
 
         Bundle extras = getIntent().getExtras();
@@ -227,8 +248,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
      * @throws JSONException
      */
     private void saveUserData(JSONObject userJson) throws JSONException {
-        SharedPreferences sharedPreferences = LoginActivity.this.getSharedPreferences(Config.SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(LOGGEDIN_SHARED_PREF, true);
         int userId = userJson.getInt(USER_ID_DB);
         editor.putInt(USER_ID_PREFS,userId);
