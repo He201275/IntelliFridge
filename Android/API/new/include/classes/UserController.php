@@ -71,17 +71,10 @@ class userController{
     }
     public function createUser(Request $request, Response $response){
         $post = checkJWT($request->getParam("jwt"));
-        
-        $this->logger->addInfo("jwt====".$request->getParam("jwt"));
-        $this->logger->addInfo("Creating user:=======================================");
-        $this->logger->addInfo("PW:".$post['UserPassword']);
-        $this->logger->addInfo("Nom:".$post['UserNom']);
-        $this->logger->addInfo("Prenom:".$post['UserPrenom']);
-        $this->logger->addInfo("Lang:".$post['LangueCode']);
+
         if (!empty($post['UserAdresseMail']) && !empty($post['UserPassword']) && !empty($post['UserNom'])
             && !empty($post['UserPrenom']) && !empty($post['LangueCode'])){ //&& !empty($post['UserGenre'])
             $apiKey = randomChar(15);
-            $this->logger->addInfo("Creating user:".$post['UserAdresseMail']);
             $email = htmlspecialchars($post['UserAdresseMail']);
             $password = htmlspecialchars($post['UserPassword']);
             $lastName = htmlspecialchars($post['UserNom']);

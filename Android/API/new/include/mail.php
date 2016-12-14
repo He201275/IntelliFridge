@@ -1,17 +1,32 @@
 <?php
+$styleBtnGrant = "display: inline-block;  padding: 12px 24px;  margin-bottom: 20px;  font-size: 14px;
+    font-weight: normal;  line-height: 1.42857143;  text-align: center;  white-space: nowrap;
+    vertical-align: middle;  -ms-touch-action: manipulation;      touch-action: manipulation;  cursor: pointer;
+    -webkit-user-select: none;     -moz-user-select: none;      -ms-user-select: none;
+    user-select: none;  background-image: none;  border: 1px solid transparent;  border-radius: 4px;
+    color: #fff;  background-color: #337ab7;  border-color: #2e6da4;text-decoration : none;";
+$styleBtnNot = "display: inline-block;  padding: 12px 24px;  margin-bottom: 20px;  font-size: 14px;
+font-weight: normal;  line-height: 1.42857143;  text-align: center;  white-space: nowrap;  vertical-align: middle;
+-ms-touch-action: manipulation;      touch-action: manipulation;  cursor: pointer;  -webkit-user-select: none;
+-moz-user-select: none;      -ms-user-select: none;          user-select: none;  background-image: none;
+border: 1px solid transparent;  border-radius: 4px;color: #fff;background-color: #d9534f;border-color: #d43f3a;
+text-decoration : none;";
+$linkGrant = "ok";
+$linkNot = "nok";
 $hostName="http://www.intellifridge.ovh/";
-if ($content==1){
-    $msg = "Hello";
-    $title = "Inscription";
-    $link = "http://app.intellifridge.ovh/inscription?token=$activationToken";
-    $content = "<div align='left' style='color: #474747;' class='article-content'>
+$name = "Rémy";
+$mail = "his@name.com";
+$msg = "Hello";
+$title = "Inscription";
+$link = "http://app.intellifridge.ovh/inscription/dfhezfjsgs4gsg4s6gs";
+$content = "<div align='left' style='color: #474747;' class='article-content'>
                 <p> Bonjour $name,</p>
                 <p>Bienvenue chez IntelliFridge.</p>
                 <p>
                     Nous vous remercions de vous être inscrit chez nous.
                 </p>
                 <p>
-                    Votre adresse mail est : <a href='#'>". strip_tags($email) . "</a>.
+                    Votre adresse mail est : <a href='#'>". strip_tags($mail) . "</a>.
                 </p>
                 <p>
                     Veuillez cliquer sur ce lien pour confirmer votre inscription :
@@ -24,32 +39,6 @@ if ($content==1){
                 <p>L'équipe d'IntelliFridge</p>
                 <br/>
             </div>";
-}
-if ($content==2){
-    $msg = "Perdu?";
-    $title = "Mot de passe perdu";
-    $link = "http://app.intellifridge.ovh/lostPW?token=$resetToken";
-    $content = "<div align='left' style='color: #474747;' class='article-content'>
-                <p> Bonjour $name,</p>
-                <p>Bienvenue chez IntelliFridge.</p>
-                <p>
-                    Vous avez donc perdu votre mot de passe, quelle honte ! ;-).
-                </p>
-                <p>
-                    Veuillez cliquer sur ce lien pour réinitialiser votre mot de passe :
-                </p>
-                <blockquote style='border-left: medium solid grey;padding-left : 10px;font-size : 100%;background-color : #d1d1d1;padding:10px;'>
-                    <a href='$link'>$link</a>
-                </blockquote>
-                <br/>
-                <p>Cordialement,</p>
-                <p>L'équipe d'IntelliFridge</p>
-                <br/>
-            </div>";
-}
-
-
-
 $mail = "<table width='100%' cellpadding='0' cellspacing='0' border='0' style='background-color:rgb(42, 55, 78);font-family: Georgia'>
     <tbody>
     <tr>
