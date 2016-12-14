@@ -63,8 +63,6 @@ $container["AllergyController"] = function($c) {
 };
 
 /*
- * HTML GET requests handling
- */
 
 
 $app->get('/hello/{name}', function (Request $request, Response $response) {
@@ -77,17 +75,10 @@ $app->get('/hello/{name}', function (Request $request, Response $response) {
     return $response;
 
 });
+
 /*
-    $app->get('/tickets', function (Request $request, Response $response) {
-    $this->logger->addInfo("Ticket list");
-    $mapper = new TicketMapper($this->db);
-    $tickets = $mapper->getTickets();
-
-    $response->getBody()->write(var_export($tickets, true));
-    return $response;
-});
-*/
-
+ * Define each route 
+ */
 
 $app->group("/user",function (){
     $this->post("/login", "UserController:authenticateUser");
@@ -140,14 +131,4 @@ $app->get("/test",function (Request $request, Response $response){
 });
 
 
-
-/*$app->post("/login", function (Request $request, Response $response){
-    $response = $response->withHeader('Content-type', 'application/json');
-    $response->getBody()->write(json_encode($request->getParsedBody()));
-    return $response;
-});
-*/
-/*
- * HTML POST requests handling
- */
 $app->run();

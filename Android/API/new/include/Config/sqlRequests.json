@@ -44,7 +44,8 @@
     "existsInFridge":"SELECT ProduitSId FROM Contenu WHERE ProduitNSId=:ProduitNSId AND ProduitSId=:ProduitSId AND FrigoId=:FrigoId",
     "addIntoFridge":"UPDATE Contenu SET Quantite = Quantite+1, DateAjout=:DateAjout WHERE FrigoId=:FrigoId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
     "minusOneProduct":"UPDATE Contenu SET Quantite = Quantite-1, DateAjout=:DateAjout WHERE FrigoId=:FrigoId AND ProduitSId=:ProduitSId AND ProduitNSId=:ProduitNSId",
-    "getRecent":"SELECT * FROM Contenu WHERE FrigoId IN (SELECT FrigoId FROM Frigo WHERE UserId=:UserId) AND NOT Quantite=0 ORDER BY DateAjout",
+    "getRecentt":"SELECT * FROM Contenu WHERE FrigoId IN (SELECT FrigoId FROM Frigo WHERE UserId=:UserId) AND NOT Quantite=0 ORDER BY DateAjout",
+    "getRecent":"SELECT IF(IsScannable, ProduitSId, ProduitNSId) as ProduitId, IF(IsScannable, CONCAT(ProduitSMarque, ' ', ProduitSNom), ProduitNSNomFR) as ProduitNom, Quantite, FrigoId, f.FrigoNom, DateAjout FROM Contenu as c NATURAL JOIN ProduitS as ps NATURAL JOIN ProduitNS as pns NATURAL JOIN Frigo as f WHERE FrigoId IN (SELECT FrigoId FROM Frigo WHERE UserId=:UserId) AND NOT Quantite=0 ORDER BY DateAjout DESC, ProduitNom ASC",
     "getInfo":"SELECT ProduitSNom,ProduitSMarque,Contenance,ProduitImageUrl FROM ProduitS WHERE ProduitSId=:ProduitSId"
   },
   "allergy":{

@@ -515,8 +515,10 @@ class FridgeController{
                     if ($isProductPresent = fetchSQLReq($this->db,$this->sql['products']['existsInFridge'],array(":FrigoId"=>$post['FrigoId'],":ProduitSId"=>$produitSid,":ProduitNSId"=>$produitNSid),true, true)){
 
                         if($isProductPresent== -1){
-                            if (sendSQLReq($this->db,$this->sql['products']['insertNSIntoFridge'],array(":FrigoId"=>$post['FrigoId'],":ProduitSNom"=>$post['ProduitSNom'],":isScannable"=>$isScannable,":Quantite"=>1,":ProduitNSId"=>$produitNSid,":ProduitSId"=>$produitSid,"DateAjout"=>$dateNow))){
-
+                            if (sendSQLReq($this->db,$this->sql['products']['insertIntoFridge'],array(":FrigoId"=>$post['FrigoId'],":isScannable"=>$isScannable,":Quantite"=>1,":ProduitNSId"=>$produitNSid,":ProduitSId"=>$produitSid,"DateAjout"=>$dateNow))){
+                                $responseBody = array(
+                                    "status" => "200"
+                                );
                             }else{
                                 $responseBody = array(
                                     "status" => "500",
@@ -605,7 +607,6 @@ class FridgeController{
         $response->getBody()->write(json_encode($responseBody));
         return $response;
     }
-    // TODO TEST
     public function removeOneProductFromFridge(Request $request, Response $response){
         $post = checkJWT($request->getParam("jwt"));
         if (!empty($post["ApiKey"]) && !empty($post["UserId"])
@@ -756,7 +757,6 @@ class FridgeController{
     public function searchProduct(Request $request, Response $response){
         
     }
-    // TODO TEST
     public function getBuyList(Request $request, Response $response){
         $post = checkJWT($request->getParam("jwt"));
         /*
@@ -823,7 +823,6 @@ class FridgeController{
         return $response;
 
     }
-    //TODO TEST
     public function getFridgeName(Request $request, Response $response){
         $post = checkJWT($request->getParam("jwt"));
         /*
@@ -891,8 +890,6 @@ class FridgeController{
 
     }
 
-    //TODO add (UserId, ApiKey,ProduitSId, nbQuantiteSup,ListeNote)
-    //TODO remove(UserId, ApiKey,ProduitSId, nbQuantiteInf,ListeNote)
     public function buyListPlusOne(Request $request, Response $response){
         $post = checkJWT($request->getParam("jwt"));
         /*
@@ -1307,6 +1304,9 @@ class FridgeController{
                     ":ListeNote"=>$post['ListeNote'],
                     ":ListeDateAjout"=>$dateNow,
                 ))){
+                    $responseBody = array(
+                        "status"=>"200",
+                    );
                 }else{
                     $responseBody = array(
                         "status"=>"500",
@@ -1650,7 +1650,7 @@ class FridgeController{
                  */
 
                 //IF REQUEST
-                if ($products=fetchSQLReq($this->db,$this->sql['products']['getRecent'], array("UserId"=>$post['UserId']))){
+                if ($products=fetchSQLReq($this->db,$this->sql['products']['getRecent'], array(":UserId"=>$post['UserId']))){
                     if ($products==-1){
                         $responseBody = array(
                             "status"=>"201",

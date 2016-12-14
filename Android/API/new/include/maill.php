@@ -1,4 +1,18 @@
 <?php
+$styleBtnGrant = "display: inline-block;  padding: 12px 24px;  margin-bottom: 20px;  font-size: 14px;
+    font-weight: normal;  line-height: 1.42857143;  text-align: center;  white-space: nowrap;
+    vertical-align: middle;  -ms-touch-action: manipulation;      touch-action: manipulation;  cursor: pointer;
+    -webkit-user-select: none;     -moz-user-select: none;      -ms-user-select: none;
+    user-select: none;  background-image: none;  border: 1px solid transparent;  border-radius: 4px;
+    color: #fff;  background-color: #337ab7;  border-color: #2e6da4;text-decoration : none;";
+$styleBtnNot = "display: inline-block;  padding: 12px 24px;  margin-bottom: 20px;  font-size: 14px;
+font-weight: normal;  line-height: 1.42857143;  text-align: center;  white-space: nowrap;  vertical-align: middle;
+-ms-touch-action: manipulation;      touch-action: manipulation;  cursor: pointer;  -webkit-user-select: none;
+-moz-user-select: none;      -ms-user-select: none;          user-select: none;  background-image: none;
+border: 1px solid transparent;  border-radius: 4px;color: #fff;background-color: #d9534f;border-color: #d43f3a;
+text-decoration : none;";
+$linkGrant = "ok";
+$linkNot = "nok";
 $hostName="http://www.intellifridge.ovh/";
 $name = "Rémy";
 $mail = "his@name.com";

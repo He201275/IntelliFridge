@@ -29,6 +29,7 @@ function connectDB ($host="", $dbName="", $username="", $password="") {
 }
 
 /**
+ * Copyright
  * @author Alexis Georges
  * @param $db
  * @param $req
@@ -84,6 +85,17 @@ function sendSQLReq ($db, $req, $params){
 
 }
 
+/**
+ * Copyright
+ * @author Alexis Georges
+ * Fetch a SQL request with PDO method.
+ * @param  [type] $db       [description]
+ * @param  [type] $req      SQL request
+ * @param  [type] $params   Params like that : array(":element1"=>$element1, ":element2"=>$element2,...)
+ * @param  [type] $isOneArg If you want only one returnment for your request, put true
+ * @param  [type] $isOneRow If you want only one row for your request, put true
+ * @return [type]           [description]
+ */
 function fetchSQLReq ($db, $req, $params=NULL, $isOneArg=false, $isOneRow=false){
     if ($params != NULL && count($params) > 0){
         if (substr_count($req, ":") == count($params)){
@@ -168,12 +180,6 @@ function fetchSQLReq ($db, $req, $params=NULL, $isOneArg=false, $isOneRow=false)
 
 function encodeJWT($data){
     $key = "wAMxBauED07a4GurMpuD";
-    /*$payload = array(
-        "iss" => "http://api.intellifridge.ovh",
-        "iat" => time(),
-        "exp" => time()+ (120 * 60),
-        "response" => $data
-    );*/
     return JWT::encode($data, $key , "HS256");
 }
 function checkJWT($encoded){
@@ -402,4 +408,3 @@ function contentMail($mailType,$name, $email, $token){
 </table>";
     return $mail;
 }
-
