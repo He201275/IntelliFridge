@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -29,7 +28,6 @@ import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static android.nfc.tech.MifareUltralight.PAGE_SIZE;
 import static ovh.intellifridge.intellifridge.Config.DATA;
 import static ovh.intellifridge.intellifridge.Config.FRIDGE_CONTENT_REQUEST_TAG;
 import static ovh.intellifridge.intellifridge.Config.GET_PRODUCT_NS_URL;
@@ -118,7 +116,7 @@ public class ProductNSActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.product_ns_recyclerview);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        ProductNSRVAdapter adapter = new ProductNSRVAdapter(productNsList);
+        ProductNSRVAdapter adapter = new ProductNSRVAdapter(productNsList,this);
         recyclerView.setAdapter(adapter);
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override

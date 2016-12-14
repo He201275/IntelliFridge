@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/fridgeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fridgeNameTitle"
+        android:labelFor="@+id/fridge_spinner"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+    <Spinner android:id="@+id/fridge_spinner_ns"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_toEndOf="@+id/fridgeLabel"
+        android:layout_marginBottom="20dp"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/productLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/productNameTitle"
+        android:labelFor="@+id/productName"
+        android:layout_below="@+id/fridge_spinner"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/productNSName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/productLabel"
+        android:layout_below="@+id/fridge_spinner"
+        android:layout_marginBottom="20dp"
+        android:textSize="20sp"/>
+
+</RelativeLayout>

@@ -29,14 +29,11 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
 import static ovh.intellifridge.intellifridge.Config.ADD_GROCERY_FROM_FRIDGE_URL;
-import static ovh.intellifridge.intellifridge.Config.ADD_PRODUCT_URL;
-import static ovh.intellifridge.intellifridge.Config.GROCERY_LIST_GET_URL;
 import static ovh.intellifridge.intellifridge.Config.JWT_KEY;
 import static ovh.intellifridge.intellifridge.Config.JWT_POST;
 import static ovh.intellifridge.intellifridge.Config.KEY_API_KEY;

@@ -17,7 +17,6 @@
             android:layout_height="match_parent"
             android:padding="16dp">
 
-
             <TextView
                 android:id="@+id/product_ns_name"
                 android:layout_width="wrap_content"
