@@ -457,8 +457,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_input_ns) {
             startProductNSActivity();
-        }else if (id == R.id.nav_multiple_input){
-            // TODO: 03-12-16  
         }else if (id == R.id.nav_grocery_list){
             startGroceryListActivity();
         }else if (id == R.id.nav_manage) {

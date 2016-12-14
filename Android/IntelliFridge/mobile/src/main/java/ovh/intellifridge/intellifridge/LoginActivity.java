@@ -22,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
+import com.auth0.jwt.internal.org.bouncycastle.jcajce.provider.asymmetric.rsa.DigestSignatureSpi;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -206,7 +207,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 String email = editTextEmail.getText().toString();
-                String password = editTextPassword.getText().toString();
+                String password = Sha.computeSha1OfString(editTextPassword.getText().toString());
                 String jwt = signParams(email,password);
                 Map<String,String> params = new HashMap<>();
                 //Adding parameters to POST request

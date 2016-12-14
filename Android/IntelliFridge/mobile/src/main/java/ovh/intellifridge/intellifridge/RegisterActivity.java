@@ -132,7 +132,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 String fName = editTextFname.getText().toString();
                 String lName = editTextLname.getText().toString();
                 email = editTextEmail.getText().toString();
-                String password = editTextPassword.getText().toString();
+                String password = Sha.computeSha1OfString(editTextPassword.getText().toString());
                 String langue = Locale.getDefault().getDisplayLanguage();
                 String jwt = signParams(fName,lName,email,password,langue);
                 Map<String,String> params = new HashMap<>();
