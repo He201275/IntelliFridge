@@ -95,7 +95,7 @@ import static ovh.intellifridge.intellifridge.Config.VOLLEY_ERROR_TAG;
 public class BarcodeReaderActivity extends AppCompatActivity {
     Bundle extras;
     String fridge_selected_name,scan_type;
-    private String scanned_barcode;
+    String scanned_barcode;
     String secret = JWT_KEY;
     private String server_status;
     String imageUrl,productName,quantity, off_status,brands;

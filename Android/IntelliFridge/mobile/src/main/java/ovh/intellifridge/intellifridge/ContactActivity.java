@@ -4,8 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -27,7 +27,6 @@ public class ContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contact);
         setTitle(R.string.title_activity_contact);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         WebView webView = (WebView)findViewById(R.id.contact_webview);
         webView.setWebViewClient(new MyWebViewClient());
         webView.loadUrl(CONTACT_URL);
@@ -41,7 +40,6 @@ public class ContactActivity extends AppCompatActivity {
      * Renvoie au navigateur par défaut du smartphone, si on sort du domaine d'IntelliFridge
      */
     private class MyWebViewClient extends WebViewClient {
-
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {

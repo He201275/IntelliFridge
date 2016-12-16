@@ -146,7 +146,7 @@ public class AboutActivity extends AppCompatActivity {
         //set downloadmanager
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
         request.setDescription(getResources().getString(R.string.download_update_progress));
-        request.setTitle(getResources().getString(R.string.download_update_progress));
+        request.setTitle(getResources().getString(R.string.download_update_title));
 
         //set destination
         request.setDestinationUri(uri);

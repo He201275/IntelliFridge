@@ -12,7 +12,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.TaskStackBuilder;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -30,6 +30,7 @@ import static ovh.intellifridge.intellifridge.Config.LAST_UPDATE_CHECK;
 import static ovh.intellifridge.intellifridge.Config.UPDATE_APP_URL;
 import static ovh.intellifridge.intellifridge.Config.UPDATE_AVAILABLE;
 import static ovh.intellifridge.intellifridge.Config.UPDATE_NOTIF_PREFS;
+import static ovh.intellifridge.intellifridge.Config.updateNotification_id;
 
 
 public class CheckAppUpdate extends Service {
@@ -109,22 +110,16 @@ public class CheckAppUpdate extends Service {
 
         Intent downIntent = new Intent(this, AboutActivity.class);
         downIntent.setAction(getResources().getString(R.string.download_notif_btn));
-        PendingIntent piDownload = PendingIntent.getService(this, 0, downIntent, 0);
+        PendingIntent piDownload = PendingIntent.getActivity(this, 0, downIntent, 0);
 
-        Notification notif = new Notification.Builder(this)
-                .setAutoCancel(true)
-                .setContentIntent(PendingIntent.getActivity(this, 131314,resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT))
+        NotificationCompat.Builder builder = (android.support.v7.app.NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_intellifridge_notif)
                 .setContentTitle(getResources().getString(R.string.update_available))
                 .setContentText(getResources().getString(R.string.update_available_detail))
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setSmallIcon(R.drawable.ic_intellifridge_notif)
-                .setWhen(System.currentTimeMillis())
-                .setStyle(new Notification.BigTextStyle()
+                .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(getResources().getString(R.string.download_notif_big)))
-                .addAction (R.drawable.ic_file_download_black_24dp,
-                        getResources().getString(R.string.notif_down), piDownload)
-                .build();
+                .addAction(R.drawable.ic_file_download_black_24dp,getString(R.string.notif_down),piDownload);
 
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
@@ -136,7 +131,7 @@ public class CheckAppUpdate extends Service {
 
         NotificationManager notificationManager
                 = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(131315, notif);
+        notificationManager.notify(updateNotification_id, builder.build());
     }
 
     @Nullable

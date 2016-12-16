@@ -1,5 +1,28 @@
 package ovh.intellifridge.intellifridge;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.JWTVerifyException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Francis O. Makokha
  * Contient toutes les constantes utilisées dans le projet java
@@ -156,4 +179,5 @@ public class Config {
     public static final String MINUS_ONE = "minus_one";
     public static final String PLUS_ONE = "plus_one";
 
+    public static final int updateNotification_id = 131315;
 }
